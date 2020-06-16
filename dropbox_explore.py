@@ -46,6 +46,7 @@ def main():
 	file_to = 'configmanager_downloaded.py'
 	transferData.download_file(file_from, file_to)
 
+	# deleting file so a new version can be upladed without error
 	transferData.delete_file(file_from)
 
 if __name__ == '__main__':
