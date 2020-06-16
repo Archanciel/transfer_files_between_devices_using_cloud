@@ -41,6 +41,8 @@ if __name__ == '__main__':
 	#print(cm.downloadPath)
 	#print(cm.dropboxApiKey)
 
-	#print(cm.config[CONFIG_SECTION_PROJECTS]['transFileCloudTestProject'])
-	print(cm.projects)
+	print(cm.config[CONFIG_SECTION_PROJECTS]['transFileCloudTestProject'])
+	
+	for key in cm.projects: 
+		print(key)
 	print(cm.projects['transFileCloudTestProject']['projectPath'])

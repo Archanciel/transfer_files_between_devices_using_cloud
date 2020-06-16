@@ -12,3 +12,7 @@ class CloudAccess(metaclass=ABCMeta):
 	@abstractmethod	
 	def downloadFiles(self):
 		pass
+
+	@abstractmethod
+	def deleteFiles(self, file):
+		pass

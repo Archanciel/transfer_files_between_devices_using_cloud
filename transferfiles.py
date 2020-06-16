@@ -17,12 +17,26 @@ class TransferFiles:
 		"""
 		    :param commandLineArgs: used only for unit testing only
 		"""
+		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
+		
 		if commandLineArgs == None:
 			commandLineArgs = sys.argv[1:]
 
-		userDocumentName, userInsertionPos, imageNumbersToAdd = self.getCommandLineArgs(commandLineArgs)
-
-		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
+		project = self.getCommandLineArgs(commandLineArgs)
+				
+		if project == None:
+			projectNameList = [x for x in configManager.projects]
+			userPrompt = "Select project:\n\n"		
+			
+			for (i, projectName) in enumerate(projectNameList): 
+				userPrompt += str(i + 1) + ' ' + projectName + '\n'
+				
+			userPrompt += '\n'
+			
+			selection = input(userPrompt)
+			project = projectNameList[int(selection) - 1]
+			print('\n' + project)
+			
 		downLoadDir = configManager.downloadPath
 		self.fileLister = FileLister(configManager=configManager, fromDir=downLoadDir)
 		projectDir = configManager.projects['transFileCloudTestProject']['projectPath']
@@ -73,7 +87,7 @@ class TransferFiles:
 																"dir are added or inserted. ")
 		args = parser.parse_args(argList)
 
-		return args.document, args.insertionPos, args.pictures
+		return args.document
 		
 if __name__ == "__main__":
 	tf = TransferFiles(None)
