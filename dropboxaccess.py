@@ -1,3 +1,5 @@
+import dropbox
+
 from cloudaccess import CloudAccess
 from configmanager import ConfigManager
 
@@ -5,6 +7,7 @@ class DropboxAccess(CloudAccess):
 	def __init__(self, configManager):
 		super().__init__()
 		accessToken = configManager.dropboxApiKey
+		self.dbx = dropbox.Dropbox(accessToken)
 
 	def uploadFiles(self, file_from, file_to):
 		"""
