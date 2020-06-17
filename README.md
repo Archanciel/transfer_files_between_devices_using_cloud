@@ -7,5 +7,5 @@ The utility works on Android and on Windows
 
 ## Class diagram
 <p align="center">
-  <img src="images/class:diagram.jpg" width="600" title="Current development state">
+  <img src="images/class_diagram.jpg" width="600" title="Class diagram">
 </p>
