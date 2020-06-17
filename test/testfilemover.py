@@ -51,10 +51,29 @@ class TestFileMover(unittest.TestCase):
 		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fl.allImageFileLst))
 		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fl.allDocFileLst))
 		self.assertEqual(sorted(['README_1.rd']), sorted(fl.allReadmeFileLst))
-		
+
 		fm = FileMover(configManager, fromDir, projectDir)
-		fm.moveFiles()
+
+		# capturing stdout into file to avoid outputing in terminal
+		# window while unit testing
+				
+		stdout = sys.stdout
 		
+		if os.name == 'posix':
+			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
+		else:
+			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
+
+		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+		try:
+			with open(FILE_PATH, 'w') as outFile:
+				sys.stdout = outFile
+				fm.moveFiles()
+		except:
+			pass
+ 
+		sys.stdout = stdout
+				
 		# using FileLister to test that the expected files were correctly moved
 		flp = FileLister(configManager, projectDir)
 		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), sorted(flp.allPythonFileLst))
