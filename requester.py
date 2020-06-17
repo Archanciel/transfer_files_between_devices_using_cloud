@@ -22,12 +22,28 @@ class Requester:
 				userPrompt += str(i + 1) + ' ' + projectName + '\n'
 				
 			userPrompt += '\n'
-			
-			selection = input(userPrompt)
-			projectName = projectNameList[int(selection) - 1]
+
+			selection = '-1'
+			projectName = ''
+
+			while int(selection) <= 0:
+				selection = input(userPrompt)
+				if int(selection) <= 0:
+					userPrompt = self.addErrorToUserPrompt(userPrompt)
+				else:
+					try:
+						projectName = projectNameList[int(selection) - 1]
+					except:
+						userPrompt = self.addErrorToUserPrompt(userPrompt)
+						selection = -1
 			
 			return projectName
-			
+
+	def addErrorToUserPrompt(self, userPrompt):
+		userPrompt = userPrompt.replace('Invalid selection. ', '')
+		userPrompt = 'Invalid selection. ' + userPrompt
+		return userPrompt
+
 	def decodeCommandLineArgs(self, argList):
 		"""
 		Uses argparse to acquire the user optional command line arguments.
