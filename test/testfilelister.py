@@ -17,11 +17,11 @@ else:
 class TestFileLister(unittest.TestCase):
 	def testFileListerConstructor(self):
 		if os.name == 'posix':
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/move_files/test/testproject_1/fromdir'
-			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/move_files/test/testproject_1/fromdir_saved'
+			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
 		else:
-			fromDir = 'D:\\Development\\Python\\move_files\\test\\testproject_1\\fromdir'
-			fromDirSaved = 'D:\\Development\\Python\\move_files\\test\\testproject_1\\fromdir_saved'
+			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
+			fromDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 		
@@ -41,11 +41,11 @@ class TestFileLister(unittest.TestCase):
 		
 	def testRemoveTestFilesFromPythonFilesLst(self):
 		if os.name == 'posix':
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/move_files/test/testproject_1/fromdir'
-			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/move_files/test/testproject_1/fromdir_saved'
+			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
 		else:
-			fromDir = 'D:\\Development\\Python\\move_files\\test\\testproject_1\\fromdir'
-			fromDirSaved = 'D:\\Development\\Python\\move_files\\test\\testproject_1\\fromdir_saved'
+			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
+			fromDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 		

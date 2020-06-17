@@ -18,15 +18,15 @@ else:
 class TestFileMover(unittest.TestCase):
 	def testMoveFiles(self):
 		if os.name == 'posix':
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/move_files/test/testproject_1/fromdir'
-			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/move_files/test/testproject_1/fromdir_saved'
-			projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/move_files/test/testproject_1/projectdir'
-			projectDirEmpty = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/move_files/test/testproject_1/projectdir_empty'
+			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
+			projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir'
+			projectDirEmpty = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir_empty'
 		else:
-			fromDir = 'D:\\Development\\Python\\move_files\\test\\testproject_1\\fromdir'
-			fromDirSaved = 'D:\\Development\\Python\\move_files\\test\\testproject_1\\fromdir_saved'
-			projectDir = 'D:\\Development\\Python\\move_files\\test\\testproject_1\\projectdir'
-			projectDirEmpty = 'D:\\Development\\Python\\move_files\\test\\testproject_1\\projectdir_empty'
+			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
+			fromDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
+			projectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir'
+			projectDirEmpty = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir_empty'
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 
