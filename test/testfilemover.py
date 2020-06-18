@@ -11,9 +11,9 @@ from filelister import FileLister
 from constants import *
 
 if os.name == 'posix':
-	CONFIG_FILE_PATH_NAME = '/sdcard/transfiles.ini'
+	CONFIG_FILE_PATH_NAME = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'	
 else:
-	CONFIG_FILE_PATH_NAME = 'c:\\temp\\transfiles.ini'
+	CONFIG_FILE_PATH_NAME = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 
 class TestFileMover(unittest.TestCase):
 	def testMoveFiles(self):

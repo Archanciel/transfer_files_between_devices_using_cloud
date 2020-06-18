@@ -172,6 +172,46 @@ class TestRequester(unittest.TestCase):
 							  '3 cartesianAxesProject\n', '\n', 'Invalid selection. Select project:\n', '\n',
 							  '1 transFileCloudTestProject\n', '2 transFileCloudProject\n', '3 cartesianAxesProject\n',
 							  '\n'], contentList)
+	
+	def testGetProjectNameInvalidUserInput_return(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+
+		configManager = ConfigManager(configFilePathName)
+		rq = Requester(configManager)
+		
+		# simulating user input
+		stdin = sys.stdin
+
+		# invalid user input of return
+		sys.stdin = StringIO('\n')
+		
+		stdout = sys.stdout
+		
+		if os.name == 'posix':
+			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
+		else:
+			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
+
+		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+		try:
+			with open(FILE_PATH, 'w') as outFile:
+				sys.stdout = outFile
+				rq.getProjectName(None) #will eat up what has been filled in stdin using StringIO above
+		except:
+			pass
+ 
+		sys.stdin = stdin
+		sys.stdout = stdout
+ 
+		with open(FILE_PATH, 'r') as inFile:
+			contentList = inFile.readlines()
+			self.assertEqual(['Select project:\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
+							  '3 cartesianAxesProject\n', '\n', 'Invalid selection. Select project:\n', '\n',
+							  '1 transFileCloudTestProject\n', '2 transFileCloudProject\n', '3 cartesianAxesProject\n',
+							  '\n'], contentList)
 
 if __name__ == '__main__':
 	unittest.main()

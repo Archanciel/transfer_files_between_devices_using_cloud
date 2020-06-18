@@ -1,6 +1,8 @@
 import os
 
 VERSION_NUMBER = 0.1
+DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+DROPBOX_FILE_TRANSFER_DIR = '/file_trans_dir'
 
 if os.name == 'posix':
 	DIR_SEP = '/'

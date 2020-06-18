@@ -2,7 +2,7 @@ import os, sys, argparse
 
 from constants import *
 from requester import Requester
-from configmanager import ConfigManager 
+from configmanager import * 
 from filelister import FileLister
 from filemover import FileMover
 from dropboxaccess import DropboxAccess
@@ -18,15 +18,51 @@ class TransferFiles:
 			configFilePath = CONFIG_FILE_PATH_NAME
 			
 		configManager = ConfigManager(configFilePath)
-		requester = Requester(configManager)
-		
-		requester.getProjectName(commandLineArgs)
-		
-		downLoadDir = configManager.downloadPath
-		self.fileLister = FileLister(configManager=configManager, fromDir=downLoadDir)
-		projectDir = configManager.projects['transFileCloudTestProject']['projectPath']
-		self.fileMover = FileMover(configManager, downLoadDir, projectDir)
-		self.cloudAccess = DropboxAccess(configManager)
+		self.downloadDir = configManager.downloadPath
 
+		self.requester = Requester(configManager)		
+		self.projectName = self.requester.getProjectName(commandLineArgs)
+		self.projectDir = configManager.projects[self.projectName][CONFIG_KEY_PROJECT_PATH]
+		self.cloudAccess = DropboxAccess(configManager)
+		self.fileLister = FileLister(configManager=configManager, fromDir=self.downloadDir)
+
+		cloudFiles = self.cloudAccess.getCloudFileList()
+		
+		if cloudFiles == []:
+			# if the clouud directory is empty, this means
+			# that we are in the state of uploading the
+			# files modified on the current device to the
+			# cloud so that they will be available to be
+			# transfered on the other device.
+			updatedFiles = self.fileLister.getModifiedFileLst(self.projectName)
+			questionStr = 'Those files will be uploaded to the cloud'
+
+			if self.requester.getUserConfirmation(updatedFiles, questionStr):		
+				self.uploadFilesToCloud(updatedFiles)
+		else:
+			# if the cloud directory contains files, this
+			# means that we are in the state of transfering
+			# those files to the current device. The
+			# transfered files will be downloaded to the
+			# download dir and deleted from the cloud.
+			# They will then be moved from the download
+			# dir to the correct project dir and sub dire
+			projectDir = self.projectDir.split(DIR_SEP)[-3:]
+			projectDir = DIR_SEP.join(projectDir)
+			questionStr = 'Those files will be transfered from the cloud and then moved to the correct dir and sub-dir of {}'.format(projectDir)
+			
+			if self.requester.getUserConfirmation(cloudFiles, questionStr):
+				self.transferFilesFromCloud()
+			
+		self.fileMover = FileMover(configManager, self.downloadDir, self.projectDir)
+
+	def uploadFilesToCloud(self, updatedFiles):
+		#print(updatedFiles)
+		pass
+		
+	def transferFilesFromCloud(self):
+		pass
+		
 if __name__ == "__main__":
 	tf = TransferFiles()
+	print(tf.projectDir)

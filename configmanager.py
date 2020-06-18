@@ -7,7 +7,9 @@ CONFIG_SECTION_PROJECTS = 'Projects'
 CONFIG_KEY_DOWNLOAD_PATH = 'downnloadPath'
 CONFIG_KEY_DROPBOX_API_KEY = 'dropboxApiKey'
 
-CONFIG_KEY_TRANS_FILE_CLOUD_TEST_PROJECT = 'transFileCloudTestProjectPath'
+#CONFIG_KEY_TRANS_FILE_CLOUD_TEST_PROJECT = 'transFileCloudTestProjectPath'
+CONFIG_KEY_PROJECT_PATH = 'projectPath'
+CONFIG_KEY_PROJECT_LAST_SYNC_TIME = 'lastSyncTime'
 
 class ConfigManager:
 	def __init__(self, configFilePathName):
@@ -33,16 +35,17 @@ class ConfigManager:
 
 if __name__ == '__main__':
 	if os.name == 'posix':
-		CONFIG_FILE_PATH_NAME = '/sdcard/transfiles.ini'
+		configFilePathName = '/sdcard/transfiles.ini'
 	else:
-		CONFIG_FILE_PATH_NAME = 'c:\\temp\\transfiles.ini'
+		configFilePathName = 'c:\\temp\\transfiles.ini'
 
-	cm = ConfigManager(CONFIG_FILE_PATH_NAME)
+	cm = ConfigManager(configFilePathName)
 	#print(cm.downloadPath)
 	#print(cm.dropboxApiKey)
 
-	print(cm.config[CONFIG_SECTION_PROJECTS]['transFileCloudTestProject'])
+	#print(cm.config[CONFIG_SECTION_PROJECTS]['transFileCloudTestProject'])
 	
 	for key in cm.projects: 
 		print(key)
-	print(cm.projects['transFileCloudTestProject']['projectPath'])
+		print(cm.projects[key][CONFIG_KEY_PROJECT_PATH])
+		print(cm.projects[key][CONFIG_KEY_PROJECT_LAST_SYNC_TIME])

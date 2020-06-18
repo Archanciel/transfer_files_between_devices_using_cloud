@@ -28,16 +28,33 @@ class Requester:
 
 			while int(selection) <= 0:
 				selection = input(userPrompt)
-				if int(selection) <= 0:
-					userPrompt = self.addErrorToUserPrompt(userPrompt)
-				else:
-					try:
-						projectName = projectNameList[int(selection) - 1]
-					except:
+				try:
+					if int(selection) <= 0:
 						userPrompt = self.addErrorToUserPrompt(userPrompt)
-						selection = -1
-			
+					else:
+						try:
+							projectName = projectNameList[int(selection) - 1]
+						except:
+							userPrompt = self.addErrorToUserPrompt(userPrompt)
+							selection = -1
+				except ValueError as e:
+					userPrompt = self.addErrorToUserPrompt(userPrompt)
+					selection = -1
+								
 			return projectName
+				
+	def getUserConfirmation(self, fileLst, questionStr):
+		userPrompt = '\n'
+		
+		for fileName in fileLst:
+			userPrompt += fileName + '\n'
+		
+		userPrompt += '\n' + questionStr + '. Continue (Y/N) '
+		
+		if input(userPrompt).upper() == 'Y':	
+			return  True
+		else:
+			return False
 
 	def addErrorToUserPrompt(self, userPrompt):
 		userPrompt = userPrompt.replace('Invalid selection. ', '')

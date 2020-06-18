@@ -1,5 +1,6 @@
 import dropbox
 
+from constants import DROPBOX_FILE_TRANSFER_DIR
 from cloudaccess import CloudAccess
 from configmanager import ConfigManager
 
@@ -28,3 +29,12 @@ class DropboxAccess(CloudAccess):
 
 	def deleteFiles(self, file):
 		self.dbx.files_delete(file)
+		
+	def getCloudFileList(self):
+		fileNameLst = []
+		fileListMetaData = self.dbx.files_list_folder(path=DROPBOX_FILE_TRANSFER_DIR)
+		
+		for fileMetaData in fileListMetaData.entries:
+			fileNameLst.append(fileMetaData.name)
+			
+		return fileNameLst

@@ -45,7 +45,7 @@ class FileMover:
 
 if __name__ == "__main__":
 	fromDir = '/storage/emulated/0/Download'
-	projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/move_files'
+	projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/'
 
 	fm = FileMover(ConfigManager('/sdcard/transfiles.ini'), fromDir, projectDir)
 	fm.moveFiles()
