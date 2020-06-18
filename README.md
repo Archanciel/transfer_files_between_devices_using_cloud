@@ -9,4 +9,4 @@ The utility works on Android and on Windows
 <p align="center">
   <img src="images/class_diagram.jpg" width="400" title="Class diagram">
 </p>
->>>>>>> parent of 481ff6c... Update README.md
+>
