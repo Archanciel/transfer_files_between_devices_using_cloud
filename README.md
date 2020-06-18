@@ -3,4 +3,13 @@ Utility which moves files from a single directory to specific directories accord
 
 Currently, the src and dst dirs are specified as constants in the constants.py file.
 
+<<<<<<< HEAD
 The utility works on Android and on Windows 
+=======
+The utility works on Android and on Windows 
+
+## Class diagram
+<p align="center">
+  <img src="images/class_diagram.jpg" width="400" title="Class diagram">
+</p>
+>>>>>>> parent of 481ff6c... Update README.md
