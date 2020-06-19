@@ -34,11 +34,11 @@ class TransferFiles:
 			# files modified on the current device to the
 			# cloud so that they will be available to be
 			# transfered on the other device.
-			updatedFiles = self.fileLister.getModifiedFileLst(self.projectName)
+			updatedFileNameLst, updatedFilePathNameLst = self.fileLister.getModifiedFileLst(self.projectName)
 			questionStr = 'Those files will be uploaded to the cloud'
 
-			if self.requester.getUserConfirmation(updatedFiles, questionStr):		
-				self.uploadFilesToCloud(updatedFiles)
+			if self.requester.getUserConfirmation(updatedFileNameLst, questionStr):		
+				self.uploadFilesToCloud(updatedFilePathNameLst)
 		else:
 			# if the cloud directory contains files, this
 			# means that we are in the state of transfering
@@ -56,7 +56,7 @@ class TransferFiles:
 			
 		self.fileMover = FileMover(configManager, self.downloadDir, self.projectDir)
 
-	def uploadFilesToCloud(self, updatedFiles):
+	def uploadFilesToCloud(self, updatedFilePathNameLst):
 		#print(updatedFiles)
 		pass
 		

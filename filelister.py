@@ -31,23 +31,32 @@ class FileLister:
 		projectDir = self.configManager.projects[projectName][CONFIG_KEY_PROJECT_PATH]
 		lastSyncTimeStr = self.configManager.projects[projectName][CONFIG_KEY_PROJECT_LAST_SYNC_TIME]
 		lastSyncTime = datetime.datetime.strptime(lastSyncTimeStr, DATE_TIME_FORMAT)
-		results = []
+		allFileNameLst = []
+		allFilePathNameLst = []
 
 		for root, dirs, files in os.walk(projectDir):
-			for filename in files:
-				path = os.path.join(root, filename)
-				file_mtime = datetime.datetime.fromtimestamp(os.stat(path).st_mtime)
+			for fileName in files:
+				pathfileName = os.path.join(root, fileName)
+				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
 				if(file_mtime > lastSyncTime):
-					results.append(path)  # yield path?
-	
-		allFileNameLst = [x.split(DIR_SEP)[-1] for x in results]
-		self.allPythonFileLst = list(filter(lambda x: '.py' in x and '.pyc' not in x, allFileNameLst))
-		self.allTestPythonFileLst = list(filter(lambda x: 'test' in x, self.allPythonFileLst))
-		self.allImageFileLst = list(filter(lambda x: '.jpg' in x, allFileNameLst))
-		self.allDocFileLst = list(filter(lambda x: '.docx' in x, allFileNameLst))
-		self.allReadmeFileLst = list(filter(lambda x: '.rd' in x, allFileNameLst))	
+					allFileNameLst.append(fileName)
+					allFilePathNameLst.append(pathfileName)
+					
+		allPythonFileNameLst = list(filter(lambda x: '.py' in x and '.pyc' not in x, allFileNameLst))
+		allImageFileNameLst = list(filter(lambda x: '.jpg' in x, allFileNameLst))
+		allDocFileNameLst = list(filter(lambda x: '.docx' in x, allFileNameLst))
+		allReadmeFileNameLst = list(filter(lambda x: '.rd' in x, allFileNameLst))	
 
-		return self.allPythonFileLst + self.allImageFileLst + self.allDocFileLst + self.allReadmeFileLst				
+		allFileNameLstReturn = allPythonFileNameLst + allImageFileNameLst + allDocFileNameLst + allReadmeFileNameLst				
+					
+		allPythonFilePathNameLst = list(filter(lambda x: '.py' in x and '.pyc' not in x, allFilePathNameLst))
+		allImageFilePathNameLst = list(filter(lambda x: '.jpg' in x, allFilePathNameLst))
+		allDocFilePathNameLst = list(filter(lambda x: '.docx' in x, allFilePathNameLst))
+		allReadmeFilePathNameLst = list(filter(lambda x: '.rd' in x, allFilePathNameLst))	
+
+		allFilePathNameLstReturn = allPythonFilePathNameLst + allImageFilePathNameLst + allDocFilePathNameLst + allReadmeFilePathNameLst
+		
+		return allFileNameLstReturn, allFilePathNameLstReturn				
 
 if __name__ == "__main__":
 	if os.name == 'posix':
@@ -72,6 +81,7 @@ if __name__ == "__main__":
 	f.write(str(fl.allReadmeFileLst))
 	f.close()
 	
-	print(fl.getModifiedFileLst('transFileCloudProject'))
-	
+	allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudProject')
+	print(allFileNameLst)
+	print(allFilePathNameLst)
 	
