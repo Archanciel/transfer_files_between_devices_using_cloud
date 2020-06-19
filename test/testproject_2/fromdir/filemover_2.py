@@ -8,29 +8,29 @@ class FileMover:
 		self.fileLister = FileLister()
 
 	def moveFiles(self):		
-		for fileName in self.fileLister.allTestPythonFileLst:
+		for fileName in self.fileLister.allTestPythonFileNameLst:
 			file = DIR_SEP + fileName
 			shutil.move(SRC_DIR + file, TEST_FILE_DST + file)
 			print('moving {} to {}'.format(SRC_DIR + file, TEST_FILE_DST + file))
 
 		self.fileLister.removeTestFilesFromPythonFiles()
 		
-		for fileName in self.fileLister.allPythonFileLst:
+		for fileName in self.fileLister.allPythonFileNameLst:
 			file = DIR_SEP + fileName
 			shutil.move(SRC_DIR + file, PYTHON_FILE_DST + file)
 			print('moving {} to {}'.format(SRC_DIR + file, PYTHON_FILE_DST + file))
 		
-		for fileName in self.fileLister.allImageFileLst:
+		for fileName in self.fileLister.allImageFileNameLst:
 			file = DIR_SEP + fileName
 			shutil.move(SRC_DIR + file, IMG_FILE_DST + file)
 			print('moving {} to {}'.format(SRC_DIR + file, IMG_FILE_DST + file))
 		
-		for fileName in self.fileLister.allDocFileLst:
+		for fileName in self.fileLister.allDocFileNameLst:
 			file = DIR_SEP + fileName
 			shutil.move(SRC_DIR + file, DOC_FILE_DST + file)
 			print('moving {} to {}'.format(SRC_DIR + file, DOC_FILE_DST + file))
 		
-		for fileName in self.fileLister.allReadmeFileLst:
+		for fileName in self.fileLister.allReadmeFileNameLst:
 			file = DIR_SEP + fileName
 			shutil.move(SRC_DIR + file, PYTHON_FILE_DST + file)
 			print('moving {} to {}'.format(SRC_DIR + file, PYTHON_FILE_DST + file))

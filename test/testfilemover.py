@@ -46,11 +46,11 @@ class TestFileMover(unittest.TestCase):
 
 		# ensuring fromDir contains the required files
 		fl = FileLister(configManager, fromDir)
-		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py', 'testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allPythonFileLst))
-		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allTestPythonFileLst))
-		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fl.allImageFileLst))
-		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fl.allDocFileLst))
-		self.assertEqual(sorted(['README_1.rd']), sorted(fl.allReadmeFileLst))
+		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py', 'testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allPythonFileNameLst))
+		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allTestPythonFileNameLst))
+		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fl.allImageFileNameLst))
+		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fl.allDocFileNameLst))
+		self.assertEqual(sorted(['README_1.rd']), sorted(fl.allReadmeFileNameLst))
 
 		fm = FileMover(configManager, fromDir, projectDir)
 
@@ -76,25 +76,25 @@ class TestFileMover(unittest.TestCase):
 				
 		# using FileLister to test that the expected files were correctly moved
 		flp = FileLister(configManager, projectDir)
-		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), sorted(flp.allPythonFileLst))
-		self.assertEqual(sorted(['README_1.rd']), sorted(flp.allReadmeFileLst))
+		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), sorted(flp.allPythonFileNameLst))
+		self.assertEqual(sorted(['README_1.rd']), sorted(flp.allReadmeFileNameLst))
 
 		flt = FileLister(configManager, projectDir + TEST_SUB_DIR)
-		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), sorted(flt.allTestPythonFileLst))
+		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), sorted(flt.allTestPythonFileNameLst))
 
 		fli = FileLister(configManager, projectDir + IMG_SUB_DIR)
-		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fli.allImageFileLst))
+		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fli.allImageFileNameLst))
 
 		fld = FileLister(configManager, projectDir + DOC_SUB_DIR)
-		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fld.allDocFileLst))
+		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fld.allDocFileNameLst))
 
 		# testing that fromDir is now empty
 		flf = FileLister(configManager, fromDir)
-		self.assertEqual([], flf.allPythonFileLst)
-		self.assertEqual([], flf.allTestPythonFileLst)
-		self.assertEqual([], flf.allImageFileLst)
-		self.assertEqual([], flf.allDocFileLst)
-		self.assertEqual([], flf.allReadmeFileLst)
+		self.assertEqual([], flf.allPythonFileNameLst)
+		self.assertEqual([], flf.allTestPythonFileNameLst)
+		self.assertEqual([], flf.allImageFileNameLst)
+		self.assertEqual([], flf.allDocFileNameLst)
+		self.assertEqual([], flf.allReadmeFileNameLst)
 		
 if __name__ == '__main__':
 	unittest.main()

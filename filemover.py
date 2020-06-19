@@ -11,7 +11,7 @@ class FileMover:
 		self.projectDir = projectDir
 
 	def moveFiles(self):		
-		for fileName in self.fileNameLister.allTestPythonFileLst:
+		for fileName in self.fileNameLister.allTestPythonFileNameLst:
 			fromFilePath = self.fromDir + DIR_SEP + fileName
 			toFilePath = self.projectDir + TEST_SUB_DIR + DIR_SEP + fileName
 			shutil.move(fromFilePath, toFilePath)
@@ -19,25 +19,25 @@ class FileMover:
 
 		self.fileNameLister.removeTestFilesFromPythonFilesLst()
 		
-		for fileName in self.fileNameLister.allPythonFileLst:
+		for fileName in self.fileNameLister.allPythonFileNameLst:
 			fromFilePath = self.fromDir + DIR_SEP + fileName
 			toFilePath = self.projectDir + DIR_SEP + fileName
 			shutil.move(fromFilePath, toFilePath)
 			print('moving {} to {}'.format(fromFilePath.replace(BASE_DST_FILE_DIR, ''), toFilePath.replace(BASE_DST_FILE_DIR, '')))
 		
-		for fileName in self.fileNameLister.allImageFileLst:
+		for fileName in self.fileNameLister.allImageFileNameLst:
 			fromFilePath = self.fromDir + DIR_SEP + fileName
 			toFilePath = self.projectDir + IMG_SUB_DIR + DIR_SEP + fileName
 			shutil.move(fromFilePath, toFilePath)
 			print('moving {} to {}'.format(fromFilePath.replace(BASE_DST_FILE_DIR, ''), toFilePath.replace(BASE_DST_FILE_DIR, '')))
 		
-		for fileName in self.fileNameLister.allDocFileLst:
+		for fileName in self.fileNameLister.allDocFileNameLst:
 			fromFilePath = self.fromDir + DIR_SEP + fileName
 			toFilePath = self.projectDir + DOC_SUB_DIR + DIR_SEP + fileName
 			shutil.move(fromFilePath, toFilePath)
 			print('moving {} to {}'.format(fromFilePath.replace(BASE_DST_FILE_DIR, ''), toFilePath.replace(BASE_DST_FILE_DIR, '')))
 		
-		for fileName in self.fileNameLister.allReadmeFileLst:
+		for fileName in self.fileNameLister.allReadmeFileNameLst:
 			fromFilePath = self.fromDir + DIR_SEP + fileName
 			toFilePath = self.projectDir + DIR_SEP + fileName
 			shutil.move(fromFilePath, toFilePath)
