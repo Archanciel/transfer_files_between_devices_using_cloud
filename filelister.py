@@ -1,4 +1,4 @@
-import os, glob, datetime
+import os, glob, datetime, re
 
 from configmanager import *
 from constants import DIR_SEP, DATE_TIME_FORMAT
@@ -18,7 +18,10 @@ class FileLister:
 		
 		# creating the different file type lists
 		allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(fromDir + '/*.*')]
-		self.allPythonFileLst = list(filter(lambda x: '.py' in x, allFileNameLst))
+
+		pattern = re.compile('\w*\.[py]*$')
+		
+		self.allPythonFileLst = [ x for x in allFileNameLst if pattern.match(x) ]
 		self.allTestPythonFileLst = list(filter(lambda x: 'test' in x, self.allPythonFileLst))
 		self.allImageFileLst = list(filter(lambda x: '.jpg' in x, allFileNameLst))
 		self.allDocFileLst = list(filter(lambda x: '.docx' in x, allFileNameLst))
@@ -42,14 +45,18 @@ class FileLister:
 					allFileNameLst.append(fileName)
 					allFilePathNameLst.append(pathfileName)
 					
-		allPythonFileNameLst = list(filter(lambda x: '.py' in x and '.pyc' not in x, allFileNameLst))
+		pattern = re.compile('\w*\.[py]*$')
+		
+		allPythonFileNameLst = [ x for x in allFileNameLst if pattern.match(x) ]
 		allImageFileNameLst = list(filter(lambda x: '.jpg' in x, allFileNameLst))
 		allDocFileNameLst = list(filter(lambda x: '.docx' in x, allFileNameLst))
 		allReadmeFileNameLst = list(filter(lambda x: '.rd' in x, allFileNameLst))	
 
 		allFileNameLstReturn = allPythonFileNameLst + allImageFileNameLst + allDocFileNameLst + allReadmeFileNameLst				
 					
-		allPythonFilePathNameLst = list(filter(lambda x: '.py' in x and '.pyc' not in x, allFilePathNameLst))
+		pattern = re.compile('[\w:\./]*\.[py]*$'.format(DIR_SEP))
+		
+		allPythonFilePathNameLst = [ x for x in allFilePathNameLst if pattern.match(x) ]
 		allImageFilePathNameLst = list(filter(lambda x: '.jpg' in x, allFilePathNameLst))
 		allDocFilePathNameLst = list(filter(lambda x: '.docx' in x, allFilePathNameLst))
 		allReadmeFilePathNameLst = list(filter(lambda x: '.rd' in x, allFilePathNameLst))	
@@ -82,8 +89,8 @@ if __name__ == "__main__":
 	f.write(str(fl.allReadmeFileLst))
 	f.close()
 	
-#	allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudProject')
-	allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudTestProject')
+	allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudProject')
+#	allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudTestProject')
 	for fn in allFileNameLst:
 		print(fn)
 
