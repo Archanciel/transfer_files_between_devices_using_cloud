@@ -61,11 +61,12 @@ class FileLister:
 if __name__ == "__main__":
 	if os.name == 'posix':
 		configFilePathName = '/sdcard/transfiles.ini'
+		fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
 	else:
 		configFilePathName = 'c:\\temp\\transfiles.ini'
+		fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 	cm = ConfigManager(configFilePathName)
-	fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
 	fl = FileLister(cm, fromDir)
 	
 	f = open("temp.txt", 'w')
@@ -81,7 +82,12 @@ if __name__ == "__main__":
 	f.write(str(fl.allReadmeFileLst))
 	f.close()
 	
-	allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudProject')
-	print(allFileNameLst)
-	print(allFilePathNameLst)
+	allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudTestProject')
+	for fn in allFileNameLst:
+		print(fn)
+
+	print()
+
+	for fpn in allFilePathNameLst:
+		print(fpn)
 	
