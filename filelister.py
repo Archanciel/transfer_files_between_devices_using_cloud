@@ -82,6 +82,7 @@ if __name__ == "__main__":
 	f.write(str(fl.allReadmeFileLst))
 	f.close()
 	
+#	allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudProject')
 	allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudTestProject')
 	for fn in allFileNameLst:
 		print(fn)
