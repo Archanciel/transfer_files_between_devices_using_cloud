@@ -88,18 +88,16 @@ class TestFileLister(unittest.TestCase):
 
 	def testListFilesRecursively(self):
 		if os.name == 'posix':
-			configFilePathName = '/sdcard/transfiles.ini'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
 		else:
-			configFilePathName = 'c:\\temp\\transfiles.ini'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm, fromDir)
-		projectDir = 'does_not_exist'
-		lastSyncTimeStr = '2020-06-18 08:45:23'
-		lastSyncTime = datetime.datetime.strptime(lastSyncTimeStr, DATE_TIME_FORMAT)
-		self.assertRaises(NotADirectoryError, fl.listFilesRecursively, lastSyncTime, projectDir)
+		invalidProjectName = 'transFileCloudInvalidProject'
+		self.assertRaises(NotADirectoryError, fl.getModifiedFileLst, invalidProjectName)
 
 if __name__ == '__main__':
 	unittest.main()

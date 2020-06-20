@@ -34,7 +34,21 @@ class FileLister:
 		projectDir = self.configManager.projects[projectName][CONFIG_KEY_PROJECT_PATH]
 		lastSyncTimeStr = self.configManager.projects[projectName][CONFIG_KEY_PROJECT_LAST_SYNC_TIME]
 		lastSyncTime = datetime.datetime.strptime(lastSyncTimeStr, DATE_TIME_FORMAT)
-		allFileNameLst, allFilePathNameLst = self.listFilesRecursively(lastSyncTime, projectDir)
+		allFileNameLst = []
+		allFilePathNameLst = []
+
+		if not os.path.isdir(projectDir):
+			raise NotADirectoryError(projectDir)
+
+		for root, dirs, files in os.walk(projectDir):
+			for fileName in files:
+				pathfileName = os.path.join(root, fileName)
+				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
+				if (file_mtime > lastSyncTime):
+					allFileNameLst.append(fileName)
+					allFilePathNameLst.append(pathfileName)
+				result = allFileNameLst, allFilePathNameLst
+				allFileNameLst, allFilePathNameLst = result
 
 		pattern = re.compile('\w*\.[py]*$')
 		
@@ -45,8 +59,6 @@ class FileLister:
 
 		allFileNameLstReturn = allPythonFileNameLst + allImageFileNameLst + allDocFileNameLst + allReadmeFileNameLst				
 					
-#		pattern = re.compile('[\w:\./]*\.[py]*$'.format(DIR_SEP))
-
 		if os.name == 'posix':
 			pattern = re.compile('[\w:\.{}]*\.[py]*$'.format(DIR_SEP))
 		else:
@@ -61,22 +73,6 @@ class FileLister:
 		allFilePathNameLstReturn = allPythonFilePathNameLst + allImageFilePathNameLst + allDocFilePathNameLst + allReadmeFilePathNameLst
 		
 		return allFileNameLstReturn, allFilePathNameLstReturn
-
-	def listFilesRecursively(self, lastSyncTime, projectDir):
-		allFileNameLst = []
-		allFilePathNameLst = []
-
-		if not os.path.isdir(projectDir):
-			raise NotADirectoryError(projectDir)
-
-		for root, dirs, files in os.walk(projectDir):
-			for fileName in files:
-				pathfileName = os.path.join(root, fileName)
-				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
-				if (file_mtime > lastSyncTime):
-					allFileNameLst.append(fileName)
-					allFilePathNameLst.append(pathfileName)
-		return allFileNameLst, allFilePathNameLst
 
 if __name__ == "__main__":
 	if os.name == 'posix':
