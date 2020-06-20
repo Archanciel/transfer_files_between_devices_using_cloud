@@ -23,10 +23,16 @@ class TransferFiles:
 		self.requester = Requester(configManager)		
 		self.projectName = self.requester.getProjectName(commandLineArgs)
 		self.projectDir = configManager.projects[self.projectName][CONFIG_KEY_PROJECT_PATH]
-		self.cloudAccess = DropboxAccess(configManager)
+		self.cloudAccess = DropboxAccess(configManager, self.projectName)
 		self.fileLister = FileLister(configManager=configManager, fromDir=self.downloadDir)
 
-		cloudFiles = self.cloudAccess.getCloudFileList()
+		cloudFiles = []
+		
+		try:
+			cloudFiles = self.cloudAccess.getCloudFileList()
+		except Exception as e:
+			print(str(e))
+			
 		
 		if cloudFiles == []:
 			# if the clouud directory is empty, this means
