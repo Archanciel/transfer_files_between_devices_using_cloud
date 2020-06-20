@@ -2,9 +2,8 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 class CloudAccess(metaclass=ABCMeta):
-	def __init__(self):
-		pass
-		
+	def __init__(self, cloudTransferBaseDir, projectName):
+		self.cloudTransferDir = cloudTransferBaseDir + '/' + projectName
 	@abstractmethod	
 	def uploadFiles(self):
 		pass

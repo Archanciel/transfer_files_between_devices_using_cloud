@@ -1,12 +1,11 @@
 import dropbox
 
-from constants import DROPBOX_FILE_TRANSFER_DIR
 from cloudaccess import CloudAccess
 from configmanager import ConfigManager
 
 class DropboxAccess(CloudAccess):
-	def __init__(self, configManager):
-		super().__init__()
+	def __init__(self, configManager, projectName):
+		super().__init__(configManager.dropboxBaseDir, projectName)
 		accessToken = configManager.dropboxApiKey
 		self.dbx = dropbox.Dropbox(accessToken)
 
@@ -32,8 +31,14 @@ class DropboxAccess(CloudAccess):
 		
 	def getCloudFileList(self):
 		fileNameLst = []
-		fileListMetaData = self.dbx.files_list_folder(path=DROPBOX_FILE_TRANSFER_DIR)
+		fileListMetaData = None
 		
+		try:			
+			fileListMetaData = self.dbx.files_list_folder(path=self.cloudTransferDir)
+		except dropbox.exceptions.ApiError as e:
+			if isinstance(e.error, dropbox.files.ListFolderError):
+				raise NotADirectoryError("Dropbox directory {} does not exist".format(self.cloudTransferDir))
+			
 		for fileMetaData in fileListMetaData.entries:
 			fileNameLst.append(fileMetaData.name)
 			
