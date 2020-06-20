@@ -8,23 +8,19 @@ sys.path.insert(0, parentdir)
 from configmanager import *
 from filelister import FileLister
 from constants import DIR_SEP, DATE_TIME_FORMAT
-
-
-if os.name == 'posix':
-	CONFIG_FILE_PATH_NAME = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'	
-else:
-	CONFIG_FILE_PATH_NAME = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 			
 class TestFileLister(unittest.TestCase):
 	def testFileListerConstructor(self):
 		if os.name == 'posix':
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
 			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
 			fromDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 
-		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
+		configManager = ConfigManager(configFilePathName)
 		
 		# deleting fromDir
 		if os.path.exists(fromDir):
@@ -44,11 +40,13 @@ class TestFileLister(unittest.TestCase):
 		if os.name == 'posix':
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
 			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
 			fromDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 
-		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
+		configManager = ConfigManager(configFilePathName)
 		
 		# deleting fromDir
 		if os.path.exists(fromDir):
@@ -86,7 +84,11 @@ class TestFileLister(unittest.TestCase):
 				['D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\constants_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\filelister_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\filemover_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\test\\testfilelister_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\test\\testfilemover_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\images\\current_state_21.jpg', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\images\\current_state_22.jpg', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\doc\\doc_21.docx', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\doc\\doc_22.docx', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\README_2.rd']),
 							 sorted(allFilePathNameLst))
 
-	def testListFilesRecursively(self):
+	def testGetModifiedFileLst_invalid_local_dir(self):
+		'''
+		Tests that the getModifiedFileLst() method raises a NotADirectoryError
+		if the project path specified in the transfiles.ini does not exist.
+		'''
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
@@ -96,6 +98,9 @@ class TestFileLister(unittest.TestCase):
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm, fromDir)
+		
+		# project name which has an invalid (not existing) project path in the
+		# transfiles.ini file
 		invalidProjectName = 'transFileCloudInvalidProject'
 		self.assertRaises(NotADirectoryError, fl.getModifiedFileLst, invalidProjectName)
 
