@@ -4,3 +4,4 @@
 *.pyc
 configmanager_downloaded.py
 temp.txt
+test/transfiles.ini
