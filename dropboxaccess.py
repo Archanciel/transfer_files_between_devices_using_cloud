@@ -1,5 +1,6 @@
 import io, dropbox
 
+from constants import DIR_SEP
 from cloudaccess import CloudAccess
 from configmanager import ConfigManager
 
@@ -9,16 +10,17 @@ class DropboxAccess(CloudAccess):
 		accessToken = configManager.dropboxApiKey
 		self.dbx = dropbox.Dropbox(accessToken)
 
-	def uploadFiles(self, file_from, file_to):
+	def uploadFile(self, localFilePathName):
 		"""
 		Uploads a file to Dropbox using API v2. Warning: if the uploaded
 		file already exists in the Dropbox destination dir, the upload
 		will fail if the file is different from the initially uploaded
 		file !
 		"""
-
-		with open(file_from, 'rb') as f:
-			self.dbx.files_upload(f.read(), file_to)
+		cloudFilePathName = self.cloudTransferDir + '/' + localFilePathName.split(DIR_SEP)[-1]
+		
+		with open(localFilePathName, 'rb') as f:
+			self.dbx.files_upload(f.read(), cloudFilePathName)
 
 	def downloadFiles(self, file_from, file_to):
 		with open(file_to, "wb") as f:
@@ -26,8 +28,9 @@ class DropboxAccess(CloudAccess):
 			f.write(res.content)
 			print(metadata)
 
-	def deleteFile(self, file):
-		self.dbx.files_delete_v2(file)
+	def deleteFile(self, fileName):
+		cloudFilePathName = self.cloudTransferDir + '/' + fileName
+		self.dbx.files_delete_v2(cloudFilePathName)
 
 	def deleteFolder(self, folder):
 		self.dbx.files_delete_v2(self.cloudTransferDir + '/' + folder)

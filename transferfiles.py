@@ -67,8 +67,8 @@ class TransferFiles:
 		self.fileMover = FileMover(configManager, self.downloadDir, self.projectDir)
 
 	def uploadFilesToCloud(self, updatedFilePathNameLst):
-		#print(updatedFiles)
-		pass
+		for localFilePathName in updatedFilePathNameLst:
+			self.cloudAccess.uploadFile(localFilePathName)
 		
 	def transferFilesFromCloud(self):
 		pass

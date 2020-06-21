@@ -7,14 +7,12 @@ sys.path.insert(0, parentdir)
 		
 import warnings 		
 
+from constants import DIR_SEP
 from configmanager import *
 from dropboxaccess import DropboxAccess
 			
 class TestDropboxAccess(unittest.TestCase):
 	def testGetCloudFileList(self):
-		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
-		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
-		
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
@@ -32,9 +30,6 @@ class TestDropboxAccess(unittest.TestCase):
 		if the cloud project path which is equal to cloud transfer base dir + 
 		'/' + projectName as defined in the tranfiles.ini file does not exist.
 		'''
-		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
-		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
-		
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
@@ -86,10 +81,7 @@ class TestDropboxAccess(unittest.TestCase):
 		drpa = DropboxAccess(cm, projectName)
 		drpa.deleteFolder(newFolderName)
 
-	def testCreateProjectFolder(self):
-		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
-		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
-
+	def testCreateProjectFoldeAndDeleteProjectFolderr(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
@@ -113,34 +105,47 @@ class TestDropboxAccess(unittest.TestCase):
 		drpa = DropboxAccess(cm, projectName)
 		drpa.deleteProjectFolder()
 
-	def testDeleteProjectFolder(self):
-		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
-		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
-
+		# verify the project folder was deleted
+		self.assertRaises(NotADirectoryError, drpa.getCloudFileList)
+		
+	def testUploadFileAndDeleteFile(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			localDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			localDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
 
 		cm = ConfigManager(configFilePathName)
-		projectName = 'transFileCloudTestProjectToCreateForDeletion'
+		projectName = 'transFileCloudTestProjectForUpload'
 
 		# creating a DropboxAccess on an inexisting Dropbox folder
 		# to ensure the folder does not exist
 		drpa = DropboxAccess(cm, projectName)
-
-		# now, creating the project folder which will be deleted
-		drpa.createProjectFolder()
+		
+		try:
+			drpa.getCloudFileList()
+		except NotADirectoryError:
+			# if project folder not exist
+			drpa.createProjectFolder()
 
 		# should not raise any error
-		drpa.getCloudFileList()
+		self.assertEqual([], drpa.getCloudFileList())
+		
+		# now, uploading a file
+		uploadFileName = 'filemover_1.py'
+		localFilePathName = localDir + DIR_SEP + uploadFileName
+		drpa.uploadFile(localFilePathName)
 
-		# now deleting the newly created folder
-		drpa = DropboxAccess(cm, projectName)
-		drpa.deleteProjectFolder()
-
-		# verify the project folder was deleted
-		self.assertRaises(NotADirectoryError, drpa.getCloudFileList)
+		self.assertEqual([uploadFileName], drpa.getCloudFileList())
+		
+		# now deleting the newly created file so that this test can be run again
+		drpa.deleteFile(uploadFileName)
+		
+		# should not raise any error
+		self.assertEqual([], drpa.getCloudFileList())		
 
 if __name__ == '__main__':
 	unittest.main()
+#	tst = TestDropboxAccess()
+#	tst.testUploadFile()

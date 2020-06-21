@@ -5,7 +5,7 @@ class CloudAccess(metaclass=ABCMeta):
 	def __init__(self, cloudTransferBaseDir, projectName):
 		self.cloudTransferDir = cloudTransferBaseDir + '/' + projectName
 	@abstractmethod	
-	def uploadFiles(self):
+	def uploadFile(self, localFilePathName):
 		pass
 		
 	@abstractmethod	
