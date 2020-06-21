@@ -18,7 +18,7 @@ def createEmptyFolder(dropboxBaseFolder, newFolder):
 	dbx.files_upload(f.read(), dummyFileTo)
 	
 	# now that the folder is created, delete the dummy file	
-	dbx.files_delete(dummyFileTo)
+	dbx.files_delete_v2(dummyFileTo)
 
 cm = ConfigManager(CONFIG_FILE_PATH_NAME)
 access_token = cm.dropboxApiKey

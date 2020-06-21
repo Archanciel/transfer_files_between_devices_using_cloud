@@ -27,10 +27,10 @@ class DropboxAccess(CloudAccess):
 			print(metadata)
 
 	def deleteFile(self, file):
-		self.dbx.files_delete(file)
+		self.dbx.files_delete_v2(file)
 
 	def deleteFolder(self, folder):
-		self.dbx.files_delete(self.cloudTransferDir + '/' + folder)
+		self.dbx.files_delete_v2(self.cloudTransferDir + '/' + folder)
 
 	def getCloudFileList(self):
 		fileNameLst = []

@@ -24,7 +24,7 @@ class TransferData:
 			print(metadata.name + ' downloaded')
 
 	def delete_file(self, file):
-		self.dbx.files_delete(file)
+		self.dbx.files_delete_v2(file)
 
 	def create_folder(self, dropboxBaseFolder, newFolder):
 		# creating a temp dummy destination file path
