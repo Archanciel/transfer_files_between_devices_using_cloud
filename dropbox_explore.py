@@ -1,4 +1,4 @@
-import os, dropbox
+import os, io, dropbox
 
 from configmanager import ConfigManager
 
@@ -25,7 +25,20 @@ class TransferData:
 
 	def delete_file(self, file):
 		self.dbx.files_delete(file)
-		
+
+	def create_folder(self, dropboxBaseFolder, newFolder):
+		# creating a temp dummy destination file path
+		dummyFileTo = dropboxBaseFolder + newFolder + '/' + 'temp.bin'
+
+		# creating a virtual in-memory binary file
+		f = io.BytesIO(b"\x00")
+
+		# uploading the dummy file in order to create the containing folder
+		self.dbx.files_upload(f.read(), dummyFileTo)
+
+		# now that the folder is created, delete the dummy file
+		self.dbx.files_delete(dummyFileTo)
+
 	def list_files(self, dropboxDir):
 		fileListMetaData = self.dbx.files_list_folder(path=dropboxDir)
 		for fileMetaData in fileListMetaData.entries:
@@ -41,6 +54,7 @@ def main():
 	access_token = cm.dropboxApiKey
 	transferData = TransferData(access_token)
 	dropboxDir = '/test_dropbox'
+	#dropboxDir = '/test_dropbox/batch_explore'
 	file_from = 'configmanager.py'
 	file_to = dropboxDir +'/configmanager.py'  # The full path to upload the file to, including the file name
 
@@ -58,6 +72,30 @@ def main():
 	transferData.delete_file(file_from)
 	print('\nList files after delete\n')
 	transferData.list_files(dropboxDir)
+	print('\nList files in dropbox dir /not exist. Raises exception\n')
+	
+	try:
+		transferData.list_files(dropboxDir + '/not_exist')
+	except Exception as e:
+		print(str(e))
+	
+	transferData.create_folder(dropboxDir, '/not_exist')
+	
+	print('\nnow list files after /not_exist was created. Will not raise exception.')
+	transferData.list_files(dropboxDir + '/not_exist')
+	
+	print('\nnow deleting the newly created folder.')
+	
+	# now, deleting the created folder
+	transferData.delete_file(dropboxDir + '/not_exist')
+	
+	print('\nList files in dropbox dir /not exist which was deleted. Raises exception\n')
+	
+	try:
+		transferData.list_files(dropboxDir + '/not_exist')
+	except Exception as e:
+		print(str(e))
+	
 
 if __name__ == '__main__':
 	main()

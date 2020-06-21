@@ -13,9 +13,17 @@ class CloudAccess(metaclass=ABCMeta):
 		pass
 
 	@abstractmethod
-	def deleteFiles(self, file):
+	def deleteFile(self, file):
+		pass
+
+	@abstractmethod
+	def deleteFolder(self, folder):
 		pass
 
 	@abstractmethod
 	def getCloudFileList(self):
+		pass
+		
+	@abstractmethod
+	def createEmptyFolder(self, folderName):
 		pass

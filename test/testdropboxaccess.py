@@ -49,5 +49,42 @@ class TestDropboxAccess(unittest.TestCase):
 		invalidProjectName = 'transFileCloudInvalidProject'
 		self.assertRaises(NotADirectoryError, drpa.getCloudFileList)
 
+	def testCreateEmptyFolder(self):
+		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
+		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+		
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'transFileCloudTestProject'
+		newFolderName = 'newFolder'
+		
+		# creating a DropboxAccess on an inexisting Dropbox folder
+		# to ensure the folder does not exist
+		drpa = DropboxAccess(cm, projectName + '/' + newFolderName)
+		self.assertRaises(NotADirectoryError, drpa.getCloudFileList)
+		
+		# now, creating the new folder. First recreate a DropboxAccess
+		# on an existing project folder
+		drpa = DropboxAccess(cm, projectName)
+		
+		# then create the new folder and ensure it is accessible
+		drpa.createEmptyFolder(newFolderName)
+		
+		# creating a DropboxAccess on the newly created Dropbox folder
+		# to ensure the folder now exists
+		drpa = DropboxAccess(cm, projectName + '/' + newFolderName)
+		
+		# should not raise any error
+		drpa.getCloudFileList()
+		
+		# now deleting the newly created folder so that other tests are not
+		# impacted
+		drpa = DropboxAccess(cm, projectName)
+		drpa.deleteFolder(newFolderName)
+				
 if __name__ == '__main__':
 	unittest.main()
