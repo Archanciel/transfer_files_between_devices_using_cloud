@@ -43,7 +43,7 @@ class Requester:
 								
 			return projectName
 				
-	def getUserConfirmation(self, fileLst, questionStr):
+	def getUserConfirmation(self, questionStr, fileLst=[]):
 		userPrompt = '\n'
 		
 		for fileName in fileLst:

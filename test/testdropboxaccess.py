@@ -85,6 +85,62 @@ class TestDropboxAccess(unittest.TestCase):
 		# impacted
 		drpa = DropboxAccess(cm, projectName)
 		drpa.deleteFolder(newFolderName)
-				
+
+	def testCreateProjectFolder(self):
+		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
+		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'transFileCloudTestProjectToCreate'
+
+		# creating a DropboxAccess on an inexisting Dropbox folder
+		# to ensure the folder does not exist
+		drpa = DropboxAccess(cm, projectName)
+		self.assertRaises(NotADirectoryError, drpa.getCloudFileList)
+
+		# now, creating the project folder
+		drpa.createProjectFolder()
+
+		# should not raise any error
+		drpa.getCloudFileList()
+
+		# now deleting the newly created folder so that this test can be run again
+		drpa = DropboxAccess(cm, projectName)
+		drpa.deleteProjectFolder()
+
+	def testDeleteProjectFolder(self):
+		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
+		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'transFileCloudTestProjectToCreateForDeletion'
+
+		# creating a DropboxAccess on an inexisting Dropbox folder
+		# to ensure the folder does not exist
+		drpa = DropboxAccess(cm, projectName)
+
+		# now, creating the project folder which will be deleted
+		drpa.createProjectFolder()
+
+		# should not raise any error
+		drpa.getCloudFileList()
+
+		# now deleting the newly created folder
+		drpa = DropboxAccess(cm, projectName)
+		drpa.deleteProjectFolder()
+
+		# verify the project folder was deleted
+		self.assertRaises(NotADirectoryError, drpa.getCloudFileList)
+
 if __name__ == '__main__':
 	unittest.main()

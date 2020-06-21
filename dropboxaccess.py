@@ -32,6 +32,9 @@ class DropboxAccess(CloudAccess):
 	def deleteFolder(self, folder):
 		self.dbx.files_delete_v2(self.cloudTransferDir + '/' + folder)
 
+	def deleteProjectFolder(self):
+		self.dbx.files_delete_v2(self.cloudTransferDir)
+
 	def getCloudFileList(self):
 		fileNameLst = []
 		fileListMetaData = None
@@ -61,4 +64,17 @@ class DropboxAccess(CloudAccess):
 		self.dbx.files_upload(f.read(), dummyFileTo)
 	
 		# now that the folder is created, delete the dummy file	
-		self.dbx.files_delete(dummyFileTo)
+		self.dbx.files_delete_v2(dummyFileTo)
+
+	def createProjectFolder(self):
+		# creating a temp dummy destination file path
+		dummyFileTo = self.cloudTransferDir + '/temp.bin'
+
+		# creating a virtual in-memory binary file
+		f = io.BytesIO(b"\x00")
+
+		# uploading the dummy file in order to create the containing folder
+		self.dbx.files_upload(f.read(), dummyFileTo)
+
+		# now that the folder is created, delete the dummy file
+		self.dbx.files_delete_v2(dummyFileTo)

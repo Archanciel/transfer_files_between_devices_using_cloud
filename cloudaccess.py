@@ -21,6 +21,10 @@ class CloudAccess(metaclass=ABCMeta):
 		pass
 
 	@abstractmethod
+	def deleteProjectFolder(self):
+		pass
+
+	@abstractmethod
 	def getCloudFileList(self):
 		pass
 		

@@ -22,7 +22,7 @@ class TransferFiles:
 
 		self.requester = Requester(configManager)		
 		self.projectName = self.requester.getProjectName(commandLineArgs)
-		self.projectDir = configManager.projects[self.projectName][CONFIG_KEY_PROJECT_PATH]
+		self.localProjectDir = configManager.projects[self.projectName][CONFIG_KEY_PROJECT_PATH]
 		self.cloudAccess = DropboxAccess(configManager, self.projectName)
 		self.fileLister = FileLister(configManager=configManager, fromDir=self.downloadDir)
 
@@ -30,10 +30,14 @@ class TransferFiles:
 		
 		try:
 			cloudFiles = self.cloudAccess.getCloudFileList()
-		except Exception as e:
-			print(str(e))
-			
-		
+		except NotADirectoryError as e:
+			# means that the cloud project directory does not exist
+			#print(str(e))
+			questionStr = 'Cloud project directory {} does not exist and will be created'.format(self.projectName)
+
+			if self.requester.getUserConfirmation(questionStr):		
+				self.cloudAccess.createProjectFolder()
+
 		if cloudFiles == []:
 			# if the clouud directory is empty, this means
 			# that we are in the state of uploading the
@@ -43,7 +47,7 @@ class TransferFiles:
 			updatedFileNameLst, updatedFilePathNameLst = self.fileLister.getModifiedFileLst(self.projectName)
 			questionStr = 'Those files will be uploaded to the cloud'
 
-			if self.requester.getUserConfirmation(updatedFileNameLst, questionStr):		
+			if self.requester.getUserConfirmation(questionStr, updatedFileNameLst):		
 				self.uploadFilesToCloud(updatedFilePathNameLst)
 		else:
 			# if the cloud directory contains files, this
@@ -53,11 +57,11 @@ class TransferFiles:
 			# download dir and deleted from the cloud.
 			# They will then be moved from the download
 			# dir to the correct project dir and sub dire
-			projectDir = self.projectDir.split(DIR_SEP)[-3:]
-			projectDir = DIR_SEP.join(projectDir)
-			questionStr = 'Those files will be transfered from the cloud and then moved to the correct dir and sub-dir of {}'.format(projectDir)
+			localProjectDirShort = self.localProjectDir.split(DIR_SEP)[-3:]
+			localProjectDirShort = DIR_SEP.join(localProjectDirShort)
+			questionStr = 'Those files will be transfered from the cloud and then moved to the correct dir and sub-dir of {}'.format(localProjectDirShort)
 			
-			if self.requester.getUserConfirmation(cloudFiles, questionStr):
+			if self.requester.getUserConfirmation(questionStr, cloudFiles):
 				self.transferFilesFromCloud()
 			
 		self.fileMover = FileMover(configManager, self.downloadDir, self.projectDir)
