@@ -64,7 +64,7 @@ class TransferFiles:
 			if self.requester.getUserConfirmation(questionStr, cloudFiles):
 				self.transferFilesFromCloud()
 			
-		self.fileMover = FileMover(configManager, self.downloadDir, self.projectDir)
+			self.fileMover = FileMover(configManager, self.downloadDir, self.localProjectDir)
 
 	def uploadFilesToCloud(self, updatedFilePathNameLst):
 		for localFilePathName in updatedFilePathNameLst:
@@ -75,4 +75,4 @@ class TransferFiles:
 		
 if __name__ == "__main__":
 	tf = TransferFiles()
-	print(tf.projectDir)
+	print(tf.localProjectDir)
