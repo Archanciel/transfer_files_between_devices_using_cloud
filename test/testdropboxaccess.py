@@ -30,6 +30,9 @@ class TestDropboxAccess(unittest.TestCase):
 		if the cloud project path which is equal to cloud transfer base dir + 
 		'/' + projectName as defined in the tranfiles.ini file does not exist.
 		'''
+		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
+		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+	
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
@@ -81,7 +84,10 @@ class TestDropboxAccess(unittest.TestCase):
 		drpa = DropboxAccess(cm, projectName)
 		drpa.deleteFolder(newFolderName)
 
-	def testCreateProjectFoldeAndDeleteProjectFolderr(self):
+	def testCreateAndDeleteProjectFolder(self):
+		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
+		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
@@ -108,7 +114,7 @@ class TestDropboxAccess(unittest.TestCase):
 		# verify the project folder was deleted
 		self.assertRaises(NotADirectoryError, drpa.getCloudFileList)
 		
-	def testUploadFileAndDeleteFile(self):
+	def testUploadAndDeleteFile(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 			localDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
