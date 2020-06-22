@@ -55,6 +55,7 @@ class TransferFiles:
 			if self.requester.getUserConfirmation(questionStr, cloudFiles):
 				print('')  # empty line
 				self.transferFilesFromCloud()
+				print('')  # empty line
 
 				# moving file from dowload dir to project dest dir and sub-dirs
 				fileMover = FileMover(self.configManager, self.downloadDir, self.localProjectDir)
