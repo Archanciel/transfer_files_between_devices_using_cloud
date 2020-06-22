@@ -68,11 +68,15 @@ class TransferFiles:
 
 	def handleUploadState(self):
 		updatedFileNameLst, updatedFilePathNameLst, lastSyncTimeStr = self.fileLister.getModifiedFileLst(self.projectName)
-		questionStr = 'Those files were modified locally after {} and will be uploaded to the cloud'.format(lastSyncTimeStr)
+		
+		if updatedFileNameLst == []:
+			print('\nNo files modified locally since last sync time {}'.format(lastSyncTimeStr))
+		else:
+			questionStr = 'Those files were modified locally after {} and will be uploaded to the cloud'.format(lastSyncTimeStr)
 
-		if self.requester.getUserConfirmation(questionStr, updatedFileNameLst):
-			print('')  # empty line
-			self.uploadFilesToCloud(updatedFilePathNameLst)
+			if self.requester.getUserConfirmation(questionStr, updatedFileNameLst):
+				print('')  # empty line
+				self.uploadFilesToCloud(updatedFilePathNameLst)
 
 	def uploadFilesToCloud(self, updatedFilePathNameLst):
 		for localFilePathName in updatedFilePathNameLst:
