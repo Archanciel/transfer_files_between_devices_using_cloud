@@ -60,13 +60,14 @@ class TransferFiles:
 				# list modified local files and ask if they should be uploaded. Handles the
 				# case where you did an upload and then modified files again on the same
 				# device and want to add those files to the cloud
-				self.handleUploadState(self.projectName)
+				self.handleUploadState()
 
 	def handleUploadState(self):
 		updatedFileNameLst, updatedFilePathNameLst, lastSyncTimeStr = self.fileLister.getModifiedFileLst(self.projectName)
 		questionStr = 'Those files were modified locally after {} and will be uploaded to the cloud'.format(lastSyncTimeStr)
 
 		if self.requester.getUserConfirmation(questionStr, updatedFileNameLst):
+			print('')  # empty line
 			self.uploadFilesToCloud(updatedFilePathNameLst)
 
 	def uploadFilesToCloud(self, updatedFilePathNameLst):
@@ -74,10 +75,18 @@ class TransferFiles:
 			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-1]))
 			self.cloudAccess.uploadFile(localFilePathName)
 
-		self.configManager.updateLastSynchTime(datetime.now().strftime(DATE_TIME_FORMAT))
+		lastSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)
+		self.configManager.updateLastSynchTime(self.projectName, lastSynchTimeStr)
+		print('\nUpdated last synch time to ' + lastSynchTimeStr)
 		
 	def transferFilesFromCloud(self):
-		pass
+		cloudFileNameLst = self.cloudAccess.getCloudFileList()
+
+		for fileName in cloudFileNameLst:
+			destFileName = self.configManager.downloadPath + DIR_SEP + fileName
+			self.cloudAccess.downloadFile(fileName, destFileName)
+			# then delete file on cloud
+			# and update synch time
 		
 if __name__ == "__main__":
 	tf = TransferFiles()

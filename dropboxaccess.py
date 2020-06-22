@@ -22,9 +22,11 @@ class DropboxAccess(CloudAccess):
 		with open(localFilePathName, 'rb') as f:
 			self.dbx.files_upload(f.read(), cloudFilePathName)
 
-	def downloadFiles(self, file_from, file_to):
-		with open(file_to, "wb") as f:
-			metadata, res = self.dbx.files_download(path=file_from)
+	def downloadFile(self, cloudFileName, destFilePathName):
+		cloudFilePathName = self.cloudTransferDir + '/' + cloudFileName
+
+		with open(destFilePathName, "wb") as f:
+			metadata, res = self.dbx.files_download(path=cloudFilePathName)
 			f.write(res.content)
 			print(metadata)
 

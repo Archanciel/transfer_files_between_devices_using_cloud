@@ -1,5 +1,6 @@
 import os, io, dropbox
 
+from constants import DIR_SEP
 from configmanager import ConfigManager
 
 class TransferData:
@@ -63,9 +64,9 @@ def main():
 	
 	print('\nList files after upload\n')
 	transferData.list_files(dropboxDir)
-
+	input('Downloading ')
 	file_from = dropboxDir + '/configmanager.py' # The full path of the file to download, including the file name
-	file_to = 'configmanager_downloaded.py'
+	file_to = cm.downloadPath + DIR_SEP + 'configmanager_downloaded.py'
 	transferData.download_file(file_from, file_to)
 
 	# deleting file so a new version can be upladed without error
