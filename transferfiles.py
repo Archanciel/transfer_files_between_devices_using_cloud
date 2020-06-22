@@ -101,4 +101,3 @@ class TransferFiles:
 
 if __name__ == "__main__":
 	tf = TransferFiles()
-	print(tf.localProjectDir)
