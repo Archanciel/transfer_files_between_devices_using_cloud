@@ -63,8 +63,16 @@ class TransferFiles:
 			
 			if self.requester.getUserConfirmation(questionStr, cloudFiles):
 				self.transferFilesFromCloud()
-			
-			self.fileMover = FileMover(configManager, self.downloadDir, self.localProjectDir)
+				fileMover = FileMover(configManager, self.downloadDir, self.localProjectDir)
+				fileMover.moveFiles()
+			else:
+				# list modified local files and ask if 
+				# they should be uploaded. Handle the
+				# case where you did an upload and then
+				# modified files again on the same
+				# device and want to add them to the
+				# cloud
+				pass
 
 	def uploadFilesToCloud(self, updatedFilePathNameLst):
 		for localFilePathName in updatedFilePathNameLst:
