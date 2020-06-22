@@ -62,10 +62,10 @@ class TestFileLister(unittest.TestCase):
 
 	def testGetModifiedFileLst(self):
 		if os.name == 'posix':
-			configFilePathName = '/sdcard/transfiles.ini'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
 		else:
-			configFilePathName = 'c:\\temp\\transfiles.ini'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
