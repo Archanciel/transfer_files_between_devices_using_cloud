@@ -70,7 +70,7 @@ class TestFileLister(unittest.TestCase):
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm, fromDir)
-		allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudTestProject')
+		allFileNameLst, allFilePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst('transFileCloudTestProject')
 
 		self.assertEqual(sorted(
 			['constants_2.py', 'filelister_2.py', 'filemover_2.py', 'testfilelister_2.py', 'testfilemover_2.py', 'current_state_21.jpg', 'current_state_22.jpg', 'doc_21.docx', 'doc_22.docx', 'README_2.rd']),
@@ -83,6 +83,8 @@ class TestFileLister(unittest.TestCase):
 			self.assertEqual(sorted(
 				['D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\constants_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\filelister_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\filemover_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\test\\testfilelister_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\test\\testfilemover_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\images\\current_state_21.jpg', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\images\\current_state_22.jpg', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\doc\\doc_21.docx', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\doc\\doc_22.docx', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\README_2.rd']),
 							 sorted(allFilePathNameLst))
+
+		self.assertEqual('2020-06-15 08:45:23', lastSyncTimeStr)
 
 	def testGetModifiedFileLst_invalid_local_dir(self):
 		'''

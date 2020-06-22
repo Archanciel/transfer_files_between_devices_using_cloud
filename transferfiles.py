@@ -1,4 +1,4 @@
-import os, sys, argparse
+from datetime import datetime
 
 from constants import *
 from requester import Requester
@@ -17,14 +17,14 @@ class TransferFiles:
 			# we are not unit testing ...
 			configFilePath = CONFIG_FILE_PATH_NAME
 			
-		configManager = ConfigManager(configFilePath)
-		self.downloadDir = configManager.downloadPath
+		self.configManager = ConfigManager(configFilePath)
+		self.downloadDir = self.configManager.downloadPath
 
-		self.requester = Requester(configManager)		
+		self.requester = Requester(self.configManager)
 		self.projectName = self.requester.getProjectName(commandLineArgs)
-		self.localProjectDir = configManager.projects[self.projectName][CONFIG_KEY_PROJECT_PATH]
-		self.cloudAccess = DropboxAccess(configManager, self.projectName)
-		self.fileLister = FileLister(configManager=configManager, fromDir=self.downloadDir)
+		self.localProjectDir = self.configManager.getProjectLocalDir(self.projectName)
+		self.cloudAccess = DropboxAccess(self.configManager, self.projectName)
+		self.fileLister = FileLister(configManager=self.configManager, fromDir=self.downloadDir)
 
 		cloudFiles = []
 		
@@ -39,44 +39,42 @@ class TransferFiles:
 				self.cloudAccess.createProjectFolder()
 
 		if cloudFiles == []:
-			# if the clouud directory is empty, this means
-			# that we are in the state of uploading the
-			# files modified on the current device to the
-			# cloud so that they will be available to be
-			# transfered on the other device.
-			updatedFileNameLst, updatedFilePathNameLst = self.fileLister.getModifiedFileLst(self.projectName)
-			questionStr = 'Those files will be uploaded to the cloud'
-
-			if self.requester.getUserConfirmation(questionStr, updatedFileNameLst):		
-				self.uploadFilesToCloud(updatedFilePathNameLst)
+			# if the clouud directory is empty, this means# that we are in the state of uploading the
+			# files modified on the current device to the cloud so that they will be available to be
+			# transferred on the other device.
+			self.handleUploadState()
 		else:
-			# if the cloud directory contains files, this
-			# means that we are in the state of transfering
-			# those files to the current device. The
-			# transfered files will be downloaded to the
-			# download dir and deleted from the cloud.
-			# They will then be moved from the download
-			# dir to the correct project dir and sub dire
+			# if the cloud directory contains files, this means that we are in the state of transferring
+			# those files to the current device. The transferred files will be downloaded to the
+			# download dir and deleted from the cloud. They will then be moved from the download
+			# dir to the correct project dir and sub dirs
 			localProjectDirShort = self.localProjectDir.split(DIR_SEP)[-3:]
 			localProjectDirShort = DIR_SEP.join(localProjectDirShort)
-			questionStr = 'Those files will be transfered from the cloud and then moved to the correct dir and sub-dir of {}'.format(localProjectDirShort)
+			questionStr = 'Those files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}'.format(localProjectDirShort)
 			
 			if self.requester.getUserConfirmation(questionStr, cloudFiles):
 				self.transferFilesFromCloud()
-				fileMover = FileMover(configManager, self.downloadDir, self.localProjectDir)
+				fileMover = FileMover(self.configManager, self.downloadDir, self.localProjectDir)
 				fileMover.moveFiles()
 			else:
-				# list modified local files and ask if 
-				# they should be uploaded. Handle the
-				# case where you did an upload and then
-				# modified files again on the same
-				# device and want to add them to the
-				# cloud
-				pass
+				# list modified local files and ask if they should be uploaded. Handles the
+				# case where you did an upload and then modified files again on the same
+				# device and want to add those files to the cloud
+				self.handleUploadState(self.projectName)
+
+	def handleUploadState(self):
+		updatedFileNameLst, updatedFilePathNameLst, lastSyncTimeStr = self.fileLister.getModifiedFileLst(self.projectName)
+		questionStr = 'Those files were modified locally after {} and will be uploaded to the cloud'.format(lastSyncTimeStr)
+
+		if self.requester.getUserConfirmation(questionStr, updatedFileNameLst):
+			self.uploadFilesToCloud(updatedFilePathNameLst)
 
 	def uploadFilesToCloud(self, updatedFilePathNameLst):
 		for localFilePathName in updatedFilePathNameLst:
+			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-1]))
 			self.cloudAccess.uploadFile(localFilePathName)
+
+		self.configManager.updateLastSynchTime(datetime.now().strftime(DATE_TIME_FORMAT))
 		
 	def transferFilesFromCloud(self):
 		pass
