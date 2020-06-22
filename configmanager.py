@@ -39,6 +39,17 @@ class ConfigManager:
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' section not defined in ' + configFilePathName)
 
+	def getProjectLocalDir(self, projectName):
+		return self.projects[projectName][CONFIG_KEY_PROJECT_PATH]
+
+	def getLastSynchTime(self, projectName):
+		return self.projects[projectName][CONFIG_KEY_PROJECT_LAST_SYNC_TIME]
+
+	def updateLastSynchTime(self, projectName, lastSynchTimeStr):
+		self.projects[projectName][CONFIG_KEY_PROJECT_LAST_SYNC_TIME] = lastSynchTimeStr
+		self.config.write()
+
+
 if __name__ == '__main__':
 	if os.name == 'posix':
 		configFilePathName = '/sdcard/transfiles.ini'
@@ -54,3 +65,7 @@ if __name__ == '__main__':
 		print(key)
 		print(cm.projects[key][CONFIG_KEY_PROJECT_PATH])
 		print(cm.projects[key][CONFIG_KEY_PROJECT_LAST_SYNC_TIME])
+
+	projectName = 'transFileCloudProject'
+	cm.updateLastSynchTime(projectName, '2020-06-22 11:45:23')
+	print(cm.getLastSynchTime(projectName))

@@ -31,8 +31,8 @@ class FileLister:
 		self.allPythonFileNameLst = [item for item in self.allPythonFileNameLst if item not in self.allTestPythonFileNameLst]
 
 	def getModifiedFileLst(self, projectName):
-		projectDir = self.configManager.projects[projectName][CONFIG_KEY_PROJECT_PATH]
-		lastSyncTimeStr = self.configManager.projects[projectName][CONFIG_KEY_PROJECT_LAST_SYNC_TIME]
+		projectDir = self.configManager.getProjectLocalDir(projectName)
+		lastSyncTimeStr = self.configManager.getLastSynchTime(projectName)
 		lastSyncTime = datetime.datetime.strptime(lastSyncTimeStr, DATE_TIME_FORMAT)
 		allFileNameLst = []
 		allFilePathNameLst = []
@@ -72,7 +72,7 @@ class FileLister:
 
 		allFilePathNameLstReturn = allPythonFilePathNameLst + allImageFilePathNameLst + allDocFilePathNameLst + allReadmeFilePathNameLst
 		
-		return allFileNameLstReturn, allFilePathNameLstReturn
+		return allFileNameLstReturn, allFilePathNameLstReturn, lastSyncTimeStr
 
 if __name__ == "__main__":
 	if os.name == 'posix':
