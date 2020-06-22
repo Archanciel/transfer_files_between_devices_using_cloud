@@ -28,7 +28,6 @@ class DropboxAccess(CloudAccess):
 		with open(destFilePathName, "wb") as f:
 			metadata, res = self.dbx.files_download(path=cloudFilePathName)
 			f.write(res.content)
-			print(metadata)
 
 	def deleteFile(self, fileName):
 		cloudFilePathName = self.cloudTransferDir + '/' + fileName

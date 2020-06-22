@@ -53,7 +53,10 @@ class TransferFiles:
 			questionStr = 'Those files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}'.format(localProjectDirShort)
 			
 			if self.requester.getUserConfirmation(questionStr, cloudFiles):
+				print('')  # empty line
 				self.transferFilesFromCloud()
+
+				# moving file from dowload dir to project dest dir and sub-dirs
 				fileMover = FileMover(self.configManager, self.downloadDir, self.localProjectDir)
 				fileMover.moveFiles()
 			else:
@@ -75,19 +78,26 @@ class TransferFiles:
 			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-1]))
 			self.cloudAccess.uploadFile(localFilePathName)
 
+		# updating last synch time for the project in config file
+		self.updateLastSynchTime()
+
+	def updateLastSynchTime(self):
 		lastSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)
 		self.configManager.updateLastSynchTime(self.projectName, lastSynchTimeStr)
 		print('\nUpdated last synch time to ' + lastSynchTimeStr)
-		
+
 	def transferFilesFromCloud(self):
 		cloudFileNameLst = self.cloudAccess.getCloudFileList()
 
 		for fileName in cloudFileNameLst:
 			destFileName = self.configManager.downloadPath + DIR_SEP + fileName
+			print('Transferring {} from the cloud ...'.format(fileName))
 			self.cloudAccess.downloadFile(fileName, destFileName)
-			# then delete file on cloud
-			# and update synch time
-		
+			self.cloudAccess.deleteFile(fileName)
+
+		# updating last synch time for the project in config file
+		self.updateLastSynchTime()
+
 if __name__ == "__main__":
 	tf = TransferFiles()
 	print(tf.localProjectDir)

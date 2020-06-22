@@ -64,7 +64,7 @@ def main():
 	
 	print('\nList files after upload\n')
 	transferData.list_files(dropboxDir)
-	input('Downloading ')
+	#input('Downloading ')
 	file_from = dropboxDir + '/configmanager.py' # The full path of the file to download, including the file name
 	file_to = cm.downloadPath + DIR_SEP + 'configmanager_downloaded.py'
 	transferData.download_file(file_from, file_to)
