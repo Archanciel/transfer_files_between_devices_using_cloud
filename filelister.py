@@ -31,6 +31,11 @@ class FileLister:
 		self.allPythonFileNameLst = [item for item in self.allPythonFileNameLst if item not in self.allTestPythonFileNameLst]
 
 	def getModifiedFileLst(self, projectName):
+		"""
+
+		@param projectName:
+		@return:
+		"""
 		projectDir = self.configManager.getProjectLocalDir(projectName)
 		lastSyncTimeStr = self.configManager.getLastSynchTime(projectName)
 		lastSyncTime = datetime.datetime.strptime(lastSyncTimeStr, DATE_TIME_FORMAT)

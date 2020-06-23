@@ -67,6 +67,9 @@ class TransferFiles:
 				self.handleUploadState()
 
 	def handleUploadState(self):
+		"""
+
+		"""
 		updatedFileNameLst, updatedFilePathNameLst, lastSyncTimeStr = self.fileLister.getModifiedFileLst(self.projectName)
 		
 		if updatedFileNameLst == []:
@@ -79,6 +82,10 @@ class TransferFiles:
 				self.uploadFilesToCloud(updatedFilePathNameLst)
 
 	def uploadFilesToCloud(self, updatedFilePathNameLst):
+		"""
+
+		@param updatedFilePathNameLst:
+		"""
 		for localFilePathName in updatedFilePathNameLst:
 			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-1]))
 			self.cloudAccess.uploadFile(localFilePathName)
@@ -87,11 +94,17 @@ class TransferFiles:
 		self.updateLastSynchTime()
 
 	def updateLastSynchTime(self):
+		"""
+
+		"""
 		lastSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)
 		self.configManager.updateLastSynchTime(self.projectName, lastSynchTimeStr)
 		print('\nUpdated last synch time to ' + lastSynchTimeStr)
 
 	def transferFilesFromCloud(self):
+		"""
+
+		"""
 		cloudFileNameLst = self.cloudAccess.getCloudFileList()
 
 		for fileName in cloudFileNameLst:

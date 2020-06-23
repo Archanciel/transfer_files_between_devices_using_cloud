@@ -8,6 +8,11 @@ class Requester:
 		self.configManager = configManager
 		
 	def getProjectName(self, commandLineArgs):
+		"""
+
+		@param commandLineArgs:
+		@return:
+		"""
 		if commandLineArgs == None:
 			# we are not unit testing ...
 			commandLineArgs = sys.argv[1:]
@@ -44,6 +49,13 @@ class Requester:
 			return projectName
 				
 	def getUserConfirmation(self, questionStr, fileNameLst=[], filePathNameLst=[]):
+		"""
+
+		@param questionStr:
+		@param fileNameLst:
+		@param filePathNameLst:
+		@return:
+		"""
 		if filePathNameLst != []:
 			# this means that the method is called in order to upload files to
 			# the cloud an not when asking to confirm downloading files from
@@ -68,6 +80,13 @@ class Requester:
 			return False
 
 	def addFilesToUserPrompt(self, questionStr, fileNameLst, detail=''):
+		"""
+
+		@param questionStr:
+		@param fileNameLst:
+		@param detail:
+		@return:
+		"""
 		userPrompt = '\n'
 				
 		for fileName in fileNameLst:
@@ -85,6 +104,11 @@ class Requester:
 		return userPrompt
 	
 	def addErrorToUserPrompt(self, userPrompt):
+		"""
+
+		@param userPrompt:
+		@return:
+		"""
 		userPrompt = userPrompt.replace('Invalid selection. ', '')
 		userPrompt = 'Invalid selection. ' + userPrompt
 		return userPrompt

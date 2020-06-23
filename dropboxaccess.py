@@ -15,6 +15,8 @@ class DropboxAccess(CloudAccess):
 		Uploads a file to Dropbox using API v2. to avoid a conflict error if
 		the file already exists on the cloud, the mode is set to 
 		dropbox.files.WriteMode.overwrite.
+
+		@param localFilePathName:
 		"""
 		cloudFilePathName = self.cloudTransferDir + '/' + localFilePathName.split(DIR_SEP)[-1]
 
@@ -22,6 +24,11 @@ class DropboxAccess(CloudAccess):
 			self.dbx.files_upload(f.read(), cloudFilePathName, mode=dropbox.files.WriteMode.overwrite)
 
 	def downloadFile(self, cloudFileName, destFilePathName):
+		"""
+
+		@param cloudFileName:
+		@param destFilePathName:
+		"""
 		cloudFilePathName = self.cloudTransferDir + '/' + cloudFileName
 
 		with open(destFilePathName, "wb") as f:
@@ -29,16 +36,31 @@ class DropboxAccess(CloudAccess):
 			f.write(res.content)
 
 	def deleteFile(self, fileName):
+		"""
+
+		@param fileName:
+		"""
 		cloudFilePathName = self.cloudTransferDir + '/' + fileName
 		self.dbx.files_delete_v2(cloudFilePathName)
 
 	def deleteFolder(self, folder):
+		"""
+
+		@param folder:
+		"""
 		self.dbx.files_delete_v2(self.cloudTransferDir + '/' + folder)
 
 	def deleteProjectFolder(self):
+		"""
+
+		"""
 		self.dbx.files_delete_v2(self.cloudTransferDir)
 
 	def getCloudFileList(self):
+		"""
+
+		@return:
+		"""
 		fileNameLst = []
 		fileListMetaData = None
 		
@@ -54,7 +76,11 @@ class DropboxAccess(CloudAccess):
 		return fileNameLst
 
 	def createEmptyFolder(self, folderName):
-		# ensuring folderName does not contain / 		
+		"""
+
+		@param folderName:
+		"""
+		# ensuring folderName does not contain /
 		folderName = folderName.replace('/', '')
 		
 		# creating a temp dummy destination file path
@@ -70,6 +96,9 @@ class DropboxAccess(CloudAccess):
 		self.dbx.files_delete_v2(dummyFileTo)
 
 	def createProjectFolder(self):
+		"""
+
+		"""
 		# creating a temp dummy destination file path
 		dummyFileTo = self.cloudTransferDir + '/temp.bin'
 
