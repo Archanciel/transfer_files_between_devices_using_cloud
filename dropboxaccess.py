@@ -12,15 +12,14 @@ class DropboxAccess(CloudAccess):
 
 	def uploadFile(self, localFilePathName):
 		"""
-		Uploads a file to Dropbox using API v2. Warning: if the uploaded
-		file already exists in the Dropbox destination dir, the upload
-		will fail if the file is different from the initially uploaded
-		file !
+		Uploads a file to Dropbox using API v2. to avoid a conflict error if
+		the file already exists on the cloud, the mode is set to 
+		dropbox.files.WriteMode.overwrite.
 		"""
 		cloudFilePathName = self.cloudTransferDir + '/' + localFilePathName.split(DIR_SEP)[-1]
-		
+
 		with open(localFilePathName, 'rb') as f:
-			self.dbx.files_upload(f.read(), cloudFilePathName)
+			self.dbx.files_upload(f.read(), cloudFilePathName, mode=dropbox.files.WriteMode.overwrite)
 
 	def downloadFile(self, cloudFileName, destFilePathName):
 		cloudFilePathName = self.cloudTransferDir + '/' + cloudFileName

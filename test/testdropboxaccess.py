@@ -1,5 +1,5 @@
 import unittest
-import os, sys, inspect
+import os, sys, inspect, datetime
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -7,7 +7,7 @@ sys.path.insert(0, parentdir)
 		
 import warnings 		
 
-from constants import DIR_SEP
+from constants import DIR_SEP, DATE_TIME_FORMAT
 from configmanager import *
 from dropboxaccess import DropboxAccess
 			
@@ -132,7 +132,7 @@ class TestDropboxAccess(unittest.TestCase):
 		try:
 			drpa.getCloudFileList()
 		except NotADirectoryError:
-			# if project folder not exist
+			# if project folder does not exist
 			drpa.createProjectFolder()
 
 		# should not raise any error
@@ -150,8 +150,56 @@ class TestDropboxAccess(unittest.TestCase):
 		
 		# should not raise any error
 		self.assertEqual([], drpa.getCloudFileList())		
+		
+	def testUploadSameFileTwice(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			localDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			localDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'transFileCloudTestProjectForUpload'
+
+		# creating a DropboxAccess on an inexisting Dropbox folder
+		# to ensure the folder does not exist
+		drpa = DropboxAccess(cm, projectName)
+		
+		try:
+			drpa.getCloudFileList()
+		except NotADirectoryError:
+			# if project folder does not exist
+			drpa.createProjectFolder()
+
+		# should not raise any error
+		self.assertEqual([], drpa.getCloudFileList())
+		
+		# now, uploading a file
+		uploadFileName = 'uploadTwice'
+		localFilePathName = localDir + DIR_SEP + uploadFileName
+		drpa.uploadFile(localFilePathName)
+
+		self.assertEqual([uploadFileName], drpa.getCloudFileList())
+
+		# modifiying the file before uploading it again. Since 
+		# dropbox.files.WriteMode.overwrite is set when calling
+		# dropbox.files_upload, no WriteConflictError is raised
+		# when uploading the modified file.
+		with open(localFilePathName, 'w') as f:
+			f.write('modified at date {}'.format(datetime.datetime.now().strftime(DATE_TIME_FORMAT)))
+			f.close()
+
+		drpa.uploadFile(localFilePathName)
+
+		self.assertEqual([uploadFileName], drpa.getCloudFileList())
+		# now deleting the newly created file so that this test can be run again
+		drpa.deleteFile(uploadFileName)
+		
+		# should not raise any error
+		self.assertEqual([], drpa.getCloudFileList())		
 
 if __name__ == '__main__':
 	unittest.main()
 #	tst = TestDropboxAccess()
-#	tst.testUploadFile()
+#	tst.testUploadSameFileTwice()
