@@ -43,19 +43,47 @@ class Requester:
 								
 			return projectName
 				
-	def getUserConfirmation(self, questionStr, fileLst=[]):
-		userPrompt = '\n'
-		
-		for fileName in fileLst:
-			userPrompt += fileName + '\n'
-		
-		userPrompt += '\n' + questionStr + '. Continue (Y/N) '
-		
+	def getUserConfirmation(self, questionStr, fileNameLst=[], filePathNameLst=[]):
+		if filePathNameLst != []:
+			# this means that the method is called in order to upload files to
+			# the cloud an not when asking to confirm downloading files from
+			# the cloud. In this situation, it may be useful for the user to
+			# see the path of the files which are candidates for upload, not
+			# only their names
+			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst, '/Detail')
+			userChoice = input(userPrompt).upper()
+			
+			if 'D' in userChoice:	
+				userPrompt = self.addFilesToUserPrompt(questionStr, filePathNameLst)
+			elif userChoice == 'Y':
+				return True
+			else:
+				return False
+		else:
+			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst)
+					
 		if input(userPrompt).upper() == 'Y':	
 			return  True
 		else:
 			return False
 
+	def addFilesToUserPrompt(self, questionStr, fileNameLst, detail=''):
+		userPrompt = '\n'
+				
+		for fileName in fileNameLst:
+			if DIR_SEP in fileName:
+				# here, the file name is in fact a fuL file path name. In order
+				# to display a more readable file list, only the last 3 file
+				# pathename element are kept
+				filePathNameElementLst = fileName.split(DIR_SEP)[-3:]
+				fileName = DIR_SEP.join(filePathNameElementLst)
+ 
+			userPrompt += fileName + '\n'
+						
+		userPrompt += '\n' + questionStr + '. Continue (Y/N{}) '.format(detail)
+					
+		return userPrompt
+	
 	def addErrorToUserPrompt(self, userPrompt):
 		userPrompt = userPrompt.replace('Invalid selection. ', '')
 		userPrompt = 'Invalid selection. ' + userPrompt

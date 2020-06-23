@@ -50,7 +50,7 @@ class TransferFiles:
 			# dir to the correct project dir and sub dirs
 			localProjectDirShort = self.localProjectDir.split(DIR_SEP)[-3:]
 			localProjectDirShort = DIR_SEP.join(localProjectDirShort)
-			questionStr = 'Those files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}'.format(localProjectDirShort)
+			questionStr = 'Those files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}. If you want to upload new modified files instead, type N'.format(localProjectDirShort)
 			
 			if self.requester.getUserConfirmation(questionStr, cloudFiles):
 				print('')  # empty line
@@ -72,9 +72,9 @@ class TransferFiles:
 		if updatedFileNameLst == []:
 			print('\nNo files modified locally since last sync time {}'.format(lastSyncTimeStr))
 		else:
-			questionStr = 'Those files were modified locally after {} and will be uploaded to the cloud'.format(lastSyncTimeStr)
+			questionStr = 'Those files were modified locally after {} and will be uploaded to the cloud. Choose D to display the path'.format(lastSyncTimeStr)
 
-			if self.requester.getUserConfirmation(questionStr, updatedFileNameLst):
+			if self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst):
 				print('')  # empty line
 				self.uploadFilesToCloud(updatedFilePathNameLst)
 
