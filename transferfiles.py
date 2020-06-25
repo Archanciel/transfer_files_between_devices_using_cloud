@@ -51,8 +51,9 @@ class TransferFiles:
 			localProjectDirShort = self.localProjectDir.split(DIR_SEP)[-3:]
 			localProjectDirShort = DIR_SEP.join(localProjectDirShort)
 			questionStr = 'Those files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}. If you want to upload new modified files instead, type N'.format(localProjectDirShort)
+			doDownload, _ = self.requester.getUserConfirmation(questionStr, cloudFiles)
 			
-			if self.requester.getUserConfirmation(questionStr, cloudFiles):
+			if doDownload:
 				print('')  # empty line
 				self.transferFilesFromCloud()
 				print('')  # empty line
@@ -75,11 +76,20 @@ class TransferFiles:
 		if updatedFileNameLst == []:
 			print('\nNo files modified locally since last sync time {}'.format(lastSyncTimeStr))
 		else:
-			questionStr = 'Those files were modified locally after {} and will be uploaded to the cloud. Choose D to display the path'.format(lastSyncTimeStr)
+			questionStr = 'Those files were modified locally after {} and will be uploaded to the cloud. Choose P to display the path and U to update the last sync time'.format(lastSyncTimeStr)
+			doUpload, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
 
-			if self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst):
+			if doUpload: 
 				print('')  # empty line
 				self.uploadFilesToCloud(updatedFilePathNameLst)
+			elif lastSynchTimeChoice == '':
+				# the user choosed not to upload anything and to leave the last sync 
+				# time unchanged
+				return
+			elif lastSynchTimeChoice == 'N':
+				self.updateLastSynchTime()
+			else:
+				self.updateLastSynchTime(lastSynchTimeChoice)				
 
 	def uploadFilesToCloud(self, updatedFilePathNameLst):
 		"""
@@ -93,11 +103,13 @@ class TransferFiles:
 		# updating last synch time for the project in config file
 		self.updateLastSynchTime()
 
-	def updateLastSynchTime(self):
+	def updateLastSynchTime(self, lastSynchTimeStr=''):
 		"""
 
 		"""
-		lastSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)
+		if lastSynchTimeStr == '':
+			lastSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)
+			
 		self.configManager.updateLastSynchTime(self.projectName, lastSynchTimeStr)
 		print('\nUpdated last synch time to ' + lastSynchTimeStr)
 

@@ -54,32 +54,45 @@ class Requester:
 		@param questionStr:
 		@param fileNameLst:
 		@param filePathNameLst:
-		@return:
+		@return: True if user confims files upload and '' for new synch time
+				 False if user cancels files upload and '' for new synch time
+				 False and new synch time answer if user wants to update the
+				 project synch time without uploading any file.
 		"""
 		if filePathNameLst != []:
 			# this means that the method is called in order to upload files to
 			# the cloud an not when asking to confirm downloading files from
 			# the cloud. In this situation, it may be useful for the user to
 			# see the path of the files which are candidates for upload, not
-			# only their names
-			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst, '/Detail')
+			# only their names.
+			#
+			# Additionally, the user has the possibility to update the last
+			# synch time of the project.
+			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst, path='/P', upload='/U')
 			userChoice = input(userPrompt).upper()
 			
-			if 'D' in userChoice:	
-				userPrompt = self.addFilesToUserPrompt(questionStr, filePathNameLst)
-			elif userChoice == 'Y':
-				return True
+			if 'P' in userChoice:
+				questionStr = questionStr.replace('P to display the path and ', '')	
+				userPrompt = self.addFilesToUserPrompt(questionStr, filePathNameLst,path='', upload='/U')
 			else:
-				return False
+				return self.handleUserChoice(userChoice)
 		else:
+			# here, we are prompting for downloading files from the cloud
 			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst)
+		
+		userChoice = input(userPrompt).upper()
 					
-		if input(userPrompt).upper() == 'Y':	
-			return  True
-		else:
-			return False
+		return self.handleUserChoice(userChoice)
 
-	def addFilesToUserPrompt(self, questionStr, fileNameLst, detail=''):
+	def handleUserChoice(self, userChoice):
+		if 'U' in userChoice:
+			return self.askUserNewSyncTime()
+		elif userChoice == 'Y':
+			return True, ''
+		else:
+			return False, ''
+		
+	def addFilesToUserPrompt(self, questionStr, fileNameLst, path='', upload=''):
 		"""
 
 		@param questionStr:
@@ -91,7 +104,7 @@ class Requester:
 				
 		for fileName in fileNameLst:
 			if DIR_SEP in fileName:
-				# here, the file name is in fact a fuL file path name. In order
+				# here, the file name is in fact a fuLl file path name. In order
 				# to display a more readable file list, only the last 3 file
 				# pathename element are kept
 				filePathNameElementLst = fileName.split(DIR_SEP)[-3:]
@@ -99,7 +112,7 @@ class Requester:
  
 			userPrompt += fileName + '\n'
 						
-		userPrompt += '\n' + questionStr + '. Continue (Y/N{}) '.format(detail)
+		userPrompt += '\n' + questionStr + '. Continue (Y/N{}{}) '.format(path, upload)
 					
 		return userPrompt
 	
@@ -111,8 +124,14 @@ class Requester:
 		"""
 		userPrompt = userPrompt.replace('Invalid selection. ', '')
 		userPrompt = 'Invalid selection. ' + userPrompt
+		
 		return userPrompt
+		
+	def askUserNewSyncTime(self):
+		userPrompt = '\nUpdating the project last synch time. Type Enter to leave it unchanged, N to update it to Now and yyyy-mm-dd hh:mm:ss to fully specify the date '
 
+		return False, input(userPrompt).upper()
+				
 	def decodeCommandLineArgs(self, argList):
 		"""
 		Uses argparse to acquire the user optional command line arguments.
@@ -164,4 +183,5 @@ if __name__ == "__main__":
 	rq = Requester(configManager)
 	projectName = rq.getProjectName(None)
 	print('\n' + projectName)
+	print(rq.askUserNewSyncTime())
 		
