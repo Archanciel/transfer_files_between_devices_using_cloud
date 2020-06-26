@@ -37,11 +37,10 @@ class TransferFiles:
 			cloudFiles = self.cloudAccess.getCloudFileList()
 		except NotADirectoryError as e:
 			# means that the cloud project directory does not exist
-			# print(str(e))
-			questionStr = 'Cloud project directory {} does not exist and will be created'.format(self.projectName)
-
-			if self.requester.getUserConfirmation(questionStr):
+			if self.requester.getCloudFolderConfirmation(self.projectName):
 				self.cloudAccess.createProjectFolder()
+			else:
+				return 
 
 		if cloudFiles == []:
 			# if the clouud directory is empty, this means# that we are in the state of uploading the
@@ -124,7 +123,7 @@ class TransferFiles:
 			print('\nSynch time format invalid {}. Nothing changed.'.format(lastSynchTimeStr))
 
 			return
-
+		
 		self.configManager.updateLastSynchTime(self.projectName, lastSynchTimeStr)
 		print('\nUpdated last synch time to ' + lastSynchTimeStr)
 

@@ -10,7 +10,7 @@ class Requester:
 	def getProjectName(self, commandLineArgs):
 		"""
 
-		@param commandLineArgs:
+		@param commandLineArgs: used for unit testing
 		@return:
 		"""
 		if commandLineArgs == None:
@@ -47,7 +47,17 @@ class Requester:
 					selection = -1
 								
 			return projectName
-				
+
+	def getCloudFolderConfirmation(self, folderName):
+		questionStr = 'Cloud project directory {} does not exist and will be created'.format(folderName)
+		userPrompt = '\n' + questionStr + '.\nContinue (Y/N) '
+		userChoice = input(userPrompt).upper()
+		
+		if userChoice == 'Y':
+			return True
+		else:
+			return False
+										
 	def getUserConfirmation(self, questionStr, fileNameLst=[], filePathNameLst=[]):
 		"""
 
@@ -61,7 +71,7 @@ class Requester:
 		"""
 		if filePathNameLst != []:
 			# this means that the method is called in order to upload files to
-			# the cloud an not when asking to confirm downloading files from
+			# the cloud and not when asking to confirm downloading files from
 			# the cloud. In this situation, it may be useful for the user to
 			# see the path of the files which are candidates for upload, not
 			# only their names.
@@ -78,6 +88,7 @@ class Requester:
 				return self.handleUserChoice(userChoice)
 		else:
 			# here, we are prompting for downloading files from the cloud
+			# or for creating a project folder on the cloud.
 			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst)
 		
 		userChoice = input(userPrompt).upper()
@@ -112,7 +123,7 @@ class Requester:
  
 			userPrompt += fileName + '\n'
 						
-		userPrompt += '\n' + questionStr + '. Continue (Y/N{}{}) '.format(path, upload)
+		userPrompt += '\n' + questionStr + '.\nContinue (Y/N{}{}) '.format(path, upload)
 					
 		return userPrompt
 	
