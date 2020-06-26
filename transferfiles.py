@@ -109,10 +109,19 @@ class TransferFiles:
 		"""
 		if lastSynchTimeStr == '':
 			lastSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)
-			
-		self.configManager.updateLastSynchTime(self.projectName, lastSynchTimeStr)
-		print('\nUpdated last synch time to ' + lastSynchTimeStr)
+		elif self.validateLastSynchTimeStr(lastSynchTimeStr):			
+			self.configManager.updateLastSynchTime(self.projectName, lastSynchTimeStr)
+			print('\nUpdated last synch time to ' + lastSynchTimeStr)
+		else:
+			print('\nSynch time format invalid {}. Nothing changed.'.format(lastSynchTimeStr))
 
+	def validateLastSynchTimeStr(self, lastSynchTimeStr):
+		try:
+			datetime.strptime(lastSynchTimeStr, DATE_TIME_FORMAT)
+			return True
+		except ValueError:
+			return False
+		
 	def transferFilesFromCloud(self):
 		"""
 
