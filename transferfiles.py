@@ -61,6 +61,9 @@ class TransferFiles:
 				# moving file from dowload dir to project dest dir and sub-dirs
 				fileMover = FileMover(self.configManager, self.downloadDir, self.localProjectDir)
 				fileMover.moveFiles()
+
+				# updating last synch time for the project in config file
+				self.updateLastSynchTime()
 			else:
 				# list modified local files and ask if they should be uploaded. Handles the
 				# case where you did an upload and then modified files again on the same
@@ -133,9 +136,6 @@ class TransferFiles:
 			print('Transferring {} from the cloud ...'.format(fileName))
 			self.cloudAccess.downloadFile(fileName, destFileName)
 			self.cloudAccess.deleteFile(fileName)
-
-		# updating last synch time for the project in config file
-		self.updateLastSynchTime()
 
 if __name__ == "__main__":
 	tf = TransferFiles()
