@@ -5,3 +5,5 @@
 configmanager_downloaded.py
 temp.txt
 test/transfiles.ini
+test/testproject_1/fromdir/uploadTwice
+test/testproject_1/fromdir_saved/uploadTwice
