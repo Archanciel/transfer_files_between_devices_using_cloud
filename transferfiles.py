@@ -8,10 +8,9 @@ from filemover import FileMover
 from dropboxaccess import DropboxAccess
 
 class TransferFiles:
-	def __init__(self, configFilePath=None, commandLineArgs=None):
+	def __init__(self, configFilePath=None):
 		"""
-		    :param configFilePath used for unit testing only
-		    :param commandLineArgs: used for unit testing only
+		    @param configFilePath: used for unit testing only
 		"""
 		if configFilePath == None:
 			# we are not unit testing ...
@@ -21,21 +20,27 @@ class TransferFiles:
 		self.downloadDir = self.configManager.downloadPath
 
 		self.requester = Requester(self.configManager)
+
+	def transferFiles(self, commandLineArgs=None):
+		"""
+
+		@param commandLineArgs: used for unit testing only
+		"""
 		self.projectName = self.requester.getProjectName(commandLineArgs)
 		self.localProjectDir = self.configManager.getProjectLocalDir(self.projectName)
 		self.cloudAccess = DropboxAccess(self.configManager, self.projectName)
 		self.fileLister = FileLister(configManager=self.configManager, fromDir=self.downloadDir)
 
 		cloudFiles = []
-		
+
 		try:
 			cloudFiles = self.cloudAccess.getCloudFileList()
 		except NotADirectoryError as e:
 			# means that the cloud project directory does not exist
-			#print(str(e))
+			# print(str(e))
 			questionStr = 'Cloud project directory {} does not exist and will be created'.format(self.projectName)
 
-			if self.requester.getUserConfirmation(questionStr):		
+			if self.requester.getUserConfirmation(questionStr):
 				self.cloudAccess.createProjectFolder()
 
 		if cloudFiles == []:
@@ -50,9 +55,10 @@ class TransferFiles:
 			# dir to the correct project dir and sub dirs
 			localProjectDirShort = self.localProjectDir.split(DIR_SEP)[-3:]
 			localProjectDirShort = DIR_SEP.join(localProjectDirShort)
-			questionStr = 'Those files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}. If you want to upload new modified files instead, type N'.format(localProjectDirShort)
+			questionStr = 'Those files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}. If you want to upload new modified files instead, type N'.format(
+				localProjectDirShort)
 			doDownload, _ = self.requester.getUserConfirmation(questionStr, cloudFiles)
-			
+
 			if doDownload:
 				print('')  # empty line
 				self.transferFilesFromCloud()
@@ -86,13 +92,15 @@ class TransferFiles:
 				print('')  # empty line
 				self.uploadFilesToCloud(updatedFilePathNameLst)
 			elif lastSynchTimeChoice == '':
-				# the user choosed not to upload anything and to leave the last sync 
+				# the user did choose not to upload anything and to leave the last sync
 				# time unchanged
 				return
 			elif lastSynchTimeChoice == 'N':
+				# the user did choose to update the last sync time to current time (now)
 				self.updateLastSynchTime()
 			else:
-				self.updateLastSynchTime(lastSynchTimeChoice)				
+				# the user did enter a last sync time manually
+				self.updateLastSynchTime(lastSynchTimeChoice)
 
 	def uploadFilesToCloud(self, updatedFilePathNameLst):
 		"""
@@ -112,11 +120,13 @@ class TransferFiles:
 		"""
 		if lastSynchTimeStr == '':
 			lastSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)
-		elif self.validateLastSynchTimeStr(lastSynchTimeStr):			
-			self.configManager.updateLastSynchTime(self.projectName, lastSynchTimeStr)
-			print('\nUpdated last synch time to ' + lastSynchTimeStr)
-		else:
+		elif not self.validateLastSynchTimeStr(lastSynchTimeStr):
 			print('\nSynch time format invalid {}. Nothing changed.'.format(lastSynchTimeStr))
+
+			return
+
+		self.configManager.updateLastSynchTime(self.projectName, lastSynchTimeStr)
+		print('\nUpdated last synch time to ' + lastSynchTimeStr)
 
 	def validateLastSynchTimeStr(self, lastSynchTimeStr):
 		try:
@@ -139,3 +149,4 @@ class TransferFiles:
 
 if __name__ == "__main__":
 	tf = TransferFiles()
+	tf.transferFiles()
