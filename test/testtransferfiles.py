@@ -28,68 +28,64 @@ class TestTransferFiles(unittest.TestCase):
 		lastSynchTimeStr = '20-6-4 8:5:3'
 		self.assertFalse(tf.validateLastSynchTimeStr(lastSynchTimeStr))
 
-#	def testUploadModifiedFilesToCloud(self):
-#		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
-#		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+	#@unittest.skip
+	def testUploadModifiedFilesToCloud(self):
+		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
+		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
-#		if os.name == 'posix':
-#			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
-#			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-#		else:
-#			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
-#			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+		if os.name == 'posix':
+			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+		else:
+			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 
-#		# reading and rewriting test project files to update their modification date
+		# reading and rewriting test project files to update their modification date
 
-#		tstFileToModifyLst = ['testfilemover_2.py']
-#		pythonFileToModifyLst = ['filemover_2.py', 'filelister_2.py']
-#		docFileToModifyLst = ['doc_21.docx', 'doc_22.docx']
-#		imgFileToModifyLst = ['current_state_21.jpg']
-#		
-#		tstFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToModifyLst]
-#		pythonFilePathNameToModifyLst = [localProjectDir + DIR_SEP + x for x in pythonFileToModifyLst]
-#		docFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToModifyLst]
-#		imgFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToModifyLst]
-#		
-#		filePathNameToModifyLst = tstFilePathNameToModifyLst + pythonFilePathNameToModifyLst + docFilePathNameToModifyLst + imgFilePathNameToModifyLst
-#		
-#		#print(filePathNameToModifyLst)
+		tstFileToModifyLst = ['testfilemover_2.py']
+		pythonFileToModifyLst = ['filemover_2.py', 'filelister_2.py']
+		docFileToModifyLst = ['doc_21.docx', 'doc_22.docx']
+		imgFileToModifyLst = ['current_state_21.jpg']
 
-#		for filePathName in filePathNameToModifyLst:
-#			with open(filePathName, 'rb+') as f: # opening file as readwrite in binary mode
-#				content = f.read()
-#				f.seek(0)
-#				f.write(content)
-#				f.close()
-#				
-#		# simulating user input
-#		
-#		
-#		# capturing program output
-#		
-#		stdout = sys.stdout
+		tstFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToModifyLst]
+		pythonFilePathNameToModifyLst = [localProjectDir + DIR_SEP + x for x in pythonFileToModifyLst]
+		docFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToModifyLst]
+		imgFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToModifyLst]
 
-#		if os.name == 'posix':
-#			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
-#		else:
-#			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
+		filePathNameToModifyLst = tstFilePathNameToModifyLst + pythonFilePathNameToModifyLst + docFilePathNameToModifyLst + imgFilePathNameToModifyLst
 
-#		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
-#		try:
-#			with open(FILE_PATH, 'w') as outFile:
-#				sys.stdout = outFile
-#				rq.getProjectName(None)  # will eat up what has been filled in stdin using StringIO above
-#		except:
-#			pass
+		#print(filePathNameToModifyLst)
 
-#		# now asking TransferFiles to upload the modified files
-#		sys.stdin = StringIO('1')					
-#		tf = TransferFiles(configFilePath=configFilePathName)
-#		
-#		sys.stdin = StringIO('Y')
-#		tf.uploadModifiedFilesToCloud()
-				
+		for filePathName in filePathNameToModifyLst:
+			with open(filePathName, 'rb+') as f: # opening file as readwrite in binary mode
+				content = f.read()
+				f.seek(0)
+				f.write(content)
+				f.close()
+
+		# simulating user input
+
+		stdin = sys.stdin
+		sys.stdin = StringIO('1')
+
+		stdout = sys.stdout
+
+		if os.name == 'posix':
+			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
+		else:
+			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
+
+		# now asking TransferFiles to upload the modified files
+
+		tf = TransferFiles(configFilePath=configFilePathName)
+		projectName = tf.projectName
+		sys.stdin = StringIO('Y')
+		tf.uploadModifiedFilesToCloud()
+
+		sys.stdin = stdin
+		sys.stdout = stdout
+
 if __name__ == '__main__':
 	unittest.main()
-#	tst = TestDropboxAccess()
-#	tst.testUploadSameFileTwice()
+	# tst = TestTransferFiles()
+	# tst.testGetProjectName()
