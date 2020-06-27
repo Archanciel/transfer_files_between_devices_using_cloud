@@ -46,7 +46,7 @@ class TestRequester(unittest.TestCase):
  
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual(['Select project:\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
+			self.assertEqual(['Select project (Q to quit):\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
 			 '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n','\n'], contentList)
 
 		self.assertEqual('transFileCloudProject', projectName)
@@ -88,8 +88,8 @@ class TestRequester(unittest.TestCase):
  
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual(['Select project:\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
-							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project:\n', '\n',
+			self.assertEqual(['Select project (Q to quit):\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
+							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project (Q to quit):\n', '\n',
 							  '1 transFileCloudTestProject\n', '2 transFileCloudProject\n', '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n',
 							  '\n'], contentList)
 
@@ -128,8 +128,8 @@ class TestRequester(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual(['Select project:\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
-							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project:\n', '\n',
+			self.assertEqual(['Select project (Q to quit):\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
+							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project (Q to quit):\n', '\n',
 							  '1 transFileCloudTestProject\n', '2 transFileCloudProject\n', '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n',
 							  '\n'], contentList)
 
@@ -168,8 +168,8 @@ class TestRequester(unittest.TestCase):
 
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual(['Select project:\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
-							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project:\n', '\n',
+			self.assertEqual(['Select project (Q to quit):\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
+							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project (Q to quit):\n', '\n',
 							  '1 transFileCloudTestProject\n', '2 transFileCloudProject\n', '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n',
 							  '\n'], contentList)
 	
@@ -208,8 +208,8 @@ class TestRequester(unittest.TestCase):
  
 		with open(FILE_PATH, 'r') as inFile:
 			contentList = inFile.readlines()
-			self.assertEqual(['Select project:\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
-							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project:\n', '\n',
+			self.assertEqual(['Select project (Q to quit):\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
+							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project (Q to quit):\n', '\n',
 							  '1 transFileCloudTestProject\n', '2 transFileCloudProject\n', '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n',
 							  '\n'], contentList)
 

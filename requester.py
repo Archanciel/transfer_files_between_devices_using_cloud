@@ -21,7 +21,7 @@ class Requester:
 				
 		if project == None:
 			projectNameList = [x for x in self.configManager.projects]
-			userPrompt = "Select project:\n\n"		
+			userPrompt = "Select project (Q to quit):\n\n"		
 			
 			for (i, projectName) in enumerate(projectNameList): 
 				userPrompt += str(i + 1) + ' ' + projectName + '\n'
@@ -32,7 +32,11 @@ class Requester:
 			projectName = ''
 
 			while int(selection) <= 0:
-				selection = input(userPrompt)
+				selection = input(userPrompt).upper()
+				
+				if selection == 'Q':
+					return None
+					
 				try:
 					if int(selection) <= 0:
 						userPrompt = self.addErrorToUserPrompt(userPrompt)
@@ -48,9 +52,9 @@ class Requester:
 								
 			return projectName
 
-	def getCloudFolderConfirmation(self, folderName):
+	def getCreateCloudFolderConfirmation(self, folderName):
 		questionStr = 'Cloud project directory {} does not exist and will be created'.format(folderName)
-		userPrompt = '\n' + questionStr + '.\nContinue (Y/N) '
+		userPrompt = '\n' + questionStr + '.\n\nContinue (Y/N) '
 		userChoice = input(userPrompt).upper()
 		
 		if userChoice == 'Y':
@@ -88,7 +92,6 @@ class Requester:
 				return self.handleUserChoice(userChoice)
 		else:
 			# here, we are prompting for downloading files from the cloud
-			# or for creating a project folder on the cloud.
 			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst)
 		
 		userChoice = input(userPrompt).upper()
@@ -123,7 +126,7 @@ class Requester:
  
 			userPrompt += fileName + '\n'
 						
-		userPrompt += '\n' + questionStr + '.\nContinue (Y/N{}{}) '.format(path, upload)
+		userPrompt += '\n' + questionStr + '.\n\nContinue (Y/N{}{}) '.format(path, upload)
 					
 		return userPrompt
 	
@@ -139,7 +142,7 @@ class Requester:
 		return userPrompt
 		
 	def askUserNewSyncTime(self):
-		userPrompt = '\nUpdating the project last synch time. Type Enter to leave it unchanged, N to update it to Now and yyyy-mm-dd hh:mm:ss to fully specify the date '
+		userPrompt = '\nUpdating the project last synch time.\nType Enter to leave it unchanged, N to update it to Now and\nyyyy-mm-dd hh:mm:ss to fully specify the date '
 
 		return False, input(userPrompt).upper()
 				

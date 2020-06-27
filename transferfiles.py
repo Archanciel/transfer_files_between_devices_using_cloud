@@ -26,56 +26,69 @@ class TransferFiles:
 
 		@param commandLineArgs: used for unit testing only
 		"""
-		self.projectName = self.requester.getProjectName(commandLineArgs)
+		projectName = self.requester.getProjectName(commandLineArgs)
+		
+		if projectName == None:
+			# user did choose Quit
+			return
+			
+		self.projectName = projectName
 		self.localProjectDir = self.configManager.getProjectLocalDir(self.projectName)
 		self.cloudAccess = DropboxAccess(self.configManager, self.projectName)
 		self.fileLister = FileLister(configManager=self.configManager, fromDir=self.downloadDir)
 
-		cloudFiles = []
+		cloudFileLst = []
 
 		try:
-			cloudFiles = self.cloudAccess.getCloudFileList()
+			cloudFileLst = self.cloudAccess.getCloudFileList()
 		except NotADirectoryError as e:
 			# means that the cloud project directory does not exist
-			if self.requester.getCloudFolderConfirmation(self.projectName):
+			if self.requester.getCreateCloudFolderConfirmation(self.projectName):
 				self.cloudAccess.createProjectFolder()
 			else:
 				return 
 
-		if cloudFiles == []:
-			# if the clouud directory is empty, this means# that we are in the state of uploading the
-			# files modified on the current device to the cloud so that they will be available to be
-			# transferred on the other device.
-			self.handleUploadState()
+		if cloudFileLst == []:
+			# if the cloud directory is empty, this means that we are in the state of uploading
+			# to the cloud the files modified on the current device so that they will be available
+			# to be transferred from the cloud to the local directories on the other device.
+			self.uploadModifiesFilesToCloud()
 		else:
 			# if the cloud directory contains files, this means that we are in the state of transferring
 			# those files to the current device. The transferred files will be downloaded to the
-			# download dir and deleted from the cloud. They will then be moved from the download
-			# dir to the correct project dir and sub dirs
-			localProjectDirShort = self.localProjectDir.split(DIR_SEP)[-3:]
-			localProjectDirShort = DIR_SEP.join(localProjectDirShort)
-			questionStr = 'Those files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}. If you want to upload new modified files instead, type N'.format(
-				localProjectDirShort)
-			doDownload, _ = self.requester.getUserConfirmation(questionStr, cloudFiles)
+			# local download dir and deleted from the cloud. They will then be moved from the download
+			# dir to the correct project dir and sub dirs.
+			self.transferFilesFromCloudToLocalDirs(cloudFileLst)
 
-			if doDownload:
-				print('')  # empty line
-				self.transferFilesFromCloud()
-				print('')  # empty line
+	def transferFilesFromCloudToLocalDirs(self, cloudFileLst):
+		"""
 
-				# moving file from dowload dir to project dest dir and sub-dirs
-				fileMover = FileMover(self.configManager, self.downloadDir, self.localProjectDir)
-				fileMover.moveFiles()
+		@param cloudFileLst:
+		"""
+		localProjectDirShort = DIR_SEP.join(self.localProjectDir.split(DIR_SEP)[-3:])
 
-				# updating last synch time for the project in config file
-				self.updateLastSynchTime()
-			else:
-				# list modified local files and ask if they should be uploaded. Handles the
-				# case where you did an upload and then modified files again on the same
-				# device and want to add those files to the cloud
-				self.handleUploadState()
+		questionStr = 'Those files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}.\nIf you want to upload new modified files instead, type N'.format(
+			localProjectDirShort)
+		doDownload, _ = self.requester.getUserConfirmation(questionStr, cloudFileLst)
 
-	def handleUploadState(self):
+		if doDownload:
+			print('')  # empty line
+			self.transferFilesFromCloud()
+			print('')  # empty line
+
+			# moving file from dowload dir to project dest dir and sub-dirs
+			fileMover = FileMover(self.configManager, self.downloadDir, self.localProjectDir)
+			fileMover.moveFiles()
+
+			# updating last synch time for the project in config file
+			self.updateLastSynchTime()
+		else:
+			# list modified local files and ask if they should be uploaded. Handles the
+			# case where you did an upload and then modified files again on the same
+			# device and want to add those files to the cloud
+			self.uploadModifiesFilesToCloud()
+
+	def uploadModifiesFilesToCloud(self):
 		"""
 
 		"""
@@ -84,7 +97,7 @@ class TransferFiles:
 		if updatedFileNameLst == []:
 			print('\nNo files modified locally since last sync time {}'.format(lastSyncTimeStr))
 		else:
-			questionStr = 'Those files were modified locally after {} and will be uploaded to the cloud. Choose P to display the path and U to update the last sync time'.format(lastSyncTimeStr)
+			questionStr = 'Those files were modified locally after {}\nand will be uploaded to the cloud.\nChoose P to display the path and U to update the last sync time'.format(lastSyncTimeStr)
 			doUpload, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
 
 			if doUpload: 
