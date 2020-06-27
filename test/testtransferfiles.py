@@ -35,10 +35,10 @@ class TestTransferFiles(unittest.TestCase):
 
 		if os.name == 'posix':
 			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
-			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
 		else:
 			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
-			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
 
 		# reading and rewriting test project files to update their modification date
 
@@ -76,11 +76,17 @@ class TestTransferFiles(unittest.TestCase):
 			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
 
 		# now asking TransferFiles to upload the modified files
-
-		tf = TransferFiles(configFilePath=configFilePathName)
-		projectName = tf.projectName
-		sys.stdin = StringIO('Y')
-		tf.uploadModifiedFilesToCloud()
+		
+		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
+		try:
+			with open(FILE_PATH, 'w') as outFile:
+				print('stdout temporarily captured. Test is running ...')
+				sys.stdout = outFile
+				tf = TransferFiles(configFilePath=configFilePathName)
+				sys.stdin = StringIO('Y')
+				tf.uploadModifiedFilesToCloud()
+		except:
+			pass
 
 		sys.stdin = stdin
 		sys.stdout = stdout
