@@ -93,7 +93,7 @@ class TransferFiles:
 			# list modified local files and ask if they should be uploaded. Handles the
 			# case where you did an upload and then modified files again on the same
 			# device and want to add those files to the cloud
-			self.uploadModifiesFilesToCloud()
+			self.uploadModifiedFilesToCloud()
 
 	def uploadModifiedFilesToCloud(self):
 		"""
