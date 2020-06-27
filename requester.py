@@ -7,7 +7,7 @@ class Requester:
 	def __init__(self, configManager):
 		self.configManager = configManager
 		
-	def getProjectName(self, commandLineArgs):
+	def getProjectName(self, commandLineArgs=None):
 		"""
 
 		@param commandLineArgs: used for unit testing

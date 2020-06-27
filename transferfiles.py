@@ -8,35 +8,42 @@ from filemover import FileMover
 from dropboxaccess import DropboxAccess
 
 class TransferFiles:
-	def __init__(self, configFilePath=None):
+	def __init__(self, configFilePath=None, projectName=None):
 		"""
 		    @param configFilePath: used for unit testing only
+		    @param projectName used for unit testing only
 		"""
 		if configFilePath == None:
 			# we are not unit testing ...
 			configFilePath = CONFIG_FILE_PATH_NAME
 			
 		self.configManager = ConfigManager(configFilePath)
-		self.downloadDir = self.configManager.downloadPath
-
 		self.requester = Requester(self.configManager)
+			
+		if projectName == None:
+			# we are not unit testing ...
+			projectName = self.requester.getProjectName()
+		
+			if projectName == None:
+				# user did choose Quit
+				self.projectName = None
+				return
+			
+		self.projectName = projectName
+		self.downloadDir = self.configManager.downloadPath
+		self.localProjectDir = self.configManager.getProjectLocalDir(self.projectName)
+		self.cloudAccess = DropboxAccess(self.configManager, self.projectName)
+		self.fileLister = FileLister(configManager=self.configManager, fromDir=self.downloadDir)
 
 	def transferFiles(self, commandLineArgs=None):
 		"""
 
 		@param commandLineArgs: used for unit testing only
 		"""
-		projectName = self.requester.getProjectName(commandLineArgs)
-		
-		if projectName == None:
+		if self.projectName == None:
 			# user did choose Quit
 			return
 			
-		self.projectName = projectName
-		self.localProjectDir = self.configManager.getProjectLocalDir(self.projectName)
-		self.cloudAccess = DropboxAccess(self.configManager, self.projectName)
-		self.fileLister = FileLister(configManager=self.configManager, fromDir=self.downloadDir)
-
 		cloudFileLst = []
 
 		try:
@@ -52,7 +59,7 @@ class TransferFiles:
 			# if the cloud directory is empty, this means that we are in the state of uploading
 			# to the cloud the files modified on the current device so that they will be available
 			# to be transferred from the cloud to the local directories on the other device.
-			self.uploadModifiesFilesToCloud()
+			self.uploadModifiedFilesToCloud()
 		else:
 			# if the cloud directory contains files, this means that we are in the state of transferring
 			# those files to the current device. The transferred files will be downloaded to the
@@ -88,7 +95,7 @@ class TransferFiles:
 			# device and want to add those files to the cloud
 			self.uploadModifiesFilesToCloud()
 
-	def uploadModifiesFilesToCloud(self):
+	def uploadModifiedFilesToCloud(self):
 		"""
 
 		"""
@@ -102,7 +109,7 @@ class TransferFiles:
 
 			if doUpload: 
 				print('')  # empty line
-				self.uploadFilesToCloud(updatedFilePathNameLst)
+				self.uploadToCloud(updatedFilePathNameLst)
 			elif lastSynchTimeChoice == '':
 				# the user did choose not to upload anything and to leave the last sync
 				# time unchanged
@@ -114,7 +121,7 @@ class TransferFiles:
 				# the user did enter a last sync time manually
 				self.updateLastSynchTime(lastSynchTimeChoice)
 
-	def uploadFilesToCloud(self, updatedFilePathNameLst):
+	def uploadToCloud(self, updatedFilePathNameLst):
 		"""
 
 		@param updatedFilePathNameLst:

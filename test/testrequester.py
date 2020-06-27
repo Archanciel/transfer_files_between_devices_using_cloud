@@ -33,7 +33,7 @@ class TestRequester(unittest.TestCase):
 
 		projectName = ''
 
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
 		try:
 			with open(FILE_PATH, 'w') as outFile:
 				sys.stdout = outFile
@@ -50,8 +50,6 @@ class TestRequester(unittest.TestCase):
 			 '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n','\n'], contentList)
 
 		self.assertEqual('transFileCloudProject', projectName)
-		
-		sys.stdin = stdin
 	
 	def testGetProjectNameInvalidUserInput_zero(self):
 		if os.name == 'posix':
@@ -75,7 +73,7 @@ class TestRequester(unittest.TestCase):
 		else:
 			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
 
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
 		try:
 			with open(FILE_PATH, 'w') as outFile:
 				sys.stdout = outFile
@@ -115,7 +113,7 @@ class TestRequester(unittest.TestCase):
 		else:
 			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
 
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
 		try:
 			with open(FILE_PATH, 'w') as outFile:
 				sys.stdout = outFile
@@ -155,7 +153,7 @@ class TestRequester(unittest.TestCase):
 		else:
 			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
 
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
 		try:
 			with open(FILE_PATH, 'w') as outFile:
 				sys.stdout = outFile
@@ -195,7 +193,7 @@ class TestRequester(unittest.TestCase):
 		else:
 			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
 
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
 		try:
 			with open(FILE_PATH, 'w') as outFile:
 				sys.stdout = outFile

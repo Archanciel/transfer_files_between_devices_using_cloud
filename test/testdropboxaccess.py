@@ -13,6 +13,12 @@ from dropboxaccess import DropboxAccess
 			
 class TestDropboxAccess(unittest.TestCase):
 	def testGetCloudFileList(self):
+		"""
+		For this test to succeed, the dropbox test dir must contain two files:
+		my_file_one.py and my_file_two.py. 
+		
+		The dropbox cloud folder is test_dropbox/transFileCloudTestProject
+		"""	
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
