@@ -11,6 +11,7 @@ import warnings
 from constants import DIR_SEP, DATE_TIME_FORMAT
 from configmanager import *
 from transferfiles import TransferFiles
+from dropboxaccess import DropboxAccess
 			
 class TestTransferFiles(unittest.TestCase):
 	def testValidateLastSynchTimeStr_invalid(self):
@@ -28,7 +29,6 @@ class TestTransferFiles(unittest.TestCase):
 		lastSynchTimeStr = '20-6-4 8:5:3'
 		self.assertFalse(tf.validateLastSynchTimeStr(lastSynchTimeStr))
 
-	#@unittest.skip
 	def testUploadModifiedFilesToCloud(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
@@ -39,6 +39,19 @@ class TestTransferFiles(unittest.TestCase):
 		else:
 			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+		
+		# cleaning up the target cloud folder
+		
+		cm = ConfigManager(configFilePathName)
+		projectName = 'TransferFilesTestProject'
+		drpa = DropboxAccess(cm, projectName)
+		
+		cloudFileLst = drpa.getCloudFileList()
+		
+		for file in cloudFileLst:
+			drpa.deleteFile(file)
+			
+		self.assertEqual([], drpa.getCloudFileList())
 
 		# reading and rewriting test project files to update their modification date
 
@@ -54,10 +67,9 @@ class TestTransferFiles(unittest.TestCase):
 
 		filePathNameToModifyLst = tstFilePathNameToModifyLst + pythonFilePathNameToModifyLst + docFilePathNameToModifyLst + imgFilePathNameToModifyLst
 
-		#print(filePathNameToModifyLst)
-
 		for filePathName in filePathNameToModifyLst:
-			with open(filePathName, 'rb+') as f: # opening file as readwrite in binary mode
+			# opening file as readwrite in binary mode
+			with open(filePathName, 'rb+') as f:
 				content = f.read()
 				f.seek(0)
 				f.write(content)
@@ -66,32 +78,33 @@ class TestTransferFiles(unittest.TestCase):
 		# simulating user input
 
 		stdin = sys.stdin
+		
+		# selecting project 1 (the test project)
 		sys.stdin = StringIO('1')
 
-		stdout = sys.stdout
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
-
-		# now asking TransferFiles to upload the modified files
+		print('\nstdout temporarily captured. Test is running ...')
 		
-		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				print('stdout temporarily captured. Test is running ...')
-				sys.stdout = outFile
-				tf = TransferFiles(configFilePath=configFilePathName)
-				sys.stdin = StringIO('Y')
-				tf.uploadModifiedFilesToCloud()
-		except:
-			pass
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+
+		# now asking TransferFiles to upload the modified files 
+		
+		tf = TransferFiles(configFilePath=configFilePathName)
+		
+		# confirming modified files upload
+		sys.stdin = StringIO('Y')
+		
+		tf.uploadModifiedFilesToCloud()
 
 		sys.stdin = stdin
 		sys.stdout = stdout
+		
+		expectedUploadedFileNameLst = tstFileToModifyLst + pythonFileToModifyLst + docFileToModifyLst + imgFileToModifyLst
+		
+		self.assertEqual(sorted(expectedUploadedFileNameLst), sorted(drpa.getCloudFileList()))
 
 if __name__ == '__main__':
 	unittest.main()
-	# tst = TestTransferFiles()
-	# tst.testGetProjectName()
+	#tst = TestTransferFiles()
+	#tst.testUploadModifiedFilesToCloud()
