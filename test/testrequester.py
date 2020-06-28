@@ -25,30 +25,15 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = StringIO('2')
 		
 		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
 		
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
-
-		projectName = ''
-
-		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				projectName = rq.getProjectName(None) #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
+		projectName = rq.getProjectName(None) #will eat up what has been filled in stdin using StringIO above
  
 		sys.stdin = stdin
 		sys.stdout = stdout
  
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual(['Select project (Q to quit):\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
-			 '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n','\n'], contentList)
-
+		self.assertEqual('Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 		self.assertEqual('transFileCloudProject', projectName)
 	
 	def testGetProjectNameInvalidUserInput_zero(self):
@@ -64,32 +49,18 @@ class TestRequester(unittest.TestCase):
 		stdin = sys.stdin
 
 		# invalid user input of o
-		sys.stdin = StringIO('0')
+		sys.stdin = StringIO('0\nQ')
 		
 		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
 		
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
-
-		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				rq.getProjectName(None) #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
+		rq.getProjectName(None) #will eat up what has been filled in stdin using StringIO above
  
 		sys.stdin = stdin
 		sys.stdout = stdout
  
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual(['Select project (Q to quit):\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
-							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project (Q to quit):\n', '\n',
-							  '1 transFileCloudTestProject\n', '2 transFileCloudProject\n', '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n',
-							  '\n'], contentList)
+		self.assertEqual('Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 
 	def testGetProjectNameInvalidUserInput_minus_one(self):
 		if os.name == 'posix':
@@ -104,32 +75,17 @@ class TestRequester(unittest.TestCase):
 		stdin = sys.stdin
 
 		# invalid user input of -1
-		sys.stdin = StringIO('-1')
+		sys.stdin = StringIO('-1\nQ')
 
 		stdout = sys.stdout
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
-
-		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				rq.getProjectName(None)  # will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+		rq.getProjectName(None)  # will eat up what has been filled in stdin using StringIO above
 
 		sys.stdin = stdin
 		sys.stdout = stdout
 
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual(['Select project (Q to quit):\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
-							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project (Q to quit):\n', '\n',
-							  '1 transFileCloudTestProject\n', '2 transFileCloudProject\n', '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n',
-							  '\n'], contentList)
+		self.assertEqual('Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 
 	def testGetProjectNameInvalidUserInput_exeed_choice_number(self):
 		if os.name == 'posix':
@@ -144,32 +100,17 @@ class TestRequester(unittest.TestCase):
 		stdin = sys.stdin
 
 		# invalid user input of 8
-		sys.stdin = StringIO('10')
+		sys.stdin = StringIO('10\nQ')
 
 		stdout = sys.stdout
-
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
-
-		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				rq.getProjectName(None)  # will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+		rq.getProjectName(None)  # will eat up what has been filled in stdin using StringIO above
 
 		sys.stdin = stdin
 		sys.stdout = stdout
 
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual(['Select project (Q to quit):\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
-							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project (Q to quit):\n', '\n',
-							  '1 transFileCloudTestProject\n', '2 transFileCloudProject\n', '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n',
-							  '\n'], contentList)
+		self.assertEqual('Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 	
 	def testGetProjectNameInvalidUserInput_return(self):
 		if os.name == 'posix':
@@ -184,32 +125,18 @@ class TestRequester(unittest.TestCase):
 		stdin = sys.stdin
 
 		# invalid user input of return
-		sys.stdin = StringIO('\n')
+		sys.stdin = StringIO('\n\nQ')
 		
 		stdout = sys.stdout
-		
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
-
-		# using a try/catch here prevent the test from failing due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				rq.getProjectName(None) #will eat up what has been filled in stdin using StringIO above
-		except:
-			pass
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+		rq.getProjectName(None) #will eat up what has been filled in stdin using StringIO above
  
 		sys.stdin = stdin
 		sys.stdout = stdout
- 
-		with open(FILE_PATH, 'r') as inFile:
-			contentList = inFile.readlines()
-			self.assertEqual(['Select project (Q to quit):\n', '\n', '1 transFileCloudTestProject\n', '2 transFileCloudProject\n',
-							  '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n', '\n', 'Invalid selection. Select project (Q to quit):\n', '\n',
-							  '1 transFileCloudTestProject\n', '2 transFileCloudProject\n', '3 cartesianAxesProject\n', '4 transFileCloudInvalidProject\n',
-							  '\n'], contentList)
+		self.assertEqual('Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 
 if __name__ == '__main__':
 	unittest.main()
+	#tst = TestRequester()
+	#tst.testGetProjectNameInvalidUserInput_zero()
