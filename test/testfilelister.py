@@ -63,10 +63,10 @@ class TestFileLister(unittest.TestCase):
 	def testGetModifiedFileLst(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
+			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/fromdir'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
+			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm, fromDir)
@@ -77,11 +77,11 @@ class TestFileLister(unittest.TestCase):
 						 sorted(allFileNameLst))
 		if os.name == 'posix':
 			self.assertEqual(sorted(
-				['/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir/constants_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir/filelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir/filemover_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir/test/testfilelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir/test/testfilemover_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir/images/current_state_21.jpg', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir/images/current_state_22.jpg', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir/doc/doc_21.docx', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir/doc/doc_22.docx', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir/README_2.rd']),
+				['/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/constants_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/filelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/filemover_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/test/testfilelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/test/testfilemover_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/images/current_state_21.jpg', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/images/current_state_22.jpg', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/doc/doc_21.docx', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/doc/doc_22.docx', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/README_2.rd']),
 							 sorted(allFilePathNameLst))
 		else:
 			self.assertEqual(sorted(
-				['D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\constants_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\filelister_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\filemover_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\test\\testfilelister_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\test\\testfilemover_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\images\\current_state_21.jpg', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\images\\current_state_22.jpg', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\doc\\doc_21.docx', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\doc\\doc_22.docx', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir\\README_2.rd']),
+				['D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir\\constants_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir\\filelister_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir\\filemover_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir\\test\\testfilelister_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir\\test\\testfilemover_2.py', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir\\images\\current_state_21.jpg', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir\\images\\current_state_22.jpg', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir\\doc\\doc_21.docx', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir\\doc\\doc_22.docx', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir\\README_2.rd']),
 							 sorted(allFilePathNameLst))
 
 		self.assertEqual('2020-06-15 08:45:23', lastSyncTimeStr)
@@ -93,10 +93,10 @@ class TestFileLister(unittest.TestCase):
 		'''
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
+			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/fromdir'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
+			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm, fromDir)
