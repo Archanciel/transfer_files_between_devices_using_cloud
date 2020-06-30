@@ -22,8 +22,11 @@ class TestConfigManager(unittest.TestCase):
 		
 		if os.name == 'posix':
 			self.assertEqual('/storage/emulated/0/Download', cm.downloadPath)
-			self.assertIsNotNone(cm.dropboxApiKey)
-			
+		else:
+			self.assertEqual('D:\\\\Users\\\\Jean-Pierre\\\\Downloads', cm.downloadPath)
+
+
+		self.assertIsNotNone(cm.dropboxApiKey)
 		self.assertEqual('/test_dropbox', cm.dropboxBaseDir)
 
 	def testGetProjectLocalDir(self):
@@ -37,6 +40,8 @@ class TestConfigManager(unittest.TestCase):
 		
 		if os.name == 'posix':
 			self.assertEqual('/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud', cm.getProjectLocalDir(projectName))
+		else:
+			self.assertEqual('D:\\\\Development\\\\Python\\\\trans_file_cloud', cm.getProjectLocalDir(projectName))
 
 	def testGetLastSynchTime(self):
 		if os.name == 'posix':
