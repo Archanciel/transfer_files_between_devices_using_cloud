@@ -1,5 +1,6 @@
 import unittest
-import os, sys, inspect, datetime
+import os, sys, inspect
+from distutils import dir_util
 from io import StringIO
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -35,9 +36,11 @@ class TestTransferFiles(unittest.TestCase):
 
 		if os.name == 'posix':
 			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
+			localProjectDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir_saved'
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
 		else:
 			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
+			localProjectDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
 		
 		# cleaning up the target cloud folder
@@ -104,7 +107,10 @@ class TestTransferFiles(unittest.TestCase):
 		
 		self.assertEqual(sorted(expectedUploadedFileNameLst), sorted(drpa.getCloudFileList()))
 
+		# now restoring the modified files dir to its saved version
+		#dir_util.copy_tree(localProjectDirSaved, localProjectDir)
+
 if __name__ == '__main__':
 	unittest.main()
-	#tst = TestTransferFiles()
-	#tst.testUploadModifiedFilesToCloud()
+	# tst = TestTransferFiles()
+	# tst.testUploadModifiedFilesToCloud()
