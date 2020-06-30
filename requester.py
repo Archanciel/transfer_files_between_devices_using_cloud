@@ -121,7 +121,7 @@ class Requester:
 				# here, the file name is in fact a fuLl file path name. In order
 				# to display a more readable file list, only the last 3 file
 				# pathename element are kept
-				filePathNameElementLst = fileName.split(DIR_SEP)[-3:]
+				filePathNameElementLst = fileName.split(DIR_SEP)[-4:]
 				fileName = DIR_SEP.join(filePathNameElementLst)
  
 			userPrompt += fileName + '\n'
