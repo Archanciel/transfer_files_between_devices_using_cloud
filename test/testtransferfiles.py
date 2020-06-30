@@ -108,7 +108,7 @@ class TestTransferFiles(unittest.TestCase):
 		self.assertEqual(sorted(expectedUploadedFileNameLst), sorted(drpa.getCloudFileList()))
 
 		# now restoring the modified files dir to its saved version
-		#dir_util.copy_tree(localProjectDirSaved, localProjectDir)
+		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
 
 if __name__ == '__main__':
 	unittest.main()
