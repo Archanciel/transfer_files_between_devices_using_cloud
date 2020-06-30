@@ -49,6 +49,22 @@ class ConfigManager:
 		self.projects[projectName][CONFIG_KEY_PROJECT_LAST_SYNC_TIME] = lastSynchTimeStr
 		self.config.write()
 
+	def getExcludedDirLst(self, projectName):
+		excludedDirSectionLst = self.projects[projectName]['exclude']['directories']
+		excludedDirLst = []
+		
+		for dirSection in excludedDirSectionLst:
+			excludedDirLst.append(dirSection['path'])
+			
+		return excludedDirLst
+		
+	def is_section(self, config_section):
+		try:
+			config_section.keys()
+		except AttributeError:
+			return False
+		else:
+			return True
 
 if __name__ == '__main__':
 	if os.name == 'posix':
@@ -57,15 +73,33 @@ if __name__ == '__main__':
 		configFilePathName = 'c:\\temp\\transfiles.ini'
 
 	cm = ConfigManager(configFilePathName)
-	print(cm.dropboxBaseDir)
-	for key in cm.config['General']: 
-		print(key)
-	
-	for key in cm.projects: 
-		print(key)
-		print(cm.projects[key][CONFIG_KEY_PROJECT_PATH])
-		print(cm.projects[key][CONFIG_KEY_PROJECT_LAST_SYNC_TIME])
+#	print("dropbox base dir ", cm.dropboxBaseDir)
+#	
+#	print("\nKeys in General section")
+#	
+#	for key in cm.config['General']: 
+#		print(key)
+#		
+#	print("\nKeys in Project section")
+#	
+#	for key in cm.projects: 
+#		print(key)
+#		print(cm.projects[key][CONFIG_KEY_PROJECT_PATH])
+#		print(cm.projects[key][CONFIG_KEY_PROJECT_LAST_SYNC_TIME])
 
 	projectName = 'transFileCloudProject'
-	cm.updateLastSynchTime(projectName, '2020-06-22 11:45:23')
-	print(cm.getLastSynchTime(projectName))
+#	cm.updateLastSynchTime(projectName, '2020-06-22 11:45:23')
+#	print("\nLast synch time ", cm.getLastSynchTime(projectName))
+#	
+#	print(cm.projects.keys)
+	#excludedDirSectionLst = cm.projects[projectName].keys
+	#print(excludedDirSectionLst)
+	sections = cm.config.keys()
+#	sections = cm.projects
+	print(sections)
+	for section in sections:
+		if cm.is_section(cm.config[section]):
+			for subsection in cm.config[section]:
+				if cm.is_section(cm.config[section][subsection]):
+					for subsection in cm.config[section][subsection]:
+						print("Subsection ", subsection)		
