@@ -68,7 +68,7 @@ class TestConfigManager(unittest.TestCase):
 		
 		# restoring old synch time
 		cm.updateLastSynchTime(projectName, lastSynchTime)
-	#@unittest.skip	
+	
 	def testGetExcludedDirLst(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
@@ -79,9 +79,23 @@ class TestConfigManager(unittest.TestCase):
 		projectName = 'transFileCloudProject'
 		
 		if os.name == 'posix':
-			self.assertEqual(['/test/testproject_2/projectdir', '/test/testproject_3/projectdir'], cm.getExcludedDirLst(projectName))
+			self.assertEqual(['/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir'], cm.getExcludedDirLst(projectName))
 		else:
-			self.assertEqual(['\\\\test\\\\testproject_2\\\\projectdir', '\\\\test\\\\testproject_3\\\\projectdir'], cm.getExcludedDirLst(projectName))
+			self.assertEqual(['D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir'], cm.getExcludedDirLst(projectName))
+	
+	def testGetExcludedFileTypeLst(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+		
+		cm = ConfigManager(configFilePathName)		
+		projectName = 'transFileCloudProject'
+		
+		if os.name == 'posix':
+			self.assertEqual(['*.ini', '*.tmp'], cm.getExcludedFileTypeLst(projectName))
+		else:
+			self.assertEqual(['*.ini', '*.tmp'], cm.getExcludedFileTypeLst(projectName))
 					
 if __name__ == '__main__':
 	unittest.main()

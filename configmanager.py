@@ -54,18 +54,19 @@ class ConfigManager:
 		excludedDirLst = []
 		
 		for dirSection in excludedDirSectionLst:
-			excludedDirLst.append(excludedDirSectionLst[dirSection]['path'])
+			excludedDirLst.append(self.getProjectLocalDir(projectName) + excludedDirSectionLst[dirSection]['path'])
 			
 		return excludedDirLst
-		
-	def is_section(self, config_section):
-		try:
-			config_section.keys()
-		except AttributeError:
-			return False
-		else:
-			return True
 
+	def getExcludedFileTypeLst(self, projectName):
+		excludedFileTypesSection = self.projects[projectName]['exclude']['fileTypes']
+		excludedFileTypeLst = []
+		
+		for fileType in excludedFileTypesSection:
+			excludedFileTypeLst.append(excludedFileTypesSection[fileType])
+			
+		return excludedFileTypeLst
+		
 if __name__ == '__main__':
 	if os.name == 'posix':
 		configFilePathName = '/sdcard/transfiles.ini'
@@ -98,11 +99,19 @@ if __name__ == '__main__':
 	projectSections = cm.projects[projectName]
 	print('first trial')
 	print(projectSections)
-		
+	
+#	def is_section(config_section):
+#		try:
+#			config_section.keys()
+#		except AttributeError:
+#			return False
+#		else:
+#			return True
+#		
 #	for section in projectSections:
-#		if cm.is_section(projectSections[section]):
+#		if is_section(projectSections[section]):
 #			for subsection in projectSections[section]:
-#				if cm.is_section(projectSections[section][subsection]):
+#				if is_section(projectSections[section][subsection]):
 #					for subsection in projectSections[section][subsection]:
 #						print("Subsection ", subsection)
 						
@@ -116,3 +125,4 @@ if __name__ == '__main__':
 
 	print(projectSections['exclude']['directories'])
 	print(cm.getExcludedDirLst(projectName))
+	print(cm.getExcludedFileTypeLst(projectName))	
