@@ -87,19 +87,32 @@ if __name__ == '__main__':
 #		print(cm.projects[key][CONFIG_KEY_PROJECT_PATH])
 #		print(cm.projects[key][CONFIG_KEY_PROJECT_LAST_SYNC_TIME])
 
+	if os.name == 'posix':
+		configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+	else:
+		configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+		
+	cm = ConfigManager(configFilePathName)		
 	projectName = 'transFileCloudProject'
-#	cm.updateLastSynchTime(projectName, '2020-06-22 11:45:23')
-#	print("\nLast synch time ", cm.getLastSynchTime(projectName))
-#	
-#	print(cm.projects.keys)
-	#excludedDirSectionLst = cm.projects[projectName].keys
-	#print(excludedDirSectionLst)
-	sections = cm.config.keys()
-#	sections = cm.projects
-	print(sections)
-	for section in sections:
-		if cm.is_section(cm.config[section]):
-			for subsection in cm.config[section]:
-				if cm.is_section(cm.config[section][subsection]):
-					for subsection in cm.config[section][subsection]:
-						print("Subsection ", subsection)		
+		
+	projectSections = cm.projects[projectName]
+	print('first trial')
+	print(projectSections)
+		
+#	for section in projectSections:
+#		if cm.is_section(projectSections[section]):
+#			for subsection in projectSections[section]:
+#				if cm.is_section(projectSections[section][subsection]):
+#					for subsection in projectSections[section][subsection]:
+#						print("Subsection ", subsection)
+						
+#	print('\nNew trial')		
+
+#	def gather_subsection(section, key):
+#		if section.depth > 1:
+#			print("Subsection " + section.name)
+
+#	cm.projects[projectName].walk(gather_subsection)
+
+	print(projectSections['exclude']['directories'])
+	print(cm.getExcludedDirLst(projectName))

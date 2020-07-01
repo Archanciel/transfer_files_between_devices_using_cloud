@@ -68,7 +68,7 @@ class TestConfigManager(unittest.TestCase):
 		
 		# restoring old synch time
 		cm.updateLastSynchTime(projectName, lastSynchTime)
-	@unittest.skip	
+	#@unittest.skip	
 	def testGetExcludedDirLst(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
@@ -78,10 +78,10 @@ class TestConfigManager(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)		
 		projectName = 'transFileCloudProject'
 		
-		if os.name == 'posix':
-			self.assertEqual(['/test/testproject_2/projectdir', '/test/testproject_3/projectdir'], cm.getExcludedDirLst(projectName))
-			
+#		if os.name == 'posix':
+#			self.assertEqual(['/test/testproject_2/projectdir', '/test/testproject_3/projectdir'], cm.getExcludedDirLst(projectName))
+					
 if __name__ == '__main__':
 	unittest.main()
-	#tst = TestTransferFiles()
-	#tst.testUploadModifiedFilesToCloud()
+	#tst = TestConfigManager()
+	#tst.testGetExcludedDirLst()
