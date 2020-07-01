@@ -54,7 +54,7 @@ class ConfigManager:
 		excludedDirLst = []
 		
 		for dirSection in excludedDirSectionLst:
-			excludedDirLst.append(dirSection['path'])
+			excludedDirLst.append(excludedDirSectionLst[dirSection]['path'])
 			
 		return excludedDirLst
 		

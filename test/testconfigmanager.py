@@ -78,8 +78,10 @@ class TestConfigManager(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)		
 		projectName = 'transFileCloudProject'
 		
-#		if os.name == 'posix':
-#			self.assertEqual(['/test/testproject_2/projectdir', '/test/testproject_3/projectdir'], cm.getExcludedDirLst(projectName))
+		if os.name == 'posix':
+			self.assertEqual(['/test/testproject_2/projectdir', '/test/testproject_3/projectdir'], cm.getExcludedDirLst(projectName))
+		else:
+			self.assertEqual(['\\\\test\\\\testproject_2\\\\projectdir', '\\\\test\\\\testproject_3\\\\projectdir'], cm.getExcludedDirLst(projectName))
 					
 if __name__ == '__main__':
 	unittest.main()
