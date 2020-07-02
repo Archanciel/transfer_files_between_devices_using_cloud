@@ -45,7 +45,12 @@ class FileLister:
 		if not os.path.isdir(projectDir):
 			raise NotADirectoryError(projectDir)
 
+		excludedDirLst = self.configManager.getExcludedDirLst(projectName)
+
 		for root, dirs, files in os.walk(projectDir):
+			if root in excludedDirLst:
+				continue
+
 			for fileName in files:
 				pathfileName = os.path.join(root, fileName)
 				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)

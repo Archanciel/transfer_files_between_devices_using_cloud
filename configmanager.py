@@ -50,7 +50,12 @@ class ConfigManager:
 		self.config.write()
 
 	def getExcludedDirLst(self, projectName):
-		excludedDirSectionLst = self.projects[projectName]['exclude']['directories']
+		try:
+			excludedDirSectionLst = self.projects[projectName]['exclude']['directories']
+		except KeyError:
+			# the case if no exclude section is defined for this project in the config file
+			return []
+
 		excludedDirLst = []
 		
 		for dirSection in excludedDirSectionLst:
