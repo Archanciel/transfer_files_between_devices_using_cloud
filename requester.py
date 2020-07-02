@@ -119,7 +119,7 @@ class Requester:
 		for fileName in fileNameLst:
 			if DIR_SEP in fileName:
 				# here, the file name is in fact a fuLl file path name. In order
-				# to display a more readable file list, only the last 3 file
+				# to display a more readable file list, only the last 4 file
 				# pathename element are kept
 				filePathNameElementLst = fileName.split(DIR_SEP)[-4:]
 				fileName = DIR_SEP.join(filePathNameElementLst)
