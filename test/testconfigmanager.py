@@ -23,7 +23,7 @@ class TestConfigManager(unittest.TestCase):
 		if os.name == 'posix':
 			self.assertEqual('/storage/emulated/0/Download', cm.downloadPath)
 		else:
-			self.assertEqual('D:\\\\Users\\\\Jean-Pierre\\\\Downloads', cm.downloadPath)
+			self.assertEqual('D:\\Users\\Jean-Pierre\\Downloads', cm.downloadPath)
 
 
 		self.assertIsNotNone(cm.dropboxApiKey)
@@ -41,7 +41,7 @@ class TestConfigManager(unittest.TestCase):
 		if os.name == 'posix':
 			self.assertEqual('/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud', cm.getProjectLocalDir(projectName))
 		else:
-			self.assertEqual('D:\\\\Development\\\\Python\\\\trans_file_cloud', cm.getProjectLocalDir(projectName))
+			self.assertEqual('D:\\Development\\Python\\trans_file_cloud', cm.getProjectLocalDir(projectName))
 
 	def testGetLastSynchTime(self):
 		if os.name == 'posix':
@@ -81,7 +81,7 @@ class TestConfigManager(unittest.TestCase):
 		if os.name == 'posix':
 			self.assertEqual(['/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir'], cm.getExcludedDirLst(projectName))
 		else:
-			self.assertEqual(['D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_2\\\\projectdir', 'D:\\\\Development\\\\Python\\\\trans_file_cloud\\\\test\\\\testproject_3\\\\projectdir'], cm.getExcludedDirLst(projectName))
+			self.assertEqual(['D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir'], cm.getExcludedDirLst(projectName))
 	
 	def testGetExcludedFileTypeLst(self):
 		if os.name == 'posix':
