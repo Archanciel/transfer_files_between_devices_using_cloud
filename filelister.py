@@ -52,8 +52,6 @@ class FileLister:
 				if (file_mtime > lastSyncTime):
 					allFileNameLst.append(fileName)
 					allFilePathNameLst.append(pathfileName)
-				result = allFileNameLst, allFilePathNameLst
-				allFileNameLst, allFilePathNameLst = result
 
 		pattern = re.compile('\w*\.[py]*$')
 		
