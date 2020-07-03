@@ -46,12 +46,17 @@ class FileLister:
 			raise NotADirectoryError(projectDir)
 
 		excludedDirLst = self.configManager.getExcludedDirLst(projectName)
+		excludedFileTypeLst = self.configManager.getExcludedFileTypeLst(projectName)
+		excludedFilePatternLst = self.createPatternsFromWildchardLst(excludedFileTypeLst)
 
 		for root, dirs, files in os.walk(projectDir):
 			if root in excludedDirLst:
 				continue
 
 			for fileName in files:
+				if self.excludeFile(fileName, excludedFilePatternLst):
+					continue
+					
 				pathfileName = os.path.join(root, fileName)
 				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
 				if (file_mtime > lastSyncTime):
@@ -82,6 +87,12 @@ class FileLister:
 		
 		return allFileNameLstReturn, allFilePathNameLstReturn, lastSyncTimeStr
 
+	def excludeFile(self, fileName, excludedFileTypeLst):
+		pass
+			
+	def createPatternsFromWildchardLst(self, excludedFileTypeLst):
+		pass	
+	
 if __name__ == "__main__":
 	if os.name == 'posix':
 		configFilePathName = '/sdcard/transfiles.ini'
@@ -106,7 +117,7 @@ if __name__ == "__main__":
 	f.write(str(fl.allReadmeFileNameLst))
 	f.close()
 	
-	allFileNameLst, allFilePathNameLst = fl.getModifiedFileLst('transFileCloudTestProject')
+	allFileNameLst, allFilePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst('transFileCloudTestProject')
 	print(allFileNameLst)
 	print(allFilePathNameLst)
 
@@ -118,3 +129,4 @@ if __name__ == "__main__":
 	for fpn in allFilePathNameLst:
 		print(fpn)
 	
+	print(lastSyncTimeStr)

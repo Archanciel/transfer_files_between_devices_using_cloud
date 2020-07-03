@@ -25,9 +25,13 @@ class TestConfigManager(unittest.TestCase):
 		else:
 			self.assertEqual('D:\\Users\\Jean-Pierre\\Downloads', cm.downloadPath)
 
+	def testConstructorConfigFileNotExist(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles_notExist.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles_notExist.ini'
+		
 
-		self.assertIsNotNone(cm.dropboxApiKey)
-		self.assertEqual('/test_dropbox', cm.dropboxBaseDir)
 
 	def testGetProjectLocalDir(self):
 		if os.name == 'posix':
@@ -96,6 +100,34 @@ class TestConfigManager(unittest.TestCase):
 			self.assertEqual(['*.ini', '*.tmp'], cm.getExcludedFileTypeLst(projectName))
 		else:
 			self.assertEqual(['*.ini', '*.tmp'], cm.getExcludedFileTypeLst(projectName))
+			
+	def testGetExcludedDirLst_noExcludeSection(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles_noExclude.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles_noExclude.ini'
+		
+		cm = ConfigManager(configFilePathName)		
+		projectName = 'transFileCloudProject'
+		
+		if os.name == 'posix':
+			self.assertEqual([], cm.getExcludedDirLst(projectName))
+		else:
+			self.assertEqual([], cm.getExcludedDirLst(projectName))
+			
+	def testGetExcludedFileTypeLst_noExcludeSection(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles_noExclude.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles_noExclude.ini'
+		
+		cm = ConfigManager(configFilePathName)		
+		projectName = 'transFileCloudProject'
+		
+		if os.name == 'posix':
+			self.assertEqual([], cm.getExcludedFileTypeLst(projectName))
+		else:
+			self.assertEqual([], cm.getExcludedFileTypeLst(projectName))
 					
 if __name__ == '__main__':
 	unittest.main()

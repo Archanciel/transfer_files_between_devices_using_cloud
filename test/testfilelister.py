@@ -106,5 +106,9 @@ class TestFileLister(unittest.TestCase):
 		invalidProjectName = 'transFileCloudInvalidProject'
 		self.assertRaises(NotADirectoryError, fl.getModifiedFileLst, invalidProjectName)
 
+		def testCreatePatternsFromWildchardLst(self):
+			wildchardLst = ['test*.py', '/excldir/subdir/*.py', 'd:\\excldir\\subdir\\*.py', '/excldir/subdir/*.*', 'd:\\excldir\\subdir\\*.*']
+			expectedPatternLst = ['test.*\.py\Z', '/excldir/subdir/.*\.py\Z', 'd:\\excldir\\subdir\\.*\.py\Z', '/excldir/subdir/.*\..*\Z', 'd:\\excldir\\subdir\\.*\..*\Z', ]
+			
 if __name__ == '__main__':
 	unittest.main()

@@ -64,7 +64,12 @@ class ConfigManager:
 		return excludedDirLst
 
 	def getExcludedFileTypeLst(self, projectName):
-		excludedFileTypesSection = self.projects[projectName]['exclude']['fileTypes']
+		try:
+			excludedFileTypesSection = self.projects[projectName]['exclude']['fileTypes']
+		except KeyError:
+			# the case if no exclude section is defined for this project in the config file
+			return []
+			
 		excludedFileTypeLst = []
 		
 		for fileType in excludedFileTypesSection:
