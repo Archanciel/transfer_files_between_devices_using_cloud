@@ -74,8 +74,8 @@ class TransferFiles:
 		"""
 		localProjectDirShort = DIR_SEP.join(self.localProjectDir.split(DIR_SEP)[-3:])
 
-		questionStr = 'vvv Those files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}.\nIf you want to upload new modified files instead, type N'.format(
-			localProjectDirShort)
+		questionStr = 'vvv {} files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}.\nIf you want to upload new modified files instead, type N'.format(
+			len(cloudFileLst), localProjectDirShort)
 		doDownload, _ = self.requester.getUserConfirmation(questionStr, cloudFileLst)
 
 		if doDownload:
@@ -104,7 +104,8 @@ class TransferFiles:
 		if updatedFileNameLst == []:
 			print('\nNo files modified locally since last sync time {}'.format(lastSyncTimeStr))
 		else:
-			questionStr = '^^^ Those files were modified locally after {}\nand will be uploaded to the cloud.\nChoose P to display the path and U to update the last sync time'.format(lastSyncTimeStr)
+			questionStr = '^^^ {} files were modified locally after {}\nand will be uploaded to the cloud.\nChoose P to display the path and U to update the last sync time'.format(
+				len(updatedFileNameLst), lastSyncTimeStr)
 			doUpload, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
 
 			if doUpload: 
