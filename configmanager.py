@@ -39,8 +39,26 @@ class ConfigManager:
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' section not defined in ' + configFilePathName)
 
-	def removeExcessiveBackslash(self, str):
-		return str.replace('\\\\', '\\')
+	def removeExcessiveBackslash(self, path):
+		"""
+		In the config ini files on Windows, the paths are specified using double
+		backslash dir separators. This is done to avoid a problem which would
+		appear in case a sub dir name starts withsminus t, like in c:\temp. In 
+		such a case, \t is interpreted like a TAB character, which results to
+		c:	temp !! So, c:\temp is specified as c.\\temp in the ini file.
+		
+		But when configobj reads in a path specified with double backslash,
+		it return four backslashes as dir separators. o:\\temp is returned 
+		as c:\\\\temp. This can cause problems, like in FileLister in which
+		os.walk() returns double backslashes for dir separators.
+		
+		This method removes the excessive backslashes when needed.
+		
+		@param path path with maybe \\\\ as dir separators
+		
+		@return path with \\ dir separators
+		"""
+		return path.replace('\\\\', '\\')
 
 	def getProjectLocalDir(self, projectName):
 		return self.removeExcessiveBackslash(self.projects[projectName][CONFIG_KEY_PROJECT_PATH])
