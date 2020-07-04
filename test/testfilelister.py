@@ -117,7 +117,7 @@ class TestFileLister(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm, fromDir)
 
-		wildchardLst = ['test*.py', '/excldir/subdir/*.py', 'd:\excldir\subdir\*.py', '/excldir/subdir/*.*', 'd:\excldir\subdir\*.*']
+		wildchardLst = ['test*.py', '/excldir/subdir/*.py', 'd:\\excldir\\subdir\\*.py', '/excldir/subdir/*.*', 'd:\\excldir\\subdir\\*.*']
 		expectedRegexpLst = ['test.*\.py\Z', '/excldir/subdir/.*\.py\Z', 'd:\\\\excldir\\\\subdir\\\\.*\.py\Z', '/excldir/subdir/.*\..*\Z', 'd:\\\\excldir\\\\subdir\\\\.*\..*\Z', ]
 
 		self.assertEqual(expectedRegexpLst, fl.createRegexpLstFromWildchardExprLst(wildchardLst))
