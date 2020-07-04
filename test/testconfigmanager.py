@@ -97,11 +97,11 @@ class TestConfigManager(unittest.TestCase):
 		projectName = 'transFileCloudProject'
 		
 		if os.name == 'posix':
-			self.assertEqual(['*.ini', '*.tmp'], cm.getExcludedFileTypeLst(projectName))
+			self.assertEqual(['*.ini', '*.tmp'], cm.getExcludedFileTypeWildchardLst(projectName))
 		else:
-			self.assertEqual(['*.ini', '*.tmp'], cm.getExcludedFileTypeLst(projectName))
+			self.assertEqual(['*.ini', '*.tmp'], cm.getExcludedFileTypeWildchardLst(projectName))
 			
-	def testGetExcludedDirLst_noExcludeSection(self):
+	def testGetExcludedFileTypeWildchardLst_noExcludeSection(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles_noExclude.ini'
 		else:
@@ -110,12 +110,9 @@ class TestConfigManager(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)		
 		projectName = 'transFileCloudProject'
 		
-		if os.name == 'posix':
-			self.assertEqual([], cm.getExcludedDirLst(projectName))
-		else:
-			self.assertEqual([], cm.getExcludedDirLst(projectName))
+		self.assertEqual([], cm.getExcludedDirLst(projectName))
 			
-	def testGetExcludedFileTypeLst_noExcludeSection(self):
+	def testGetExcludedFileTypeWildchardLst_noExcludeSection(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles_noExclude.ini'
 		else:
@@ -124,10 +121,7 @@ class TestConfigManager(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)		
 		projectName = 'transFileCloudProject'
 		
-		if os.name == 'posix':
-			self.assertEqual([], cm.getExcludedFileTypeLst(projectName))
-		else:
-			self.assertEqual([], cm.getExcludedFileTypeLst(projectName))
+		self.assertEqual([], cm.getExcludedFileTypeWildchardLst(projectName))
 					
 if __name__ == '__main__':
 	unittest.main()

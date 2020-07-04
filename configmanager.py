@@ -20,7 +20,7 @@ class ConfigManager:
 			raise FileNotFoundError(configFilePathName + " does not exist !")
 
 		try:
-			self.downloadPath = self.config[CONFIG_SECTION_GENERAL][CONFIG_KEY_DOWNLOAD_PATH]
+			self.downloadPath = self.removeExcessiveBackslash(self.config[CONFIG_SECTION_GENERAL][CONFIG_KEY_DOWNLOAD_PATH])
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' parameter not defined in ' + configFilePathName)
 
@@ -39,8 +39,11 @@ class ConfigManager:
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' section not defined in ' + configFilePathName)
 
+	def removeExcessiveBackslash(self, str):
+		return str.replace('\\\\', '\\')
+
 	def getProjectLocalDir(self, projectName):
-		return self.projects[projectName][CONFIG_KEY_PROJECT_PATH]
+		return self.removeExcessiveBackslash(self.projects[projectName][CONFIG_KEY_PROJECT_PATH])
 
 	def getLastSynchTime(self, projectName):
 		return self.projects[projectName][CONFIG_KEY_PROJECT_LAST_SYNC_TIME]
@@ -59,23 +62,23 @@ class ConfigManager:
 		excludedDirLst = []
 		
 		for dirSection in excludedDirSectionLst:
-			excludedDirLst.append(self.getProjectLocalDir(projectName) + excludedDirSectionLst[dirSection]['path'])
+			excludedDirLst.append(self.getProjectLocalDir(projectName) + self.removeExcessiveBackslash(excludedDirSectionLst[dirSection]['path']))
 			
 		return excludedDirLst
 
-	def getExcludedFileTypeLst(self, projectName):
+	def getExcludedFileTypeWildchardLst(self, projectName):
 		try:
 			excludedFileTypesSection = self.projects[projectName]['exclude']['fileTypes']
 		except KeyError:
 			# the case if no exclude section is defined for this project in the config file
 			return []
 			
-		excludedFileTypeLst = []
+		excludedFileTypeWildchardLst = []
 		
-		for fileType in excludedFileTypesSection:
-			excludedFileTypeLst.append(excludedFileTypesSection[fileType])
+		for wildchardFileType in excludedFileTypesSection:
+			excludedFileTypeWildchardLst.append(excludedFileTypesSection[wildchardFileType])
 			
-		return excludedFileTypeLst
+		return excludedFileTypeWildchardLst
 		
 if __name__ == '__main__':
 	if os.name == 'posix':

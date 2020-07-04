@@ -106,9 +106,21 @@ class TestFileLister(unittest.TestCase):
 		invalidProjectName = 'transFileCloudInvalidProject'
 		self.assertRaises(NotADirectoryError, fl.getModifiedFileLst, invalidProjectName)
 
-		def testCreatePatternsFromWildchardLst(self):
-			wildchardLst = ['test*.py', '/excldir/subdir/*.py', 'd:\\excldir\\subdir\\*.py', '/excldir/subdir/*.*', 'd:\\excldir\\subdir\\*.*']
-			expectedPatternLst = ['test.*\.py\Z', '/excldir/subdir/.*\.py\Z', 'd:\\excldir\\subdir\\.*\.py\Z', '/excldir/subdir/.*\..*\Z', 'd:\\excldir\\subdir\\.*\..*\Z', ]
-			
+	def testCreateRegexpLstFromWildchardExprLst(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/fromdir'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
+
+		cm = ConfigManager(configFilePathName)
+		fl = FileLister(cm, fromDir)
+
+		wildchardLst = ['test*.py', '/excldir/subdir/*.py', 'd:\excldir\subdir\*.py', '/excldir/subdir/*.*', 'd:\excldir\subdir\*.*']
+		expectedRegexpLst = ['test.*\.py\Z', '/excldir/subdir/.*\.py\Z', 'd:\\\\excldir\\\\subdir\\\\.*\.py\Z', '/excldir/subdir/.*\..*\Z', 'd:\\\\excldir\\\\subdir\\\\.*\..*\Z', ]
+
+		self.assertEqual(expectedRegexpLst, fl.createRegexpLstFromWildchardExprLst(wildchardLst))
+					
 if __name__ == '__main__':
 	unittest.main()

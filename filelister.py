@@ -46,15 +46,15 @@ class FileLister:
 			raise NotADirectoryError(projectDir)
 
 		excludedDirLst = self.configManager.getExcludedDirLst(projectName)
-		excludedFileTypeLst = self.configManager.getExcludedFileTypeLst(projectName)
-		excludedFilePatternLst = self.createPatternsFromWildchardLst(excludedFileTypeLst)
+		excludedFileTypeWildchardLst = self.configManager.getExcludedFileTypeWildchardLst(projectName)
+		excludedFileTypePatternLst = self.createRegexpLstFromWildchardExprLst(excludedFileTypeWildchardLst)
 
 		for root, dirs, files in os.walk(projectDir):
 			if root in excludedDirLst:
 				continue
 
 			for fileName in files:
-				if self.excludeFile(fileName, excludedFilePatternLst):
+				if self.excludeFile(fileName, excludedFileTypePatternLst):
 					continue
 					
 				pathfileName = os.path.join(root, fileName)
@@ -87,11 +87,29 @@ class FileLister:
 		
 		return allFileNameLstReturn, allFilePathNameLstReturn, lastSyncTimeStr
 
-	def excludeFile(self, fileName, excludedFileTypeLst):
+	def excludeFile(self, fileName, excludedFileTypeWildchardLst):
 		pass
 			
-	def createPatternsFromWildchardLst(self, excludedFileTypeLst):
-		pass	
+	def createRegexpLstFromWildchardExprLst(self, excludedFileTypeWildchardLst):
+		expectedRegexpLst = []
+		
+		for fileTypeWildchardExpr in excludedFileTypeWildchardLst:
+			expectedRegexpLst.append(self.convertWildcardExprStrToRegexpStr(fileTypeWildchardExpr))
+			
+		return expectedRegexpLst
+			
+	def convertWildcardExprStrToRegexpStr(self, wildcardExpression):
+		regexpStr = wildcardExpression.replace("\\", "\\\\")
+		#regexpStr = wildcardExpression.replace("\", "\\")
+		regexpStr = regexpStr.replace(".", "\.")
+		regexpStr = regexpStr.replace("*", ".*")
+		regexpStr += "\Z"
+	
+		# no effect !
+		# regexpStr = "\A" + regexpStr
+	
+		return regexpStr
+			
 	
 if __name__ == "__main__":
 	if os.name == 'posix':

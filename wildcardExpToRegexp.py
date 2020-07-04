@@ -18,9 +18,12 @@ def tryWCExp(wildcardExp):
 	pattern = re.compile(patternStr)
 	l = ['testclass.py', 'testobj.pyc', '/excldir/subdir/*.*', '/excldir/subdir/testConvert.py', '/excldir/subdir/testConvert.pyc', 'd:\\excldir\\subdir\\test_Co21.py', 'd:\\excldir\\subdir\\test_Co21.pyc', 'd:\excldir\subdir\Test_Co22.py', 'd:\excldir\subdir\Test_Co22.pyc', 'd:\excldir\test_ALWAYS_USE_DOUBLE_BACKSLASH.py']
 
+	print('\ntest strings:\n')
+	
 	for x in l:
 		print(x)
 
+	print('\nmatched string list:')
 	print([x for x in l if pattern.match(x)])  
 	print('\n')
 	
@@ -30,10 +33,10 @@ tryWCExp(wildcardExp)
 wildcardExp = "/excldir/subdir/*.py"
 tryWCExp(wildcardExp)
 
-wildcardExp = "d:\\excldir\\subdir\\*.py"
+wildcardExp = "/excldir/subdir/*.*"
 tryWCExp(wildcardExp)
 
-wildcardExp = "/excldir/subdir/*.*"
+wildcardExp = "d:\\excldir\\subdir\\*.py"
 tryWCExp(wildcardExp)
 
 wildcardExp = "d:\\excldir\\subdir\\*.*"
