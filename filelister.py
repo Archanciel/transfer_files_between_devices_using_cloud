@@ -39,8 +39,6 @@ class FileLister:
 		projectDir = self.configManager.getProjectLocalDir(projectName)
 		lastSyncTimeStr = self.configManager.getLastSynchTime(projectName)
 		lastSyncTime = datetime.datetime.strptime(lastSyncTimeStr, DATE_TIME_FORMAT)
-		allFileNameLst = []
-		allFilePathNameLst = []
 
 		if not os.path.isdir(projectDir):
 			raise NotADirectoryError(projectDir)
@@ -49,19 +47,8 @@ class FileLister:
 		excludedFileTypeWildchardLst = self.configManager.getExcludedFileTypeWildchardLst(projectName)
 		excludedFileTypePatternLst = self.createRegexpPatternLstFromWildchardExprLst(excludedFileTypeWildchardLst)
 
-		for root, dirs, files in os.walk(projectDir):
-			if root in excludedDirLst:
-				continue
-
-			for fileName in files:
-#				if self.excludeFile(fileName, excludedFileTypePatternLst):
-#					continue
-					
-				pathfileName = os.path.join(root, fileName)
-				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
-				if (file_mtime > lastSyncTime):
-					allFileNameLst.append(fileName)
-					allFilePathNameLst.append(pathfileName)
+		allFileNameLst, allFilePathNameLst = self.getAllModifiedFileLst(projectDir, lastSyncTime, excludedDirLst,
+																		excludedFileTypePatternLst)
 
 		pattern = re.compile('\w*\.[py]*$')
 		
@@ -86,6 +73,26 @@ class FileLister:
 		allFilePathNameLstReturn = allPythonFilePathNameLst + allImageFilePathNameLst + allDocFilePathNameLst + allReadmeFilePathNameLst
 		
 		return allFileNameLstReturn, allFilePathNameLstReturn, lastSyncTimeStr
+
+	def getAllModifiedFileLst(self, projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst):
+		allFileNameLst = []
+		allFilePathNameLst = []
+
+		for root, dirs, files in os.walk(projectDir):
+			if root in excludedDirLst:
+				continue
+
+			for fileName in files:
+				if self.excludeFile(fileName, excludedFileTypePatternLst):
+					continue
+
+				pathfileName = os.path.join(root, fileName)
+				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
+				if (file_mtime > lastSyncTime):
+					allFileNameLst.append(fileName)
+					allFilePathNameLst.append(pathfileName)
+
+		return allFileNameLst, allFilePathNameLst
 
 	def excludeFile(self, fileName, excludedFileTypePatternLst):
 		for pattern in excludedFileTypePatternLst:

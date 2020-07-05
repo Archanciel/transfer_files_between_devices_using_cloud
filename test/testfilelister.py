@@ -160,6 +160,10 @@ class TestFileLister(unittest.TestCase):
 		self.assertTrue(fl.excludeFile('helpMe.txt', excludedPatternLst))
 		self.assertTrue(fl.excludeFile('modified_no_type', excludedPatternLst))
 		self.assertTrue(fl.excludeFile('transfiles.pyc', excludedPatternLst))	
-						
+
+	def testGetAllModifiedFileLst(self):
+		expectedAllFileNameLst = sorted(['constants_2.py', 'filelister_2.py', 'filemover_2.py', 'README_2.rd', 'testfilelister_2.py', 'testfilemover_2.py'])
+		expectedAllFilePathNameLst = sorted(['D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\constants_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filemover_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\README_2.rd', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilemover_2.py'])
+
 if __name__ == '__main__':
 	unittest.main()
