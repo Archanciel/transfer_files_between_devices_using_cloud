@@ -47,15 +47,15 @@ class FileLister:
 
 		excludedDirLst = self.configManager.getExcludedDirLst(projectName)
 		excludedFileTypeWildchardLst = self.configManager.getExcludedFileTypeWildchardLst(projectName)
-		excludedFileTypePatternLst = self.createRegexpLstFromWildchardExprLst(excludedFileTypeWildchardLst)
+		excludedFileTypePatternLst = self.createRegexpPatternLstFromWildchardExprLst(excludedFileTypeWildchardLst)
 
 		for root, dirs, files in os.walk(projectDir):
 			if root in excludedDirLst:
 				continue
 
 			for fileName in files:
-				if self.excludeFile(fileName, excludedFileTypePatternLst):
-					continue
+#				if self.excludeFile(fileName, excludedFileTypePatternLst):
+#					continue
 					
 				pathfileName = os.path.join(root, fileName)
 				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
@@ -87,16 +87,21 @@ class FileLister:
 		
 		return allFileNameLstReturn, allFilePathNameLstReturn, lastSyncTimeStr
 
-	def excludeFile(self, fileName, excludedFileTypeWildchardLst):
-		pass
-			
-	def createRegexpLstFromWildchardExprLst(self, excludedFileTypeWildchardLst):
-		expectedRegexpLst = []
+	def excludeFile(self, fileName, excludedFileTypePatternLst):
+		for pattern in excludedFileTypePatternLst:
+			if pattern.match(fileName):
+				return True
+				
+		return False		
+	
+	def createRegexpPatternLstFromWildchardExprLst(self, excludedFileTypeWildchardLst):
+		regexpPatternLst = []
 		
 		for fileTypeWildchardExpr in excludedFileTypeWildchardLst:
-			expectedRegexpLst.append(self.convertWildcardExprStrToRegexpStr(fileTypeWildchardExpr))
+			regexpStr = self.convertWildcardExprStrToRegexpStr(fileTypeWildchardExpr)
+			regexpPatternLst.append(re.compile(regexpStr))
 			
-		return expectedRegexpLst
+		return regexpPatternLst
 			
 	def convertWildcardExprStrToRegexpStr(self, wildcardExpression):
 		regexpStr = wildcardExpression.replace("\\", "\\\\")
