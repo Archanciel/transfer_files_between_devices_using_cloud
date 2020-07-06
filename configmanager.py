@@ -1,16 +1,5 @@
-import os
+import os, pickle
 from configobj import ConfigObj
-
-CONFIG_SECTION_GENERAL = 'General'
-CONFIG_SECTION_PROJECTS = 'Projects'
-
-CONFIG_KEY_DOWNLOAD_PATH = 'downnloadPath'
-CONFIG_KEY_DROPBOX_API_KEY = 'dropboxApiKey'
-CONFIG_KEY_DROPBOX_BASE_DIR = 'dropboxBaseDir'
-
-#CONFIG_KEY_TRANS_FILE_CLOUD_TEST_PROJECT = 'transFileCloudTestProjectPath'
-CONFIG_KEY_PROJECT_PATH = 'projectPath'
-CONFIG_KEY_PROJECT_LAST_SYNC_TIME = 'lastSyncTime'
 
 class ConfigManager:
 	def __init__(self, configFilePathName):
@@ -20,22 +9,27 @@ class ConfigManager:
 			raise FileNotFoundError(configFilePathName + " does not exist !")
 
 		try:
-			self.downloadPath = self.removeExcessiveBackslash(self.config[CONFIG_SECTION_GENERAL][CONFIG_KEY_DOWNLOAD_PATH])
+			self.downloadPath = self.removeExcessiveBackslash(self.config['General']['downloadPath'])
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' parameter not defined in ' + configFilePathName)
 
 		try:
-			self.dropboxApiKey = self.config[CONFIG_SECTION_GENERAL][CONFIG_KEY_DROPBOX_API_KEY]
+			dropboxApiKeyFilePath = self.config['General']['dropboxApiKeyFilePath']
+			
+			with open(dropboxApiKeyFilePath, 'rb') as handle:
+				dic = pickle.loads(handle.read())
+				self.dropboxApiKey = dic['dropboxApiKey']
+				handle.close()
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' parameter not defined in ' + configFilePathName)
 
 		try:
-			self.dropboxBaseDir = self.config[CONFIG_SECTION_GENERAL][CONFIG_KEY_DROPBOX_BASE_DIR]
+			self.dropboxBaseDir = self.config['General']['dropboxBaseDir']
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' parameter not defined in ' + configFilePathName)
 
 		try:
-			self.projects = self.config[CONFIG_SECTION_PROJECTS]
+			self.projects = self.config['Projects']
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' section not defined in ' + configFilePathName)
 
@@ -61,18 +55,18 @@ class ConfigManager:
 		return path.replace('\\\\', '\\')
 
 	def getProjectLocalDir(self, projectName):
-		return self.removeExcessiveBackslash(self.projects[projectName][CONFIG_KEY_PROJECT_PATH])
+		return self.removeExcessiveBackslash(self.projects[projectName]['projectPath'])
 
 	def getLastSynchTime(self, projectName):
-		return self.projects[projectName][CONFIG_KEY_PROJECT_LAST_SYNC_TIME]
+		return self.projects[projectName]['lastSyncTime']
 
 	def updateLastSynchTime(self, projectName, lastSynchTimeStr):
-		self.projects[projectName][CONFIG_KEY_PROJECT_LAST_SYNC_TIME] = lastSynchTimeStr
+		self.projects[projectName]['lastSyncTime'] = lastSynchTimeStr
 		self.config.write()
 
 	def getExcludedDirLst(self, projectName):
 		try:
-			excludedDirSectionLst = self.projects[projectName]['exclude']['directories']
+			excludedDirSectionLst = self.projects[projectName]['upload']['exclude']['directories']
 		except KeyError:
 			# the case if no exclude section is defined for this project in the config file
 			return []
@@ -86,7 +80,7 @@ class ConfigManager:
 
 	def getExcludedFileTypeWildchardLst(self, projectName):
 		try:
-			excludedFileTypesSection = self.projects[projectName]['exclude']['fileTypes']
+			excludedFileTypesSection = self.projects[projectName]['upload']['exclude']['filePatterns']
 		except KeyError:
 			# the case if no exclude section is defined for this project in the config file
 			return []
@@ -105,19 +99,6 @@ if __name__ == '__main__':
 		configFilePathName = 'c:\\temp\\transfiles.ini'
 
 	cm = ConfigManager(configFilePathName)
-#	print("dropbox base dir ", cm.dropboxBaseDir)
-#	
-#	print("\nKeys in General section")
-#	
-#	for key in cm.config['General']: 
-#		print(key)
-#		
-#	print("\nKeys in Project section")
-#	
-#	for key in cm.projects: 
-#		print(key)
-#		print(cm.projects[key][CONFIG_KEY_PROJECT_PATH])
-#		print(cm.projects[key][CONFIG_KEY_PROJECT_LAST_SYNC_TIME])
 
 	if os.name == 'posix':
 		configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
@@ -154,6 +135,6 @@ if __name__ == '__main__':
 
 #	cm.projects[projectName].walk(gather_subsection)
 
-	print(projectSections['exclude']['directories'])
+	print(projectSections['upload']['exclude']['directories'])
 	print(cm.getExcludedDirLst(projectName))
-	print(cm.getExcludedFileTypeLst(projectName))	
+	print(cm.getExcludedFileTypeWildchardLst(projectName))	
