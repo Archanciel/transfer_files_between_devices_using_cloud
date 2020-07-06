@@ -161,7 +161,7 @@ class TestFileLister(unittest.TestCase):
 		self.assertTrue(fl.excludeFile('modified_no_type', excludedPatternLst))
 		self.assertTrue(fl.excludeFile('transfiles.pyc', excludedPatternLst))	
 
-	def testGetAllModifiedFileLst(self):
+	def testGetModifiedAndNotExcludedFileLst(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/fromdir'
@@ -187,7 +187,7 @@ class TestFileLister(unittest.TestCase):
 		excludedFileTypePatternLst = fl.createRegexpPatternLstFromWildchardExprLst(excludedFileTypeWildchardLst)			
 		lastSyncTime = datetime.datetime.strptime('2020-06-15 08:45:23', DATE_TIME_FORMAT)
 
-		actualAllFileNameLst, actualAllFilePathNameLst = fl.getAllModifiedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
+		actualAllFileNameLst, actualAllFilePathNameLst = fl.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
 		self.assertEqual(sorted(expectedAllFileNameLst), sorted(actualAllFileNameLst))
 		self.assertEqual(sorted(expectedAllFilePathNameLst), sorted(actualAllFilePathNameLst))
 		

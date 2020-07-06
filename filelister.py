@@ -47,17 +47,16 @@ class FileLister:
 		excludedFileTypeWildchardLst = self.configManager.getExcludedFileTypeWildchardLst(projectName)
 		excludedFileTypePatternLst = self.createRegexpPatternLstFromWildchardExprLst(excludedFileTypeWildchardLst)
 
-		allFileNameLst, allFilePathNameLst = self.getAllModifiedFileLst(projectDir, lastSyncTime, excludedDirLst,
-																		excludedFileTypePatternLst)
+		fileNameLst, filePathNameLst = self.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
 
 		pattern = re.compile('\w*\.[py]*$')
 		
-		allPythonFileNameLst = [ x for x in allFileNameLst if pattern.match(x) ]
-		allImageFileNameLst = list(filter(lambda x: '.jpg' in x, allFileNameLst))
-		allDocFileNameLst = list(filter(lambda x: '.docx' in x, allFileNameLst))
-		allReadmeFileNameLst = list(filter(lambda x: '.rd' in x, allFileNameLst))	
+		allPythonFileNameLst = [ x for x in fileNameLst if pattern.match(x) ]
+		allImageFileNameLst = list(filter(lambda x: '.jpg' in x, fileNameLst))
+		allDocFileNameLst = list(filter(lambda x: '.docx' in x, fileNameLst))
+		allReadmeFileNameLst = list(filter(lambda x: '.rd' in x, fileNameLst))	
 
-		allFileNameLstReturn = allPythonFileNameLst + allImageFileNameLst + allDocFileNameLst + allReadmeFileNameLst				
+		fileNameLstReturn = allPythonFileNameLst + allImageFileNameLst + allDocFileNameLst + allReadmeFileNameLst				
 					
 		if os.name == 'posix':
 			pattern = re.compile('[\w:\.{}]*\.[py]*$'.format(DIR_SEP))
@@ -65,37 +64,47 @@ class FileLister:
 			# since the Windows dir sep in strings are \\, the dir sep in the pattern must be \\\\ !
 			pattern = re.compile('[\w:\.{}]*\.[py]*$'.format(DIR_SEP + DIR_SEP))
 
-		allPythonFilePathNameLst = [ x for x in allFilePathNameLst if pattern.match(x) ]
-		allImageFilePathNameLst = list(filter(lambda x: '.jpg' in x, allFilePathNameLst))
-		allDocFilePathNameLst = list(filter(lambda x: '.docx' in x, allFilePathNameLst))
-		allReadmeFilePathNameLst = list(filter(lambda x: '.rd' in x, allFilePathNameLst))	
+		allPythonFilePathNameLst = [ x for x in filePathNameLst if pattern.match(x) ]
+		allImageFilePathNameLst = list(filter(lambda x: '.jpg' in x, filePathNameLst))
+		allDocFilePathNameLst = list(filter(lambda x: '.docx' in x, filePathNameLst))
+		allReadmeFilePathNameLst = list(filter(lambda x: '.rd' in x, filePathNameLst))	
 
-		allFilePathNameLstReturn = allPythonFilePathNameLst + allImageFilePathNameLst + allDocFilePathNameLst + allReadmeFilePathNameLst
+		filePathNameLstReturn = allPythonFilePathNameLst + allImageFilePathNameLst + allDocFilePathNameLst + allReadmeFilePathNameLst
 		
-		return allFileNameLstReturn, allFilePathNameLstReturn, lastSyncTimeStr
+		return fileNameLstReturn, filePathNameLstReturn, lastSyncTimeStr
 
-	def getAllModifiedFileLst(self, projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst):
-		allFileNameLst = []
-		allFilePathNameLst = []
+	def getModifiedAndNotExcludedFileLst(self, projectDir, lastSyncTime, excludedDirLst, excludedFileNamePatternLst):
+		"""
+		Returns two lists, one containing file names only, the other containing
+		corresponding file path names. The returned files satisfy three
+		constraints:
+		
+			1/ they are not in any of the passed excluded dir list
+			2/ their name does not match the passed excluded file name pattern
+			   list
+			3/ their modification time is after the passed last synch time
+		"""
+		fileNameLst = []
+		filePathNameLst = []
 
 		for root, dirs, files in os.walk(projectDir):
 			if root in excludedDirLst:
 				continue
 
 			for fileName in files:
-				if self.excludeFile(fileName, excludedFileTypePatternLst):
+				if self.excludeFile(fileName, excludedFileNamePatternLst):
 					continue
 
 				pathfileName = os.path.join(root, fileName)
 				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
 				if (file_mtime > lastSyncTime):
-					allFileNameLst.append(fileName)
-					allFilePathNameLst.append(pathfileName)
+					fileNameLst.append(fileName)
+					filePathNameLst.append(pathfileName)
 
-		return allFileNameLst, allFilePathNameLst
+		return fileNameLst, filePathNameLst
 
-	def excludeFile(self, fileName, excludedFileTypePatternLst):
-		for pattern in excludedFileTypePatternLst:
+	def excludeFile(self, fileName, excludedFileNamePatternLst):
+		for pattern in excludedFileNamePatternLst:
 			if pattern.match(fileName):
 				return True
 				
@@ -147,16 +156,16 @@ if __name__ == "__main__":
 	f.write(str(fl.allReadmeFileNameLst))
 	f.close()
 	
-	allFileNameLst, allFilePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst('transFileCloudTestProject')
-	print(allFileNameLst)
-	print(allFilePathNameLst)
+	fileNameLst, filePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst('transFileCloudTestProject')
+	print(fileNameLst)
+	print(filePathNameLst)
 
-	for fn in allFileNameLst:
+	for fn in fileNameLst:
 		print(fn)
 
 	print()
 
-	for fpn in allFilePathNameLst:
+	for fpn in filePathNameLst:
 		print(fpn)
 	
 	print(lastSyncTimeStr)
