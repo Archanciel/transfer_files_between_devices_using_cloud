@@ -21,18 +21,18 @@ class FileLister:
 		self.configManager = configManager
 		
 		# creating the different file type lists
-		allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(fromDir + '/*.*')]
+		# allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(fromDir + '/*.*')]
+		#
+		# pattern = re.compile('\w*\.[py]*$')
+		#
+		# self.allPythonFileNameLst = [x for x in allFileNameLst if pattern.match(x)]
+		# self.allTestPythonFileNameLst = list(filter(lambda x: 'test' in x, self.allPythonFileNameLst))
+		# self.allImageFileNameLst = list(filter(lambda x: '.jpg' in x, allFileNameLst))
+		# self.allDocFileNameLst = list(filter(lambda x: '.docx' in x, allFileNameLst))
+		# self.allReadmeFileNameLst = list(filter(lambda x: '.rd' in x, allFileNameLst))
 
-		pattern = re.compile('\w*\.[py]*$')
-		
-		self.allPythonFileNameLst = [x for x in allFileNameLst if pattern.match(x)]
-		self.allTestPythonFileNameLst = list(filter(lambda x: 'test' in x, self.allPythonFileNameLst))
-		self.allImageFileNameLst = list(filter(lambda x: '.jpg' in x, allFileNameLst))
-		self.allDocFileNameLst = list(filter(lambda x: '.docx' in x, allFileNameLst))
-		self.allReadmeFileNameLst = list(filter(lambda x: '.rd' in x, allFileNameLst))
-
-	def removeTestFilesFromPythonFilesLst(self):
-		self.allPythonFileNameLst = [item for item in self.allPythonFileNameLst if item not in self.allTestPythonFileNameLst]
+	# def removeTestFilesFromPythonFilesLst(self):
+	# 	self.allPythonFileNameLst = [item for item in self.allPythonFileNameLst if item not in self.allTestPythonFileNameLst]
 
 	def getModifiedFileLst(self, projectName):
 		"""
@@ -112,7 +112,7 @@ class FileLister:
 	def isRootAsDirOrSubDirInExcludedDirLst(self, root, excludedDirLst):
 		if root in excludedDirLst:
 			return True
-
+			
 		for dir in excludedDirLst:
 			parentDir = Path(dir)
 			childDir = Path(root)
@@ -161,29 +161,50 @@ if __name__ == "__main__":
 	cm = ConfigManager(configFilePathName)
 	fl = FileLister(cm, fromDir)
 	
-	f = open("temp.txt", 'w')
-	f.write('allPythonFileLst ')
-	f.write(str(fl.allPythonFileNameLst))
-	f.write('\r\nallTestPythonFileLst ')
-	f.write(str(fl.allTestPythonFileNameLst))
-	f.write('\r\nallImageFileLst ')
-	f.write(str(fl.allImageFileNameLst))
-	f.write('\r\nallDocFileLst ')
-	f.write(str(fl.allDocFileNameLst))
-	f.write('\r\nallReadmeFileLst ')
-	f.write(str(fl.allReadmeFileNameLst))
-	f.close()
+	if os.name == 'posix':
+		FILE_PATH = '/sdcard/transfiles_debug.txt'
+	else:
+		FILE_PATH = 'c:\\temp\\transfiles_debug.txt'
+		
+	import sys
+	stdout = sys.stdout
+
+	# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
+	try:
+		with open(FILE_PATH, 'w') as outFile:
+			sys.stdout = outFile
+			fl.getModifiedFileLst('transFileCloudProject')
+	except:
+		pass
+
+	outFile.close()
+	sys.stdout = stdout
 	
-	fileNameLst, filePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst('transFileCloudTestProject')
-	print(fileNameLst)
-	print(filePathNameLst)
-
-	for fn in fileNameLst:
-		print(fn)
-
-	print()
-
-	for fpn in filePathNameLst:
-		print(fpn)
 	
-	print(lastSyncTimeStr)
+	
+#	f = open("temp.txt", 'w')
+#	f.write('allPythonFileLst ')
+#	f.write(str(fl.allPythonFileNameLst))
+#	f.write('\r\nallTestPythonFileLst ')
+#	f.write(str(fl.allTestPythonFileNameLst))
+#	f.write('\r\nallImageFileLst ')
+#	f.write(str(fl.allImageFileNameLst))
+#	f.write('\r\nallDocFileLst ')
+#	f.write(str(fl.allDocFileNameLst))
+#	f.write('\r\nallReadmeFileLst ')
+#	f.write(str(fl.allReadmeFileNameLst))
+#	f.close()
+#	
+#	fileNameLst, filePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst('transFileCloudTestProject')
+#	print(fileNameLst)
+#	print(filePathNameLst)
+
+#	for fn in fileNameLst:
+#		print(fn)
+
+#	print()
+
+#	for fpn in filePathNameLst:
+#		print(fpn)
+#	
+#	print(lastSyncTimeStr)
