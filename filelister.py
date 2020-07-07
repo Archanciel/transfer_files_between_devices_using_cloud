@@ -1,8 +1,12 @@
-import os, glob, datetime, re
+import datetime
+import glob
+import re
+from pathlib import Path
 
 from configmanager import *
 from constants import DIR_SEP, DATE_TIME_FORMAT
-	
+
+
 class FileLister:
 	"""
 	This class manages the lists of files which will be moved to specific
@@ -49,29 +53,31 @@ class FileLister:
 
 		fileNameLst, filePathNameLst = self.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
 
-		pattern = re.compile('\w*\.[py]*$')
-		
-		allPythonFileNameLst = [ x for x in fileNameLst if pattern.match(x) ]
-		allImageFileNameLst = list(filter(lambda x: '.jpg' in x, fileNameLst))
-		allDocFileNameLst = list(filter(lambda x: '.docx' in x, fileNameLst))
-		allReadmeFileNameLst = list(filter(lambda x: '.rd' in x, fileNameLst))	
-
-		fileNameLstReturn = allPythonFileNameLst + allImageFileNameLst + allDocFileNameLst + allReadmeFileNameLst				
-					
-		if os.name == 'posix':
-			pattern = re.compile('[\w:\.{}]*\.[py]*$'.format(DIR_SEP))
-		else:
-			# since the Windows dir sep in strings are \\, the dir sep in the pattern must be \\\\ !
-			pattern = re.compile('[\w:\.{}]*\.[py]*$'.format(DIR_SEP + DIR_SEP))
-
-		allPythonFilePathNameLst = [ x for x in filePathNameLst if pattern.match(x) ]
-		allImageFilePathNameLst = list(filter(lambda x: '.jpg' in x, filePathNameLst))
-		allDocFilePathNameLst = list(filter(lambda x: '.docx' in x, filePathNameLst))
-		allReadmeFilePathNameLst = list(filter(lambda x: '.rd' in x, filePathNameLst))	
-
-		filePathNameLstReturn = allPythonFilePathNameLst + allImageFilePathNameLst + allDocFilePathNameLst + allReadmeFilePathNameLst
-		
-		return fileNameLstReturn, filePathNameLstReturn, lastSyncTimeStr
+		return fileNameLst, filePathNameLst,lastSyncTimeStr
+		#
+		# pattern = re.compile('\w*\.[py]*$')
+		#
+		# allPythonFileNameLst = [ x for x in fileNameLst if pattern.match(x) ]
+		# allImageFileNameLst = list(filter(lambda x: '.jpg' in x, fileNameLst))
+		# allDocFileNameLst = list(filter(lambda x: '.docx' in x, fileNameLst))
+		# allReadmeFileNameLst = list(filter(lambda x: '.rd' in x, fileNameLst))
+		#
+		# fileNameLstReturn = allPythonFileNameLst + allImageFileNameLst + allDocFileNameLst + allReadmeFileNameLst
+		#
+		# if os.name == 'posix':
+		# 	pattern = re.compile('[\w:\.{}]*\.[py]*$'.format(DIR_SEP))
+		# else:
+		# 	# since the Windows dir sep in strings are \\, the dir sep in the pattern must be \\\\ !
+		# 	pattern = re.compile('[\w:\.{}]*\.[py]*$'.format(DIR_SEP + DIR_SEP))
+		#
+		# allPythonFilePathNameLst = [ x for x in filePathNameLst if pattern.match(x) ]
+		# allImageFilePathNameLst = list(filter(lambda x: '.jpg' in x, filePathNameLst))
+		# allDocFilePathNameLst = list(filter(lambda x: '.docx' in x, filePathNameLst))
+		# allReadmeFilePathNameLst = list(filter(lambda x: '.rd' in x, filePathNameLst))
+		#
+		# filePathNameLstReturn = allPythonFilePathNameLst + allImageFilePathNameLst + allDocFilePathNameLst + allReadmeFilePathNameLst
+		#
+		# return fileNameLstReturn, filePathNameLstReturn, lastSyncTimeStr
 
 	def getModifiedAndNotExcludedFileLst(self, projectDir, lastSyncTime, excludedDirLst, excludedFileNamePatternLst):
 		"""
@@ -88,7 +94,7 @@ class FileLister:
 		filePathNameLst = []
 
 		for root, dirs, files in os.walk(projectDir):
-			if root in excludedDirLst:
+			if self.isRootAsDirOrSubDirInExcludedDirLst(root, excludedDirLst):
 				continue
 
 			for fileName in files:
@@ -102,6 +108,18 @@ class FileLister:
 					filePathNameLst.append(pathfileName)
 
 		return fileNameLst, filePathNameLst
+
+	def isRootAsDirOrSubDirInExcludedDirLst(self, root, excludedDirLst):
+		if root in excludedDirLst:
+			return True
+
+		for dir in excludedDirLst:
+			parentDir = Path(dir)
+			childDir = Path(root)
+			if parentDir in childDir.parents:
+				return True
+
+		return False
 
 	def excludeFile(self, fileName, excludedFileNamePatternLst):
 		for pattern in excludedFileNamePatternLst:
