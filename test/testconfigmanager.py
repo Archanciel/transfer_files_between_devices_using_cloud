@@ -96,10 +96,7 @@ class TestConfigManager(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)		
 		projectName = 'transFileCloudProject'
 		
-		if os.name == 'posix':
-			self.assertEqual(['*.ini', '*.tmp'], cm.getExcludedFileTypeWildchardLst(projectName))
-		else:
-			self.assertEqual(['*.ini', '*.tmp'], cm.getExcludedFileTypeWildchardLst(projectName))
+		self.assertEqual(['*.pyc', '*.ini', '*.tmp'], cm.getExcludedFileTypeWildchardLst(projectName))
 			
 	def testGetExcludedFileTypeWildchardLst_noExcludeSection(self):
 		if os.name == 'posix':
