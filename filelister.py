@@ -34,11 +34,12 @@ class FileLister:
 	def removeTestFilesFromPythonFilesLst(self):
 		self.allPythonFileNameLst = [item for item in self.allPythonFileNameLst if item not in self.allTestPythonFileNameLst]
 
-	def getFilesByOrderedTypes(self, dir):
+	def getFilesByOrderedTypes(self, projectName, dir):
 		"""
 		@orderedTypeLst 
 		@fileTypeDic
 		"""
+		filePatternDirLst = self.configManager.getFilePatternLocalDestinations(projectName)
 		orderedTypeLst = ['test*.py', '*.py', "*.rd", '*.docx', "*.jpg"]
 		fileTypeDic = {"test*.py": ("/test", ["testfile1.py", "testfile2.py"]),
 					"*.py":("/", ["file1.py", "file2.py"]),
@@ -69,30 +70,6 @@ class FileLister:
 		fileNameLst, filePathNameLst = self.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
 
 		return fileNameLst, filePathNameLst,lastSyncTimeStr
-		#
-		# pattern = re.compile('\w*\.[py]*$')
-		#
-		# allPythonFileNameLst = [ x for x in fileNameLst if pattern.match(x) ]
-		# allImageFileNameLst = list(filter(lambda x: '.jpg' in x, fileNameLst))
-		# allDocFileNameLst = list(filter(lambda x: '.docx' in x, fileNameLst))
-		# allReadmeFileNameLst = list(filter(lambda x: '.rd' in x, fileNameLst))
-		#
-		# fileNameLstReturn = allPythonFileNameLst + allImageFileNameLst + allDocFileNameLst + allReadmeFileNameLst
-		#
-		# if os.name == 'posix':
-		# 	pattern = re.compile('[\w:\.{}]*\.[py]*$'.format(DIR_SEP))
-		# else:
-		# 	# since the Windows dir sep in strings are \\, the dir sep in the pattern must be \\\\ !
-		# 	pattern = re.compile('[\w:\.{}]*\.[py]*$'.format(DIR_SEP + DIR_SEP))
-		#
-		# allPythonFilePathNameLst = [ x for x in filePathNameLst if pattern.match(x) ]
-		# allImageFilePathNameLst = list(filter(lambda x: '.jpg' in x, filePathNameLst))
-		# allDocFilePathNameLst = list(filter(lambda x: '.docx' in x, filePathNameLst))
-		# allReadmeFilePathNameLst = list(filter(lambda x: '.rd' in x, filePathNameLst))
-		#
-		# filePathNameLstReturn = allPythonFilePathNameLst + allImageFilePathNameLst + allDocFilePathNameLst + allReadmeFilePathNameLst
-		#
-		# return fileNameLstReturn, filePathNameLstReturn, lastSyncTimeStr
 
 	def getModifiedAndNotExcludedFileLst(self, projectDir, lastSyncTime, excludedDirLst, excludedFileNamePatternLst):
 		"""

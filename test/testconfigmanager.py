@@ -109,17 +109,20 @@ class TestConfigManager(unittest.TestCase):
 		
 		self.assertEqual([], cm.getExcludedDirLst(projectName))
 			
-	def testGetExcludedFileTypeWildchardLst_noExcludeSection(self):
+	def testGetFilePatternLocalDestinations(self):
 		if os.name == 'posix':
-			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles_noExclude.ini'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
-			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles_noExclude.ini'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 		
 		cm = ConfigManager(configFilePathName)		
-		projectName = 'transFileCloudProject'
+		projectName = 'transFileCloudTestProject'
 		
-		self.assertEqual([], cm.getExcludedFileTypeWildchardLst(projectName))
-					
+		if os.name == 'posix':
+			self.assertEqual({'test*.py': '/test', '*.py': '/', '*.rd': '/', '*.docx': '/doc', '*.jpg': '/images'}, cm.getFilePatternLocalDestinations(projectName))
+		else:
+			self.assertEqual({'test*.py': '\\test', '*.py': '\\', '*.rd': '\\', '*.docx': '\\doc', '*.jpg': '\\images'}, cm.getFilePatternLocalDestinations(projectName))
+
 if __name__ == '__main__':
 	unittest.main()
 	#tst = TestConfigManager()

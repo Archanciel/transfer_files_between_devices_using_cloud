@@ -92,6 +92,15 @@ class ConfigManager:
 			
 		return excludedFileTypeWildchardLst
 		
+	def getFilePatternLocalDestinations(self, projectName):
+		filePatternLocalDestinationsDic = self.projects[projectName]['download']['filePatterns']
+
+		for key in filePatternLocalDestinationsDic.keys():
+			path = filePatternLocalDestinationsDic[key]
+			filePatternLocalDestinationsDic[key] = self.removeExcessiveBackslash(path)
+
+		return filePatternLocalDestinationsDic
+		
 if __name__ == '__main__':
 	if os.name == 'posix':
 		configFilePathName = '/sdcard/transfiles.ini'

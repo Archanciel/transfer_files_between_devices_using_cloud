@@ -190,6 +190,9 @@ class TestFileLister(unittest.TestCase):
 		actualAllFileNameLst, actualAllFilePathNameLst = fl.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
 		self.assertEqual(sorted(expectedAllFileNameLst), sorted(actualAllFileNameLst))
 		self.assertEqual(sorted(expectedAllFilePathNameLst), sorted(actualAllFilePathNameLst))
-		
+
+	def testGetFilesByOrderedTypes(self):
+		pass
+				
 if __name__ == '__main__':
 	unittest.main()
