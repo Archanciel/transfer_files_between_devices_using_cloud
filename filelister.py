@@ -39,7 +39,11 @@ class FileLister:
 		@orderedTypeLst 
 		@fileTypeDic
 		"""
-		filePatternDirLst = self.configManager.getFilePatternLocalDestinations(projectName)
+		filePatternDirDic = self.configManager.getFilePatternLocalDestinations(projectName)
+		print(filePatternDirDic)
+		print()
+		
+		# what is expected:
 		orderedTypeLst = ['test*.py', '*.py', "*.rd", '*.docx', "*.jpg"]
 		fileTypeDic = {"test*.py": ("/test", ["testfile1.py", "testfile2.py"]),
 					"*.py":("/", ["file1.py", "file2.py"]),
@@ -172,4 +176,4 @@ if __name__ == "__main__":
 	outFile.close()
 	sys.stdout = stdout
 	
-	print(fl.getFilesByOrderedTypes(fromDir))
+	print(fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir))
