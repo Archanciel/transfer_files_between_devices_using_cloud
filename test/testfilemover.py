@@ -11,9 +11,9 @@ from filelister import FileLister
 from constants import *
 
 if os.name == 'posix':
-	CONFIG_FILE_PATH_NAME = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'	
+	CONFIG_FILE_PATH_NAME = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_FileMover.ini'
 else:
-	CONFIG_FILE_PATH_NAME = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+	CONFIG_FILE_PATH_NAME = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_FileMover.ini'
 
 class TestFileMover(unittest.TestCase):
 	def testMoveFiles(self):
@@ -52,7 +52,9 @@ class TestFileMover(unittest.TestCase):
 		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fl.allDocFileNameLst))
 		self.assertEqual(sorted(['README_1.rd']), sorted(fl.allReadmeFileNameLst))
 
-		fm = FileMover(configManager, fromDir, projectDir)
+		fm = FileMover(configManager, 'transFileCloudTestProject')
+		fm.downloadDir = fromDir
+		fm.projectDir = projectDir
 
 		# capturing stdout into file to avoid outputing in terminal
 		# window while unit testing

@@ -34,6 +34,21 @@ class FileLister:
 	def removeTestFilesFromPythonFilesLst(self):
 		self.allPythonFileNameLst = [item for item in self.allPythonFileNameLst if item not in self.allTestPythonFileNameLst]
 
+	def getFilesByOrderedTypes(self, dir):
+		"""
+		@orderedTypeLst 
+		@fileTypeDic
+		"""
+		orderedTypeLst = ['test*.py', '*.py', "*.rd", '*.docx', "*.jpg"]
+		fileTypeDic = {"test*.py": ("/test", ["testfile1.py", "testfile2.py"]),
+					"*.py":("/", ["file1.py", "file2.py"]),
+					"*.rd":("/", ["readme.rd"]),
+					 '*.docx':("/doc", ["file1.docx", "file2.docx"]),
+					  "*.jpg":("/images", ["file1.jpg", "file2.jpg"])}
+
+		
+		return orderedTypeLst, fileTypeDic
+		
 	def getModifiedFileLst(self, projectName):
 		"""
 
@@ -180,31 +195,4 @@ if __name__ == "__main__":
 	outFile.close()
 	sys.stdout = stdout
 	
-	
-	
-#	f = open("temp.txt", 'w')
-#	f.write('allPythonFileLst ')
-#	f.write(str(fl.allPythonFileNameLst))
-#	f.write('\r\nallTestPythonFileLst ')
-#	f.write(str(fl.allTestPythonFileNameLst))
-#	f.write('\r\nallImageFileLst ')
-#	f.write(str(fl.allImageFileNameLst))
-#	f.write('\r\nallDocFileLst ')
-#	f.write(str(fl.allDocFileNameLst))
-#	f.write('\r\nallReadmeFileLst ')
-#	f.write(str(fl.allReadmeFileNameLst))
-#	f.close()
-#	
-#	fileNameLst, filePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst('transFileCloudTestProject')
-#	print(fileNameLst)
-#	print(filePathNameLst)
-
-#	for fn in fileNameLst:
-#		print(fn)
-
-#	print()
-
-#	for fpn in filePathNameLst:
-#		print(fpn)
-#	
-#	print(lastSyncTimeStr)
+	print(fl.getFilesByOrderedTypes(fromDir))

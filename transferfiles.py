@@ -80,11 +80,11 @@ class TransferFiles:
 
 		if doDownload:
 			print('')  # empty line
-			self.transferFilesFromCloud()
+			self.downloadAndDeleteFilesFromCloud()
 			print('')  # empty line
 
 			# moving file from dowload dir to project dest dir and sub-dirs
-			fileMover = FileMover(self.configManager, self.downloadDir, self.localProjectDir)
+			fileMover = FileMover(self.configManager, self.projectName)
 			fileMover.moveFiles()
 
 			# updating last synch time for the project in config file
@@ -155,7 +155,7 @@ class TransferFiles:
 		except ValueError:
 			return False
 		
-	def transferFilesFromCloud(self):
+	def downloadAndDeleteFilesFromCloud(self):
 		"""
 
 		"""

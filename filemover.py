@@ -5,10 +5,14 @@ from configmanager import ConfigManager
 from filelister import FileLister
 
 class FileMover:
-	def __init__(self, configManager, downloadDir, localProjectDir):
-		self.fileNameLister = FileLister(configManager, downloadDir)
-		self.downloadDir = downloadDir
-		self.projectDir = localProjectDir
+	def __init__(self, configManager, projectName):
+		"""
+		@param configManager:
+		@param projectName:
+		"""
+		self.downloadDir = configManager.downloadPath
+		self.projectDir = configManager.getProjectLocalDir(projectName)
+		self.fileNameLister = FileLister(configManager, self.downloadDir)
 
 	def moveFiles(self):		
 		for fileName in self.fileNameLister.allTestPythonFileNameLst:
