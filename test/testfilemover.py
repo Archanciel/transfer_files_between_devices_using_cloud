@@ -1,5 +1,6 @@
 import unittest
 import os, sys, inspect, shutil
+from io import StringIO
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -60,20 +61,11 @@ class TestFileMover(unittest.TestCase):
 		# window while unit testing
 				
 		stdout = sys.stdout
-		
-		if os.name == 'posix':
-			FILE_PATH = '/sdcard/transFileCloudUnitTestOutput.txt'
-		else:
-			FILE_PATH = 'c:\\temp\\transFileCloudUnitTestOutput.txt'
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
 
-		# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-		try:
-			with open(FILE_PATH, 'w') as outFile:
-				sys.stdout = outFile
-				fm.moveFiles()
-		except:
-			pass
- 
+		fm.moveFiles()
+
 		sys.stdout = stdout
 				
 		# using FileLister to test that the expected files were correctly moved
