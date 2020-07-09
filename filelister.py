@@ -53,16 +53,7 @@ class FileLister:
 			matchingFileNameLst = [x for x in allFileNameLst if regexpPattern.match(x)]
 			fileTypeDic[fileTypeWildchardExpr] = (filePatternDirDic[fileTypeWildchardExpr], matchingFileNameLst)
 			allFileNameLst = [x for x in allFileNameLst if x not in matchingFileNameLst]			
-			
-		# what is expected:
-		# orderedfileTypeLst = ['test*.py', '*.py', "*.rd", '*.docx', "*.jpg"]
-#		fileTypeDic = {"test*.py": ("/test", ["testfile1.py", "testfile2.py"]),
-#					"*.py":("/", ["file1.py", "file2.py"]),
-#					"*.rd":("/", ["readme.rd"]),
-#					 '*.docx':("/doc", ["file1.docx", "file2.docx"]),
-#					  "*.jpg":("/images", ["file1.jpg", "file2.jpg"])}
 
-		
 		return orderedFileTypeWildchardExprLst, fileTypeDic
 		
 	def computeMoveOrder(self, typeTupleOne, typeTupleTwo):
