@@ -228,7 +228,7 @@ class TestFileLister(unittest.TestCase):
 		self.assertEqual(-1, fl.moveOrderComparisonFunction(parentDirTuple, subDirTuple))
 		self.assertEqual(1, fl.moveOrderComparisonFunction(subDirTuple, parentDirTuple))
 
-	def testSortFilePatternDirTupleLst(self):
+	def testSortFilePatternDirTupleLst_2_items(self):
 		if os.name == 'posix':
 			configFilePathName = '/sdcard/transfiles.ini'
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
@@ -244,7 +244,23 @@ class TestFileLister(unittest.TestCase):
 
 		filePatternDirTupleLst = [('test*.py', '/test'), ('*.py', '/')]		
 		self.assertEqual([('test*.py', '/test'), ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
-		
-		
+
+	def testSortFilePatternDirTupleLst_n_items(self):
+		if os.name == 'posix':
+			configFilePathName = '/sdcard/transfiles.ini'
+			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
+		else:
+			configFilePathName = 'c:\\temp\\transfiles.ini'
+			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
+
+		cm = ConfigManager(configFilePathName)
+		fl = FileLister(cm, fromDir)
+
+		filePatternDirTupleLst = [('*.py', '/'), ('test*.py', '/test'), ('*.jpg', '/.images'), ('*.docx', '/doc')]
+		self.assertEqual([('test*.py', '/test'), ('*.py', '/'), ('*.jpg', '/.images'), ('*.docx', '/doc')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+
+		filePatternDirTupleLst = [('*.docx', '/doc'), ('*.jpg', '/.images'), ('test*.py', '/test'), ('*.py', '/')]
+		self.assertEqual([('*.docx', '/doc'), ('*.jpg', '/.images'), ('test*.py', '/test'), ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+
 if __name__ == '__main__':
 	unittest.main()
