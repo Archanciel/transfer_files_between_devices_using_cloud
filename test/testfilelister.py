@@ -211,7 +211,7 @@ class TestFileLister(unittest.TestCase):
 		else:
 			self.assertEqual({'*.jpg': ('\\images', ['current_state_21.jpg', 'current_state_22.jpg']), '*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']), '*.rd': ('\\', ['README_2.rd']), 'test*.py': ('\\test', ['testfilelister_2.py', 'testfilemover_2.py']), '*.py': ('\\', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
 	
-	def testComputeMoveOrder(self):
+	def testMoveOrderComparisonFunction(self):
 		if os.name == 'posix':
 			configFilePathName = '/sdcard/transfiles.ini'
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
@@ -225,8 +225,8 @@ class TestFileLister(unittest.TestCase):
 		parentDirTuple = ('*.py', '/') 
 		subDirTuple = ('test*.py', '/test')
 		
-		self.assertEqual(-1, fl.computeMoveOrder(parentDirTuple, subDirTuple))
-		self.assertEqual(1, fl.computeMoveOrder(subDirTuple, parentDirTuple))
+		self.assertEqual(-1, fl.moveOrderComparisonFunction(parentDirTuple, subDirTuple))
+		self.assertEqual(1, fl.moveOrderComparisonFunction(subDirTuple, parentDirTuple))
 
 	def testSortFilePatternDirTupleLst(self):
 		if os.name == 'posix':
@@ -239,9 +239,12 @@ class TestFileLister(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm, fromDir)
 		
-		filePatternDirTupleLst = [('*.py', '/'), ('test*.py', '/test')]
-		
+		filePatternDirTupleLst = [('*.py', '/'), ('test*.py', '/test')]		
 		self.assertEqual([('test*.py', '/test'), ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+
+		filePatternDirTupleLst = [('test*.py', '/test'), ('*.py', '/')]		
+		self.assertEqual([('test*.py', '/test'), ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+		
 		
 if __name__ == '__main__':
 	unittest.main()

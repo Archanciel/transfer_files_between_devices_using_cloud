@@ -64,12 +64,21 @@ class FileLister:
 		return orderedFileTypeWildchardExprLst, fileTypeDic
 	
 	def sortFilePatternDirTupleLst(self, filePatternDirTupleLst):
-		return sorted(filePatternDirTupleLst, key=functools.cmp_to_key(self.computeMoveOrder), reverse=True)
+		return sorted(filePatternDirTupleLst, key=functools.cmp_to_key(self.moveOrderComparisonFunction), reverse=True)
 				
-	def computeMoveOrder(self, typeTupleOne, typeTupleTwo):
+	def moveOrderComparisonFunction(self, typeTupleOne, typeTupleTwo):
 		"""
-		Applied to a list like [('*.py', '/'), ('test*.py', '/test')], will 
-		return [('test*.py', '/test'), ('*.py', '/')]
+		A comparison function is any callable that accept two arguments,
+		compares them, and returns a negative number for less-than, 
+		zero for equality, or a positive number for greater-than. 
+		
+		Applied to typeTupleOne = ('*.py', '/') and typeTupleTwo = 
+		('test*.py', '/test'), it returns -1 since typeTupleOne will have
+		to be handled after (is less than) typeTupleTwo.
+		
+		Applied as a cmp_to_key function to a list like [('*.py', '/'),
+		('test*.py', '/test')], the result will be [('test*.py', '/test'), 
+		('*.py', '/')] 
 		"""
 		wildchardOne, dirOne = typeTupleOne
 		wildchardTwo, dirTwo = typeTupleTwo
@@ -80,6 +89,7 @@ class FileLister:
 		if dirOne in dirTwo and patternOne.match(wildchardTwo.replace("*", "a")):
 			return -1
 		else:
+			# ok for equality and greater than
 			return 1
 		
 	def getModifiedFileLst(self, projectName):
