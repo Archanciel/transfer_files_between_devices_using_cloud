@@ -41,8 +41,15 @@ class FileLister:
 		@fileTypeDic
 		"""
 		filePatternDirDic = self.configManager.getFilePatternLocalDestinations(projectName)
+		
+		# converting the file pattern dir dictionary to a list of (key, value)
+		# tuples in order to then sort the tuples.
+		#
+		# Ex: {'test*.py': '/test', '*.py': '/'} --> [('test*.py', '/test'), ('*.py', '/')]
 		filePatternDirTupleLst = [item for item in filePatternDirDic.items()]
-		filePatternDirTupleSortedLst = sorted(filePatternDirTupleLst, key=functools.cmp_to_key(self.computeMoveOrder))
+		
+		
+		filePatternDirTupleSortedLst = self.sortFilePatternDirTupleLst(filePatternDirTupleLst)
 		orderedFileTypeWildchardExprLst = [x[0] for x in filePatternDirTupleSortedLst]
 		allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + '/*.*')]
 		fileTypeDic = {}
@@ -55,8 +62,15 @@ class FileLister:
 			allFileNameLst = [x for x in allFileNameLst if x not in matchingFileNameLst]			
 
 		return orderedFileTypeWildchardExprLst, fileTypeDic
-		
+	
+	def sortFilePatternDirTupleLst(self, filePatternDirTupleLst):
+		return sorted(filePatternDirTupleLst, key=functools.cmp_to_key(self.computeMoveOrder), reverse=True)
+				
 	def computeMoveOrder(self, typeTupleOne, typeTupleTwo):
+		"""
+		Applied to a list like [('*.py', '/'), ('test*.py', '/test')], will 
+		return [('test*.py', '/test'), ('*.py', '/')]
+		"""
 		wildchardOne, dirOne = typeTupleOne
 		wildchardTwo, dirTwo = typeTupleTwo
 	
@@ -64,9 +78,9 @@ class FileLister:
 		patternOne = re.compile(regexpOne)
 	
 		if dirOne in dirTwo and patternOne.match(wildchardTwo.replace("*", "a")):
-			return 1
-		else:
 			return -1
+		else:
+			return 1
 		
 	def getModifiedFileLst(self, projectName):
 		"""
