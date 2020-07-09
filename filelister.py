@@ -2,6 +2,7 @@ import datetime
 import glob
 import re
 from pathlib import Path
+import functools
 
 from configmanager import *
 from constants import DIR_SEP, DATE_TIME_FORMAT
@@ -34,25 +35,47 @@ class FileLister:
 	def removeTestFilesFromPythonFilesLst(self):
 		self.allPythonFileNameLst = [item for item in self.allPythonFileNameLst if item not in self.allTestPythonFileNameLst]
 
-	def getFilesByOrderedTypes(self, projectName, dir):
+	def getFilesByOrderedTypes(self, projectName, downloadDir):
 		"""
 		@orderedTypeLst 
 		@fileTypeDic
 		"""
 		filePatternDirDic = self.configManager.getFilePatternLocalDestinations(projectName)
-		print(filePatternDirDic)
-		print()
+		filePatternDirTupleLst = [item for item in filePatternDirDic.items()]
+		filePatternDirTupleSortedLst = sorted(filePatternDirTupleLst, key=functools.cmp_to_key(self.computeMoveOrder))
+		orderedFileTypeWildchardExprLst = [x[0] for x in filePatternDirTupleSortedLst]
+		allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + '/*.*')]
+		fileTypeDic = {}
 		
+		for fileTypeWildchardExpr in orderedFileTypeWildchardExprLst:
+			regexpStr = self.convertWildcardExprStrToRegexpStr(fileTypeWildchardExpr)
+			regexpPattern = re.compile(regexpStr)
+			matchingFileNameLst = [x for x in allFileNameLst if regexpPattern.match(x)]
+			fileTypeDic[fileTypeWildchardExpr] = (filePatternDirDic[fileTypeWildchardExpr], matchingFileNameLst)
+			allFileNameLst = [x for x in allFileNameLst if x not in matchingFileNameLst]			
+			
 		# what is expected:
-		orderedTypeLst = ['test*.py', '*.py', "*.rd", '*.docx', "*.jpg"]
-		fileTypeDic = {"test*.py": ("/test", ["testfile1.py", "testfile2.py"]),
-					"*.py":("/", ["file1.py", "file2.py"]),
-					"*.rd":("/", ["readme.rd"]),
-					 '*.docx':("/doc", ["file1.docx", "file2.docx"]),
-					  "*.jpg":("/images", ["file1.jpg", "file2.jpg"])}
+		# orderedfileTypeLst = ['test*.py', '*.py', "*.rd", '*.docx', "*.jpg"]
+#		fileTypeDic = {"test*.py": ("/test", ["testfile1.py", "testfile2.py"]),
+#					"*.py":("/", ["file1.py", "file2.py"]),
+#					"*.rd":("/", ["readme.rd"]),
+#					 '*.docx':("/doc", ["file1.docx", "file2.docx"]),
+#					  "*.jpg":("/images", ["file1.jpg", "file2.jpg"])}
 
 		
-		return orderedTypeLst, fileTypeDic
+		return orderedFileTypeWildchardExprLst, fileTypeDic
+		
+	def computeMoveOrder(self, typeTupleOne, typeTupleTwo):
+		wildchardOne, dirOne = typeTupleOne
+		wildchardTwo, dirTwo = typeTupleTwo
+	
+		regexpOne = self.convertWildcardExprStrToRegexpStr(wildchardOne)
+		patternOne = re.compile(regexpOne)
+	
+		if dirOne in dirTwo and patternOne.match(wildchardTwo.replace("*", "a")):
+			return 1
+		else:
+			return -1
 		
 	def getModifiedFileLst(self, projectName):
 		"""
@@ -135,7 +158,6 @@ class FileLister:
 			
 	def convertWildcardExprStrToRegexpStr(self, wildcardExpression):
 		regexpStr = wildcardExpression.replace("\\", "\\\\")
-		#regexpStr = wildcardExpression.replace("\", "\\")
 		regexpStr = regexpStr.replace(".", "\.")
 		regexpStr = regexpStr.replace("*", ".*")
 		regexpStr += "\Z"
@@ -157,23 +179,7 @@ if __name__ == "__main__":
 	cm = ConfigManager(configFilePathName)
 	fl = FileLister(cm, fromDir)
 	
-	if os.name == 'posix':
-		FILE_PATH = '/sdcard/transfiles_debug.txt'
-	else:
-		FILE_PATH = 'c:\\temp\\transfiles_debug.txt'
-		
-	import sys
-	stdout = sys.stdout
-
-	# using a try/catch here prevent the test from failing  due to the run of CommandQuit !
-	try:
-		with open(FILE_PATH, 'w') as outFile:
-			sys.stdout = outFile
-			fl.getModifiedFileLst('transFileCloudProject')
-	except:
-		pass
-
-	outFile.close()
-	sys.stdout = stdout
+	orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
 	
-	print(fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir))
+	print(orderedFileTypeWildchardExprLst)
+	print(fileTypeDic)
