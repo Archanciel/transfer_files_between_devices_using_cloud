@@ -192,7 +192,23 @@ class TestFileLister(unittest.TestCase):
 		self.assertEqual(sorted(expectedAllFilePathNameLst), sorted(actualAllFilePathNameLst))
 
 	def testGetFilesByOrderedTypes(self):
-		pass
-				
+		if os.name == 'posix':
+			configFilePathName = '/sdcard/transfiles.ini'
+			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
+		else:
+			configFilePathName = 'c:\\temp\\transfiles.ini'
+			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
+
+		cm = ConfigManager(configFilePathName)
+		fl = FileLister(cm, fromDir)
+
+		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
+
+		self.assertEqual(['*.jpg', '*.docx', '*.rd', 'test*.py', '*.py'], orderedFileTypeWildchardExprLst)
+
+		if os.name == 'posix':
+			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']), '*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']), '*.rd': ('/', ['README_2.rd']), 'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']), '*.py': ('/', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
+		else:
+			self.assertEqual({'*.jpg': ('\\images', ['current_state_21.jpg', 'current_state_22.jpg']), '*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']), '*.rd': ('\\', ['README_2.rd']), 'test*.py': ('\\test', ['testfilelister_2.py', 'testfilemover_2.py']), '*.py': ('\\', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
 if __name__ == '__main__':
 	unittest.main()
