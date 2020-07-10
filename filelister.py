@@ -58,40 +58,15 @@ class FileLister:
 			regexpStr = self.convertWildcardExprStrToRegexpStr(fileTypeWildchardExpr)
 			regexpPattern = re.compile(regexpStr)
 			matchingFileNameLst = [x for x in allFileNameLst if regexpPattern.match(x)]
+			matchingFileNameLst.sort()
 			fileTypeDic[fileTypeWildchardExpr] = (filePatternDirDic[fileTypeWildchardExpr], matchingFileNameLst)
 			allFileNameLst = [x for x in allFileNameLst if x not in matchingFileNameLst]			
 
 		return orderedFileTypeWildchardExprLst, fileTypeDic
 	
 	def sortFilePatternDirTupleLst(self, filePatternDirTupleLst):
-		return sorted(filePatternDirTupleLst, key=functools.cmp_to_key(self.moveOrderComparisonFunction), reverse=True)
-				
-	def moveOrderComparisonFunction(self, typeTupleOne, typeTupleTwo):
-		"""
-		A comparison function is any callable that accept two arguments,
-		compares them, and returns a negative number for less-than, 
-		zero for equality, or a positive number for greater-than. 
-		
-		Applied to typeTupleOne = ('*.py', '/') and typeTupleTwo = 
-		('test*.py', '/test'), it returns -1 since typeTupleOne will have
-		to be handled after (is less than) typeTupleTwo.
-		
-		Applied as a cmp_to_key function to a list like [('*.py', '/'),
-		('test*.py', '/test')], the result will be [('test*.py', '/test'), 
-		('*.py', '/')] 
-		"""
-		wildchardOne, dirOne = typeTupleOne
-		wildchardTwo, dirTwo = typeTupleTwo
-	
-		regexpOne = self.convertWildcardExprStrToRegexpStr(wildchardOne)
-		patternOne = re.compile(regexpOne)
-	
-		if dirOne in dirTwo and patternOne.match(wildchardTwo.replace("*", "a")):
-			return -1
-		else:
-			# ok for equality and greater than
-			return 1
-		
+		return sorted(filePatternDirTupleLst, key=lambda tup: tup[1], reverse=True)
+
 	def getModifiedFileLst(self, projectName):
 		"""
 
