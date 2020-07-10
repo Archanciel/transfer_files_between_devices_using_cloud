@@ -207,7 +207,7 @@ class TestFileLister(unittest.TestCase):
 		self.assertEqual(['test*.py', '*.jpg', '*.docx', '*.py', '*.rd'], orderedFileTypeWildchardExprLst)
 
 		if os.name == 'posix':
-			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']), '*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']), '*.rd': ('/', ['README_2.rd']), 'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']), '*.py': ('/', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
+			self.assertEqual({'*.jpg': ('/images', ['aa_current.jpg', 'current_state_21.jpg', 'current_state_22.jpg']), '*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']), '*.rd': ('/', ['README_2.rd']), 'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']), '*.py': ('/', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
 		else:
 			self.assertEqual({'*.jpg': ('\\images', ['aa_current.jpg', 'current_state_21.jpg', 'current_state_22.jpg']), '*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']), '*.rd': ('\\', ['README_2.rd']), 'test*.py': ('\\test', ['testfilelister_2.py', 'testfilemover_2.py']), '*.py': ('\\', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
 
