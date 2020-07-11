@@ -17,6 +17,79 @@ else:
 	CONFIG_FILE_PATH_NAME = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_FileMover.ini'
 
 class TestFileMover(unittest.TestCase):
+	def testMoveFilesToDel(self):
+		if os.name == 'posix':
+			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
+			projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir'
+			projectDirEmpty = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir_empty'
+		else:
+			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
+			fromDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
+			projectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir'
+			projectDirEmpty = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir_empty'
+
+		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
+
+		# deleting fromDir
+		if os.path.exists(fromDir):
+			shutil.rmtree(fromDir)
+
+		# restoring fromDir from its saved version
+		shutil.copytree(fromDirSaved, fromDir)
+
+		# deleting projectDir
+		if os.path.exists(projectDir):
+			shutil.rmtree(projectDir)
+
+		# restoring a directory structure only project dir (no files) from its saved empty version
+		shutil.copytree(projectDirEmpty, projectDir)
+
+		# ensuring fromDir contains the required files
+		fl = FileLister(configManager, fromDir)
+		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py', 'testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allPythonFileNameLst))
+		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allTestPythonFileNameLst))
+		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fl.allImageFileNameLst))
+		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fl.allDocFileNameLst))
+		self.assertEqual(sorted(['README_1.rd']), sorted(fl.allReadmeFileNameLst))
+
+		fm = FileMover(configManager, 'transFileCloudTestProject')
+		fm.downloadDir = fromDir
+		fm.projectDir = projectDir
+
+		# capturing stdout into StringIO to avoid outputing in terminal
+		# window while unit testing
+				
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+
+		fm.moveFilesToDel()
+
+		sys.stdout = stdout
+				
+		# using FileLister to test that the expected files were correctly moved
+		flp = FileLister(configManager, projectDir)
+		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), sorted(flp.allPythonFileNameLst))
+		self.assertEqual(sorted(['README_1.rd']), sorted(flp.allReadmeFileNameLst))
+
+		flt = FileLister(configManager, projectDir + TEST_SUB_DIR)
+		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), sorted(flt.allTestPythonFileNameLst))
+
+		fli = FileLister(configManager, projectDir + IMG_SUB_DIR)
+		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fli.allImageFileNameLst))
+
+		fld = FileLister(configManager, projectDir + DOC_SUB_DIR)
+		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fld.allDocFileNameLst))
+
+		# testing that fromDir is now empty
+		flf = FileLister(configManager, fromDir)
+		self.assertEqual([], flf.allPythonFileNameLst)
+		self.assertEqual([], flf.allTestPythonFileNameLst)
+		self.assertEqual([], flf.allImageFileNameLst)
+		self.assertEqual([], flf.allDocFileNameLst)
+		self.assertEqual([], flf.allReadmeFileNameLst)
+
 	def testMoveFiles(self):
 		if os.name == 'posix':
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
@@ -57,7 +130,7 @@ class TestFileMover(unittest.TestCase):
 		fm.downloadDir = fromDir
 		fm.projectDir = projectDir
 
-		# capturing stdout into file to avoid outputing in terminal
+		# capturing stdout into StringIO to avoid outputing in terminal
 		# window while unit testing
 				
 		stdout = sys.stdout
@@ -89,6 +162,6 @@ class TestFileMover(unittest.TestCase):
 		self.assertEqual([], flf.allImageFileNameLst)
 		self.assertEqual([], flf.allDocFileNameLst)
 		self.assertEqual([], flf.allReadmeFileNameLst)
-		
+				
 if __name__ == '__main__':
 	unittest.main()
