@@ -21,9 +21,6 @@ class FileLister:
 		"""
 		self.configManager = configManager
 
-	def removeTestFilesFromPythonFilesLst(self):
-		self.allPythonFileNameLst = [item for item in self.allPythonFileNameLst if item not in self.allTestPythonFileNameLst]
-
 	def getFilesByOrderedTypes(self, projectName, downloadDir):
 		"""
 
