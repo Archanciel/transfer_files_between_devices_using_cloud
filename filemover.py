@@ -13,7 +13,7 @@ class FileMover:
 		self.projectName = projectName
 		self.downloadDir = configManager.downloadPath
 		self.projectDir = configManager.getProjectLocalDir(projectName)
-		self.fileNameLister = FileLister(configManager, self.downloadDir)
+		self.fileNameLister = FileLister(configManager)
 
 	def moveFilesToDel(self):		
 		for fileName in self.fileNameLister.allTestPythonFileNameLst:

@@ -33,7 +33,7 @@ class TransferFiles:
 		self.downloadDir = self.configManager.downloadPath
 		self.localProjectDir = self.configManager.getProjectLocalDir(self.projectName)
 		self.cloudAccess = DropboxAccess(self.configManager, self.projectName)
-		self.fileLister = FileLister(configManager=self.configManager, downloadDir=self.downloadDir)
+		self.fileLister = FileLister(configManager=self.configManager)
 
 	def transferFiles(self, commandLineArgs=None):
 		"""

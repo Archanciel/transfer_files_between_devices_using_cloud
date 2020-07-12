@@ -55,7 +55,7 @@ class TestFileMover(unittest.TestCase):
 
 		# ensuring fromDir contains the required files
 		
-		fl = FileLister(configManager, fromDir)
+		fl = FileLister(configManager)
 		projectName = 'transFileCloudTestProject'
 		_, fileTypeDic = fl.getFilesByOrderedTypes(projectName, fromDir)
 		
@@ -86,28 +86,28 @@ class TestFileMover(unittest.TestCase):
 		# several instances of FileLister are used below.
 
 		# verifying project dir
-		flp = FileLister(configManager, projectDir)
+		flp = FileLister(configManager)
 		_, projectDirFileTypeDic = flp.getFilesByOrderedTypes(projectName, projectDir)
 		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), projectDirFileTypeDic['*.py'][1])
 		self.assertEqual(sorted(['README_1.rd']), projectDirFileTypeDic['*.rd'][1])
 
 		# verifying project test sub dir
-		flt = FileLister(configManager, projectDir + TEST_SUB_DIR)
+		flt = FileLister(configManager)
 		_, projectTestDirFileTypeDic = flt.getFilesByOrderedTypes(projectName, projectDir + TEST_SUB_DIR)
 		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), projectTestDirFileTypeDic['test*.py'][1])
 
 		# verifying project images sub dir
-		fli = FileLister(configManager, projectDir + IMG_SUB_DIR)
+		fli = FileLister(configManager)
 		_, projectImagesDirFileTypeDic = fli.getFilesByOrderedTypes(projectName, projectDir + IMG_SUB_DIR)
 		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), projectImagesDirFileTypeDic['*.jpg'][1])
 
 		# verifying project doc s	ub dir
-		fld = FileLister(configManager, projectDir + DOC_SUB_DIR)
+		fld = FileLister(configManager)
 		_, projectDocDirFileTypeDic = fld.getFilesByOrderedTypes(projectName, projectDir + DOC_SUB_DIR)
 		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), projectDocDirFileTypeDic['*.docx'][1])
 
 		# testing that download is now empty
-		fld = FileLister(configManager, fromDir)
+		fld = FileLister(configManager)
 		_, downloadDirFileTypeDic = fld.getFilesByOrderedTypes(projectName, fromDir)
 		self.assertEqual([], downloadDirFileTypeDic['*.py'][1])
 		self.assertEqual([], downloadDirFileTypeDic['test*.py'][1])

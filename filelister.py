@@ -13,24 +13,13 @@ class FileLister:
 	This class manages the lists of files which will be moved to specific
 	directories
 	"""
-	def __init__(self, configManager, downloadDir):
+	def __init__(self, configManager):
 		"""
 		FileLister constructor.
 
 		:param downloadDir: directory containing the files to list.
 		"""
 		self.configManager = configManager
-		
-		# creating the different file type lists. Those lists are used by FileMover.moveFiles()
-		allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + '/*.*')]
-
-		pattern = re.compile('\w*\.[py]*$')
-
-		self.allPythonFileNameLst = [x for x in allFileNameLst if pattern.match(x)]
-		self.allTestPythonFileNameLst = list(filter(lambda x: 'test' in x, self.allPythonFileNameLst))
-		self.allImageFileNameLst = list(filter(lambda x: '.jpg' in x, allFileNameLst))
-		self.allDocFileNameLst = list(filter(lambda x: '.docx' in x, allFileNameLst))
-		self.allReadmeFileNameLst = list(filter(lambda x: '.rd' in x, allFileNameLst))
 
 	def removeTestFilesFromPythonFilesLst(self):
 		self.allPythonFileNameLst = [item for item in self.allPythonFileNameLst if item not in self.allTestPythonFileNameLst]
@@ -178,7 +167,7 @@ if __name__ == "__main__":
 		fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 	cm = ConfigManager(configFilePathName)
-	fl = FileLister(cm, fromDir)
+	fl = FileLister(cm)
 	
 	orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
 	

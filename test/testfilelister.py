@@ -10,56 +10,6 @@ from filelister import FileLister
 from constants import DIR_SEP, DATE_TIME_FORMAT
 			
 class TestFileLister(unittest.TestCase):
-	def testFileListerConstructor(self):
-		if os.name == 'posix':
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
-			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
-			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-		else:
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
-			fromDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
-			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-
-		configManager = ConfigManager(configFilePathName)
-		
-		# deleting fromDir
-		if os.path.exists(fromDir):
-			shutil.rmtree(fromDir)
-
-		# restoring fromDir from its saved version
-		shutil.copytree(fromDirSaved, fromDir)
-
-		fl = FileLister(configManager, fromDir)
-		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py', 'testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allPythonFileNameLst))
-		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allTestPythonFileNameLst))
-		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fl.allImageFileNameLst))
-		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fl.allDocFileNameLst))
-		self.assertEqual(sorted(['README_1.rd']), sorted(fl.allReadmeFileNameLst))
-		
-	def testRemoveTestFilesFromPythonFilesLst(self):
-		if os.name == 'posix':
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
-			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
-			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-		else:
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
-			fromDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
-			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-
-		configManager = ConfigManager(configFilePathName)
-		
-		# deleting fromDir
-		if os.path.exists(fromDir):
-			shutil.rmtree(fromDir)
-
-		# restoring fromDir from its saved version
-		shutil.copytree(fromDirSaved, fromDir)
-
-		fl = FileLister(configManager, fromDir)
-		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py', 'testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allPythonFileNameLst))
-		fl.removeTestFilesFromPythonFilesLst()
-		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), sorted(fl.allPythonFileNameLst))
-
 	def testGetModifiedFileLst(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
@@ -69,7 +19,7 @@ class TestFileLister(unittest.TestCase):
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm, fromDir)
+		fl = FileLister(cm)
 		allFileNameLst, allFilePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst('transFileCloudTestProject')
 
 		self.assertEqual(sorted(
@@ -99,7 +49,7 @@ class TestFileLister(unittest.TestCase):
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm, fromDir)
+		fl = FileLister(cm)
 		
 		# project name which has an invalid (not existing) project path in the
 		# transfiles.ini file
@@ -115,7 +65,7 @@ class TestFileLister(unittest.TestCase):
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm, fromDir)
+		fl = FileLister(cm)
 
 		wildchardLst = ['test*.py', '/excldir/subdir/*.py', 'd:\\excldir\\subdir\\*.py', '/excldir/subdir/*.*', 'd:\\excldir\\subdir\\*.*']
 		expectedRegexpLst = ['test.*\.py\Z', '/excldir/subdir/.*\.py\Z', 'd:\\\\excldir\\\\subdir\\\\.*\.py\Z', '/excldir/subdir/.*\..*\Z', 'd:\\\\excldir\\\\subdir\\\\.*\..*\Z']
@@ -132,7 +82,7 @@ class TestFileLister(unittest.TestCase):
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm, fromDir)
+		fl = FileLister(cm)
 
 		wildchardLst = ['test*.py', '/excldir/subdir/*.py', 'd:\\excldir\\subdir\\*.py', '/excldir/subdir/*.*', 'd:\\excldir\\subdir\\*.*']
 		expectedPatternLst = [re.compile('test.*\.py\Z'), re.compile('/excldir/subdir/.*\.py\Z'), re.compile('d:\\\\excldir\\\\subdir\\\\.*\.py\Z'), re.compile('/excldir/subdir/.*\..*\Z'), re.compile('d:\\\\excldir\\\\subdir\\\\.*\..*\Z')]
@@ -148,7 +98,7 @@ class TestFileLister(unittest.TestCase):
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm, fromDir)
+		fl = FileLister(cm)
 
 		excludedFileSpecLst = ['*.ini', '*.temp', 'help*.*', 'modified*', '*.pyc']
 		excludedPatternLst = fl.createRegexpPatternLstFromWildchardExprLst(excludedFileSpecLst)
@@ -172,7 +122,7 @@ class TestFileLister(unittest.TestCase):
 			projectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir'
 
 		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm, fromDir)
+		fl = FileLister(cm)
 		
 		expectedAllFileNameLst = ['constants_2.py', 'filelister_2.py', 'filemover_2.py', 'README_2.rd', 'testfilelister_2.py', 'testfilemover_2.py']
 
@@ -200,7 +150,7 @@ class TestFileLister(unittest.TestCase):
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm, fromDir)
+		fl = FileLister(cm)
 
 		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
 
@@ -228,7 +178,7 @@ class TestFileLister(unittest.TestCase):
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm, fromDir)
+		fl = FileLister(cm)
 
 		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
 
@@ -258,7 +208,7 @@ class TestFileLister(unittest.TestCase):
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm, fromDir)
+		fl = FileLister(cm)
 		
 		filePatternDirTupleLst = [('*.py', '/'), ('test*.py', '/test')]		
 		self.assertEqual([('test*.py', '/test'), ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
@@ -275,7 +225,7 @@ class TestFileLister(unittest.TestCase):
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm, fromDir)
+		fl = FileLister(cm)
 
 		filePatternDirTupleLst = [('*.py', '/'), ('test*.py', '/test'), ('*.jpg', '/images'), ('sub*.jpg', '/images/sub'), ('*.docx', '/doc')]
 		self.assertEqual([('test*.py', '/test'),  ('sub*.jpg', '/images/sub'),  ('*.jpg', '/images'),  ('*.docx', '/doc'),  ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
