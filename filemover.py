@@ -50,6 +50,8 @@ class FileMover:
 
 	def moveFiles(self):
 		"""
+			orderedFileTypeWildchardExprLst and fileTypeDic examples:
+				
 			['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.rd'], orderedFileTypeWildchardExprLst)
 
 			{'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']), 

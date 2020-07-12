@@ -136,7 +136,7 @@ class TransferFiles:
 
 	def updateLastSynchTime(self, lastSynchTimeStr=''):
 		"""
-
+		@param lastSynchTimeStr
 		"""
 		if lastSynchTimeStr == '':
 			lastSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)

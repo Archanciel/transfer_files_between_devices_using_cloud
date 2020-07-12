@@ -37,8 +37,21 @@ class FileLister:
 
 	def getFilesByOrderedTypes(self, projectName, downloadDir):
 		"""
+
 		@orderedTypeLst 
 		@fileTypeDic
+		
+		Example of returned data structures for project 'transFileCloudTestProject'
+		and downloadDir '/test/testproject_2/fromdir':
+			
+			['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.rd'], orderedFileTypeWildchardExprLst)
+
+			{'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']), 
+			'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
+			'*.rd': ('/', ['README_2.rd']),
+			'aa*.jpg': ('/images/aa', ['aa_current.jpg']),
+			'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
+			'*.py': ('/', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
 		"""
 		filePatternDirDic = self.configManager.getFilePatternLocalDestinations(projectName)
 		
@@ -47,11 +60,9 @@ class FileLister:
 		#
 		# Ex: {'test*.py': '/test', '*.py': '/'} --> [('test*.py', '/test'), ('*.py', '/')]
 		filePatternDirTupleLst = [item for item in filePatternDirDic.items()]
-		
-		
 		filePatternDirTupleSortedLst = self.sortFilePatternDirTupleLst(filePatternDirTupleLst)
 		orderedFileTypeWildchardExprLst = [x[0] for x in filePatternDirTupleSortedLst]
-		allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + '/*.*')]
+		allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + '*.*')]
 		fileTypeDic = {}
 		
 		for fileTypeWildchardExpr in orderedFileTypeWildchardExprLst:
