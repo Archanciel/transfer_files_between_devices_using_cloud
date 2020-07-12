@@ -150,7 +150,7 @@ class TestFileLister(unittest.TestCase):
 							'*.rd': ('', ['README_2.rd']),
 							'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
 							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
-							'aa*.jpg': ('\\images\\aa', ['aa_current.jpg'])}, fileTypeDic)
+							'aa*.jpg': ('/images/aa', ['aa_current.jpg'])}, fileTypeDic)
 		else:
 			self.assertEqual({'*.jpg': ('\\images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']),
