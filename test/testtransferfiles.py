@@ -16,17 +16,35 @@ from dropboxaccess import DropboxAccess
 			
 class TestTransferFiles(unittest.TestCase):
 	def testValidateLastSynchTimeStr_invalid(self):
-		tf = TransferFiles(projectName='transFileCloudTestProject')
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+
+		projectName = 'TransferFilesTestProject'
+		tf = TransferFiles(configFilePath=configFilePathName, projectName=projectName)
 		lastSynchTimeStr = '2020-13-02 08:09:55'
 		self.assertFalse(tf.validateLastSynchTimeStr(lastSynchTimeStr))
 
 	def testValidateLastSynchTimeStrNoZeroInDateTimeString(self):
-		tf = TransferFiles(projectName='transFileCloudTestProject')
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+
+		projectName = 'TransferFilesTestProject'
+		tf = TransferFiles(configFilePath=configFilePathName, projectName=projectName)
 		lastSynchTimeStr = '2020-6-4 8:5:3'
 		self.assertTrue(tf.validateLastSynchTimeStr(lastSynchTimeStr))
 
 	def testValidateLastSynchTimeStrTwoOigitYear(self):
-		tf = TransferFiles(projectName='transFileCloudTestProject')
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+
+		projectName = 'TransferFilesTestProject'
+		tf = TransferFiles(configFilePath=configFilePathName, projectName=projectName)
 		lastSynchTimeStr = '20-6-4 8:5:3'
 		self.assertFalse(tf.validateLastSynchTimeStr(lastSynchTimeStr))
 

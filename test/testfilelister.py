@@ -13,10 +13,8 @@ class TestFileLister(unittest.TestCase):
 	def testGetModifiedFileLst(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/fromdir'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
@@ -43,10 +41,8 @@ class TestFileLister(unittest.TestCase):
 		'''
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/fromdir'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
@@ -59,10 +55,8 @@ class TestFileLister(unittest.TestCase):
 	def testConvertWildcardExprStrToRegexpStr(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/fromdir'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
@@ -76,10 +70,8 @@ class TestFileLister(unittest.TestCase):
 	def testCreateRegexpPatternLstFromWildchardExprLst(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/fromdir'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
@@ -92,10 +84,8 @@ class TestFileLister(unittest.TestCase):
 	def testExcludeFile(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/fromdir'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
@@ -114,11 +104,9 @@ class TestFileLister(unittest.TestCase):
 	def testGetModifiedAndNotExcludedFileLst(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/fromdir'
 			projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\fromdir'
 			projectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir'
 
 		cm = ConfigManager(configFilePathName)
@@ -143,10 +131,10 @@ class TestFileLister(unittest.TestCase):
 
 	def testGetFilesByOrderedTypes(self):
 		if os.name == 'posix':
-			configFilePathName = '/sdcard/transfiles.ini'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
 		else:
-			configFilePathName = 'c:\\temp\\transfiles.ini'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
@@ -154,20 +142,22 @@ class TestFileLister(unittest.TestCase):
 
 		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
 
-		self.assertEqual(['test*.py', '*.jpg', '*.docx', '*.py', '*.rd'], orderedFileTypeWildchardExprLst)
+		self.assertEqual(['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.rd'], orderedFileTypeWildchardExprLst)
 
 		if os.name == 'posix':
-			self.assertEqual({'*.jpg': ('/images', ['aa_current.jpg', 'current_state_21.jpg', 'current_state_22.jpg']),
+			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
 							'*.rd': ('', ['README_2.rd']),
 							'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
-							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
+							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
+							'aa*.jpg': ('\\images\\aa', ['aa_current.jpg'])}, fileTypeDic)
 		else:
-			self.assertEqual({'*.jpg': ('\\images', ['aa_current.jpg', 'current_state_21.jpg', 'current_state_22.jpg']),
+			self.assertEqual({'*.jpg': ('\\images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']),
 							'*.rd': ('', ['README_2.rd']),
 							'test*.py': ('\\test', ['testfilelister_2.py', 'testfilemover_2.py']),
-							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
+							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
+							'aa*.jpg': ('\\images\\aa', ['aa_current.jpg'])}, fileTypeDic)
 
 	def testGetFilesByOrderedTypes_order_in_configFile_not_respected(self):
 		if os.name == 'posix':
@@ -202,10 +192,8 @@ class TestFileLister(unittest.TestCase):
 	def testSortFilePatternDirTupleLst_2_items(self):
 		if os.name == 'posix':
 			configFilePathName = '/sdcard/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
 		else:
 			configFilePathName = 'c:\\temp\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
@@ -219,10 +207,8 @@ class TestFileLister(unittest.TestCase):
 	def testSortFilePatternDirTupleLst_n_items(self):
 		if os.name == 'posix':
 			configFilePathName = '/sdcard/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
 		else:
 			configFilePathName = 'c:\\temp\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
