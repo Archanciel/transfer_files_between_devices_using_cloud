@@ -54,14 +54,17 @@ class TestFileMover(unittest.TestCase):
 		shutil.copytree(projectDirEmpty, projectDir)
 
 		# ensuring fromDir contains the required files
+		
 		fl = FileLister(configManager, fromDir)
-		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py', 'testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allPythonFileNameLst))
-		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), sorted(fl.allTestPythonFileNameLst))
-		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fl.allImageFileNameLst))
-		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fl.allDocFileNameLst))
-		self.assertEqual(sorted(['README_1.rd']), sorted(fl.allReadmeFileNameLst))
+		projectName = 'transFileCloudTestProject'
+		_, fileTypeDic = fl.getFilesByOrderedTypes(projectName, fromDir)
+		
+		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), fileTypeDic['*.py'][1])
+		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), fileTypeDic['test*.py'][1])
+		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), fileTypeDic['*.jpg'][1])
+		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), fileTypeDic['*.docx'][1])
+		self.assertEqual(sorted(['README_1.rd']), fileTypeDic['*.rd'][1])
 
-		fm = FileMover(configManager, 'transFileCloudTestProject')
 		fm = FileMover(configManager, projectName)
 		fm.downloadDir = fromDir
 		fm.projectDir = projectDir
