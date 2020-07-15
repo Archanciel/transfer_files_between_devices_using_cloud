@@ -83,7 +83,7 @@ class FileLister:
 
 		fileNameLst, filePathNameLst = self.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
 
-		return fileNameLst, filePathNameLst,lastSyncTimeStr
+		return fileNameLst, filePathNameLst, lastSyncTimeStr
 
 	def getModifiedAndNotExcludedFileLst(self, projectDir, lastSyncTime, excludedDirLst, excludedFileNamePatternLst):
 		"""
