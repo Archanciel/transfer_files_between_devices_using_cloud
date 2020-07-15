@@ -6,5 +6,4 @@ configmanager_downloaded.py
 temp.txt
 test/testproject_1/fromdir/uploadTwice
 test/testproject_1/fromdir_saved/uploadTwice
-test/test_TransferFiles.ini
 .idea/workspace.xml~
