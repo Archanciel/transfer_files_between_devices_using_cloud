@@ -1,6 +1,6 @@
 import os
 
-VERSION_NUMBER = 1.0
+VERSION_NUMBER = 1.1
 DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 if os.name == 'posix':

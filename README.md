@@ -5,8 +5,6 @@ Currently, the src and dst dirs are specified as constants in the constants.py f
 
 The utility works on Android and on Windows 
 
-## Class diagram
-<p align="center">
-  <img src="images/class_diagram.jpg" width="400" title="Class diagram">
-</p>
->
+## Version history
+- 1.1 Added handling command line arguments
+- 1.0 Working and unit tested version
