@@ -63,7 +63,7 @@ class TestFileMover(unittest.TestCase):
 		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), fileTypeDic['test*.py'][1])
 		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), fileTypeDic['*.jpg'][1])
 		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), fileTypeDic['*.docx'][1])
-		self.assertEqual(sorted(['README_1.rd']), fileTypeDic['*.rd'][1])
+		self.assertEqual(sorted(['README_1.md']), fileTypeDic['*.md'][1])
 
 		fm = FileMover(configManager, projectName)
 		fm.downloadDir = fromDir
@@ -89,7 +89,7 @@ class TestFileMover(unittest.TestCase):
 		flp = FileLister(configManager)
 		_, projectDirFileTypeDic = flp.getFilesByOrderedTypes(projectName, projectDir)
 		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), projectDirFileTypeDic['*.py'][1])
-		self.assertEqual(sorted(['README_1.rd']), projectDirFileTypeDic['*.rd'][1])
+		self.assertEqual(sorted(['README_1.md']), projectDirFileTypeDic['*.md'][1])
 
 		# verifying project test sub dir
 		flt = FileLister(configManager)
@@ -113,7 +113,7 @@ class TestFileMover(unittest.TestCase):
 		self.assertEqual([], downloadDirFileTypeDic['test*.py'][1])
 		self.assertEqual([], downloadDirFileTypeDic['*.jpg'][1])
 		self.assertEqual([], downloadDirFileTypeDic['*.docx'][1])
-		self.assertEqual([], downloadDirFileTypeDic['*.rd'][1])
+		self.assertEqual([], downloadDirFileTypeDic['*.md'][1])
 
 if __name__ == '__main__':
 	unittest.main()

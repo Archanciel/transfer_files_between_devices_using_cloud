@@ -21,15 +21,15 @@ class TestFileLister(unittest.TestCase):
 		allFileNameLst, allFilePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst('transFileCloudTestProject')
 
 		self.assertEqual(sorted(
-			['constants_2.py', 'filelister_2.py', 'filemover_2.py', 'testfilelister_2.py', 'testfilemover_2.py', 'README_2.rd']),
+			['constants_2.py', 'filelister_2.py', 'filemover_2.py', 'testfilelister_2.py', 'testfilemover_2.py', 'README_2.md']),
 						 sorted(allFileNameLst))
 		if os.name == 'posix':
 			self.assertEqual(sorted(
-				['/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/constants_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/filelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/filemover_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/test/testfilelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/test/testfilemover_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/README_2.rd']),
+				['/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/constants_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/filelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/filemover_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/test/testfilelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/test/testfilemover_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/README_2.md']),
 							 sorted(allFilePathNameLst))
 		else:
 			self.assertEqual(sorted(
-				['D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\constants_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filemover_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilemover_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\README_2.rd']),
+				['D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\constants_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filemover_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilemover_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\README_2.md']),
 							 sorted(allFilePathNameLst))
 
 		self.assertEqual('2020-06-15 08:45:23', lastSyncTimeStr)
@@ -112,12 +112,12 @@ class TestFileLister(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
 		
-		expectedAllFileNameLst = ['constants_2.py', 'filelister_2.py', 'filemover_2.py', 'README_2.rd', 'testfilelister_2.py', 'testfilemover_2.py']
+		expectedAllFileNameLst = ['constants_2.py', 'filelister_2.py', 'filemover_2.py', 'README_2.md', 'testfilelister_2.py', 'testfilemover_2.py']
 
 		if os.name == 'posix':
-			expectedAllFilePathNameLst = ['/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/constants_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/filelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/filemover_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/README_2.rd', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/test/testfilelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/test/testfilemover_2.py']
+			expectedAllFilePathNameLst = ['/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/constants_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/filelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/filemover_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/README_2.md', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/test/testfilelister_2.py', '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_3/projectdir/test/testfilemover_2.py']
 		else:			
-			expectedAllFilePathNameLst = ['D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\constants_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filemover_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\README_2.rd', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilemover_2.py']
+			expectedAllFilePathNameLst = ['D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\constants_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filemover_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\README_2.md', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilemover_2.py']
 
 		excludedDirLst = []
 		excludedFileTypeWildchardLst = ['*.ini', '*.tmp', '*.jpg', '*.docx']
@@ -142,19 +142,19 @@ class TestFileLister(unittest.TestCase):
 
 		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
 
-		self.assertEqual(['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.rd'], orderedFileTypeWildchardExprLst)
+		self.assertEqual(['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
 
 		if os.name == 'posix':
 			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
-							'*.rd': ('', ['README_2.rd']),
+							'*.md': ('', ['README_2.md']),
 							'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
 							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
 							'aa*.jpg': ('/images/aa', ['aa_current.jpg'])}, fileTypeDic)
 		else:
 			self.assertEqual({'*.jpg': ('\\images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']),
-							'*.rd': ('', ['README_2.rd']),
+							'*.md': ('', ['README_2.md']),
 							'test*.py': ('\\test', ['testfilelister_2.py', 'testfilemover_2.py']),
 							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
 							'aa*.jpg': ('\\images\\aa', ['aa_current.jpg'])}, fileTypeDic)
@@ -172,19 +172,19 @@ class TestFileLister(unittest.TestCase):
 
 		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
 
-		self.assertEqual(['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.rd'], orderedFileTypeWildchardExprLst)
+		self.assertEqual(['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
 
 		if os.name == 'posix':
 			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']), 
 							'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
-							'*.rd': ('', ['README_2.rd']),
+							'*.md': ('', ['README_2.md']),
 							'aa*.jpg': ('/images/aa', ['aa_current.jpg']),
 							'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
 							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
 		else:
 			self.assertEqual({'*.jpg': ('\\images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']),
-							'*.rd': ('', ['README_2.rd']),
+							'*.md': ('', ['README_2.md']),
 							'aa*.jpg': ('\\images\\aa', ['aa_current.jpg']),
 							'test*.py': ('\\test', ['testfilelister_2.py', 'testfilemover_2.py']),
 							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)

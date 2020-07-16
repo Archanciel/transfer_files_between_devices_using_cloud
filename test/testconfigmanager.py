@@ -117,9 +117,9 @@ class TestConfigManager(unittest.TestCase):
 		projectName = 'transFileCloudTestProject'
 		
 		if os.name == 'posix':
-			self.assertEqual({'test*.py': '/test', '*.py': '', '*.rd': '', '*.docx': '/doc', '*.jpg': '/images', 'aa*.jpg': '/images/aa',}, cm.getFilePatternLocalDestinations(projectName))
+			self.assertEqual({'test*.py': '/test', '*.py': '', '*.md': '', '*.docx': '/doc', '*.jpg': '/images', 'aa*.jpg': '/images/aa',}, cm.getFilePatternLocalDestinations(projectName))
 		else:
-			self.assertEqual({'test*.py': '\\test', '*.py': '', '*.rd': '', '*.docx': '\\doc', '*.jpg': '\\images',  'aa*.jpg': '\\images\\aa',}, cm.getFilePatternLocalDestinations(projectName))
+			self.assertEqual({'test*.py': '\\test', '*.py': '', '*.md': '', '*.docx': '\\doc', '*.jpg': '\\images',  'aa*.jpg': '\\images\\aa',}, cm.getFilePatternLocalDestinations(projectName))
 
 if __name__ == '__main__':
 	unittest.main()
