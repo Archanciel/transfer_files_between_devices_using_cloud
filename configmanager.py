@@ -2,18 +2,36 @@ import os, pickle
 from configobj import ConfigObj
 
 class ConfigManager:
+	"""
+	This class uses ConfigObj to access to the information specified in the
+	local configuration file.
+	"""
 	def __init__(self, configFilePathName):
+		"""
+		The ConfigManager constructor loads the local configuration file. Namely,
+		the local dowload path, the Dropbox API key, the Dropbox base 
+		application dir and the project configurations dictionary are strored
+		in the ConfigManager instance variables.
+		
+		in order to avoid storing the Dropbox API key directly in the configuration 
+		file, the key is stored in its binary form in a separate file which will
+		not be uploaded to Github. The Dropbox API key was binarised using the
+		storeApiKey.py utility file.
+		"""
 		self.config = ConfigObj(configFilePathName)
 
 		if len(self.config) == 0:
 			raise FileNotFoundError(configFilePathName + " does not exist !")
 
 		try:
+			# storing the local dowload path
 			self.downloadPath = self.removeExcessiveBackslash(self.config['General']['downloadPath'])
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' parameter not defined in ' + configFilePathName)
 
 		try:
+			# storing the Dropbox API key after reading it from its binary
+			# file
 			dropboxApiKeyFilePath = self.config['General']['dropboxApiKeyFilePath']
 			
 			with open(dropboxApiKeyFilePath, 'rb') as handle:
@@ -24,11 +42,14 @@ class ConfigManager:
 			raise KeyError('\'' + e.args[0] + '\' parameter not defined in ' + configFilePathName)
 
 		try:
+			# storing the Dropbox base dir. This base dir will contain the
+			# project specific dirs
 			self.dropboxBaseDir = self.config['General']['dropboxBaseDir']
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' parameter not defined in ' + configFilePathName)
 
 		try:
+			# storing the project configurations dictionary
 			self.projects = self.config['Projects']
 		except KeyError as e:
 			raise KeyError('\'' + e.args[0] + '\' section not defined in ' + configFilePathName)
@@ -120,30 +141,6 @@ if __name__ == '__main__':
 	projectSections = cm.projects[projectName]
 	print('first trial')
 	print(projectSections)
-	
-#	def is_section(config_section):
-#		try:
-#			config_section.keys()
-#		except AttributeError:
-#			return False
-#		else:
-#			return True
-#		
-#	for section in projectSections:
-#		if is_section(projectSections[section]):
-#			for subsection in projectSections[section]:
-#				if is_section(projectSections[section][subsection]):
-#					for subsection in projectSections[section][subsection]:
-#						print("Subsection ", subsection)
-						
-#	print('\nNew trial')		
-
-#	def gather_subsection(section, key):
-#		if section.depth > 1:
-#			print("Subsection " + section.name)
-
-#	cm.projects[projectName].walk(gather_subsection)
-
 	print(projectSections['upload']['exclude']['directories'])
 	print(cm.getExcludedDirLst(projectName))
 	print(cm.getExcludedFileTypeWildchardLst(projectName))	

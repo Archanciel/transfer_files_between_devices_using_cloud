@@ -248,6 +248,8 @@ class TestTransferFiles(unittest.TestCase):
 		sys.argv = [old_sys_argv[0]] + ['-pinvalProjName']
 
 		tf = TransferFiles(configFilePathName)
+		
+		# if not done, perturbates the next unit tests !
 		sys.argv = old_sys_argv
 
 		self.assertEqual(None, tf.projectName)

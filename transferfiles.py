@@ -8,8 +8,18 @@ from filemover import FileMover
 from dropboxaccess import DropboxAccess
 
 class TransferFiles:
+	"""
+	This is the main class of the TransferFiles utility.
+	
+	The TransferFiles utility is used to transfer files from one device to 
+	another device using the cloud as intermediary location. What makes 
+	TransferFiles unique is that the directory structures on both source
+	target devices can be different. A local configuration file (transfiles.ini)
+	stores the information required for the transfer to be done correctly.
+	"""
 	def __init__(self, configFilePath=None, projectName=None):
 		"""
+			TransferFiles constructor.
 		    @param configFilePath: used for unit testing only
 		    @param projectName used for unit testing only
 		"""
@@ -36,17 +46,22 @@ class TransferFiles:
 		try:
 			self.localProjectDir = self.configManager.getProjectLocalDir(self.projectName)
 		except KeyError as e:
+			# this happens only when TransferFiles is launched from the command line
+			# with an invalid project name passed as -p command line parm
 			print('\nProject {} not defined in configuration file {}. Program closed.\n'.format(str(e), configFilePath))
 			self.projectName = None
 			return
 
+		# currently, only Dropbox as cloud space is implemented
 		self.cloudAccess = DropboxAccess(self.configManager, self.projectName)
 		self.fileLister = FileLister(configManager=self.configManager)
 
-	def transferFiles(self, commandLineArgs=None):
+	def transferFiles(self):
 		"""
-
-		@param commandLineArgs: used for unit testing only
+		This is the main TransferFiles method. Depending on the content of the
+		cloud space for the current project, the user is prompted for uploading
+		files modified locally or for downloading and transfering to the right
+		local dirs of the files contained on the cloud.
 		"""
 		if self.projectName == None:
 			# user did choose Quit
@@ -57,7 +72,7 @@ class TransferFiles:
 		try:
 			cloudFileLst = self.cloudAccess.getCloudFileList()
 		except NotADirectoryError as e:
-			# means that the cloud project directory does not exist
+			# means that the cloud project directory does not yet exist
 			if self.requester.getCreateCloudFolderConfirmation(self.projectName):
 				self.cloudAccess.createProjectFolder()
 			else:
@@ -77,8 +92,23 @@ class TransferFiles:
 
 	def transferFilesFromCloudToLocalDirs(self, cloudFileLst):
 		"""
-
-		@param cloudFileLst:
+		This method first ask the user to confirm the download and transfer of
+		the files available on the cloud. If the user refuses the download, he
+		will be asked if he wants instead to upload files modified locally
+		provided that local files exist whose modification date is after
+		the last update date stored in the local configuration file.
+		
+		If the user confirms the download, the cloud files are dowloaded to
+		the local download dir and then deleted from the cloud. Then, the
+		files are moved from the download dir to the correct project dir and
+		sub-dirs, using the information specified in the download section of
+		the project in the local configuration file.
+		
+		Finally, the last synch date is updated to now in the local configuration
+		file.
+		
+		@param cloudFileLst: contains the list of file names for the files
+							 available on the cloud
 		"""
 		localProjectDirShort = DIR_SEP.join(self.localProjectDir.split(DIR_SEP)[-3:])
 
@@ -95,17 +125,31 @@ class TransferFiles:
 			fileMover = FileMover(self.configManager, self.projectName)
 			fileMover.moveFiles()
 
-			# updating last synch time for the project in config file
+			# updating last synch time for the project in the local config file
 			self.updateLastSynchTime()
 		else:
-			# list modified local files and ask if they should be uploaded. Handles the
-			# case where you did an upload and then modified files again on the same
-			# device and want to add those files to the cloud
+			# lists modified local files and asks if they should be uploaded. Handles
+			# the case where you did an upload and then modified files again on the
+			# same device and want to add those files to the cloud
 			self.uploadModifiedFilesToCloud()
 
 	def uploadModifiedFilesToCloud(self):
 		"""
-
+		This method first obtain the list of localfiles whose modification date
+		is after the last update date stored in the local configuration file.
+		
+		If this list is not empty, an upload confirmation is asked to the user.
+		
+		At this stage, the user has several choices: he can confirm the upload,
+		he can ask to display a more detailed list showing the path of the
+		modified files or he can decide to update the the last update date stored
+		in the local configuration file so that the next time the program is
+		executed, the list of modified files will be different.
+		
+		If the user confirms the upload, the modified files are uploaded to the
+		cloud in the cloud dir specific to the project (having the same name
+		than the project name) and the last update date stored in the local
+		configuration file is set to now.
 		"""
 		updatedFileNameLst, updatedFilePathNameLst, lastSyncTimeStr = self.fileLister.getModifiedFileLst(self.projectName)
 		
@@ -132,8 +176,11 @@ class TransferFiles:
 
 	def uploadToCloud(self, updatedFilePathNameLst):
 		"""
-
-		@param updatedFilePathNameLst:
+		Physically uploads the files contained in updatedFilePathNameLst to
+		the cloud and sets the last update date stored in the 
+		configuration file to now.
+		
+		@param updatedFilePathNameLst: list of file path names to upload
 		"""
 		for localFilePathName in updatedFilePathNameLst:
 			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-1]))
@@ -144,6 +191,10 @@ class TransferFiles:
 
 	def updateLastSynchTime(self, lastSynchTimeStr=''):
 		"""
+		If the passed lastSynchTimeStr is empty, sets the last update date
+		stored in the configuration file to now. Else, if the user specifiej
+		a synch date, validates it before settnng it in the config file.
+		
 		@param lastSynchTimeStr
 		"""
 		if lastSynchTimeStr == '':
@@ -165,7 +216,8 @@ class TransferFiles:
 		
 	def downloadAndDeleteFilesFromCloud(self):
 		"""
-
+		Physically downloads the files from the cloud and deletes them from
+		the cloud.
 		"""
 		cloudFileNameLst = self.cloudAccess.getCloudFileList()
 
