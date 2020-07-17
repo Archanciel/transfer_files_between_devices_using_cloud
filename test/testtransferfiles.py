@@ -238,7 +238,21 @@ class TestTransferFiles(unittest.TestCase):
 		# now restoring the modified files dir to its saved version
 		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
 
+	def testTransferFilesConstructor_commandLine_invalProject(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+
+		old_sys_argv = sys.argv
+		sys.argv = [old_sys_argv[0]] + ['-pinvalProjName']
+
+		tf = TransferFiles(configFilePathName)
+		sys.argv = old_sys_argv
+
+		self.assertEqual(None, tf.projectName)
+
 if __name__ == '__main__':
-	#unittest.main()
-	tst = TestTransferFiles()
-	tst.testTransferFilesFromCloudToLocalDirs()
+	unittest.main()
+	#tst = TestTransferFiles()
+	#tst.testTransferFilesConstructor_commandLine_invalProject()

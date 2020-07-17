@@ -31,7 +31,15 @@ class TransferFiles:
 			
 		self.projectName = projectName
 		self.downloadDir = self.configManager.downloadPath
-		self.localProjectDir = self.configManager.getProjectLocalDir(self.projectName)
+		self.localProjectDir = None
+
+		try:
+			self.localProjectDir = self.configManager.getProjectLocalDir(self.projectName)
+		except KeyError as e:
+			print('\nProject {} not defined in configuration file {}. Program closed.\n'.format(str(e), configFilePath))
+			self.projectName = None
+			return
+
 		self.cloudAccess = DropboxAccess(self.configManager, self.projectName)
 		self.fileLister = FileLister(configManager=self.configManager)
 
