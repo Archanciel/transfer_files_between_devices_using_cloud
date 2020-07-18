@@ -16,21 +16,47 @@ class FileLister:
 	def __init__(self, configManager):
 		"""
 		FileLister constructor.
-
-		:param downloadDir: directory containing the files to list.
 		"""
 		self.configManager = configManager
 
 	def getFilesByOrderedTypes(self, projectName, downloadDir):
 		"""
-
-		@orderedTypeLst 
-		@fileTypeDic
+		This method handles one of the key functionality of the TransferFiles 
+		utility. It returns two data structures. The first one is an ordered
+		list of wildchard file patterns. The list is ordered so that the file
+		pattern to handle first are positioned in the list before the more 
+		general file pattern.
+		
+		Lets take the example of 'test*.py' which is positioned before the more
+		general pattern '*.py'. This means that the files whose name starts with
+		'test' wiLl be moved from the download dir to their destination path before 
+		the other '*.py' files. If this order was not available, unit test Python 
+		files whose name start with 'test' would be moved from the download dir to
+		the project path root dir instead of being moved to the /test project 
+		sub-dir.
+		
+		Same remark for the 'aa*.jpg' files which would be moved from the download
+		dir to the /images project sub-dir instead of being moved to the
+		/images/aa project sub-dir.
+		
+		The second data structure is a dictionary whose key is the wildchard file 
+		pattern listed in the first data structure and the value is a tuple of two
+		elements: the first one is the project dir or sub-dir destination for this
+		file nàme pattern and the second element is a liet of files corresppnding
+		to the file pattern and contained in the download dir.
+		
+		The FileMover class will use those two data etructure to move in the
+		adequate order the files contained in the download dir to their correct
+		local destination dir.
+		
+		@orderedTypeLst example: see below
+		
+		@fileTypeDic example: see below
 		
 		Example of returned data structures for project 'transFileCloudTestProject'
 		and downloadDir '/test/testproject_2/fromdir':
 			
-			['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.rd'], orderedFileTypeWildchardExprLst)
+			['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.rd']
 
 			{'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']), 
 			'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
@@ -62,6 +88,11 @@ class FileLister:
 		return orderedFileTypeWildchardExprLst, fileTypeDic
 	
 	def sortFilePatternDirTupleLst(self, filePatternDirTupleLst):
+		"""
+
+		@param filePatternDirTupleLst:
+		@return:
+		"""
 		return sorted(filePatternDirTupleLst, key=lambda tup: tup[1], reverse=True)
 
 	def getModifiedFileLst(self, projectName):
@@ -116,6 +147,12 @@ class FileLister:
 		return fileNameLst, filePathNameLst
 
 	def isRootAsDirOrSubDirInExcludedDirLst(self, root, excludedDirLst):
+		"""
+
+		@param root:
+		@param excludedDirLst:
+		@return:
+		"""
 		if root in excludedDirLst:
 			return True
 			
@@ -128,6 +165,12 @@ class FileLister:
 		return False
 
 	def excludeFile(self, fileName, excludedFileNamePatternLst):
+		"""
+
+		@param fileName:
+		@param excludedFileNamePatternLst:
+		@return:
+		"""
 		for pattern in excludedFileNamePatternLst:
 			if pattern.match(fileName):
 				return True
@@ -135,6 +178,11 @@ class FileLister:
 		return False		
 	
 	def createRegexpPatternLstFromWildchardExprLst(self, excludedFileTypeWildchardLst):
+		"""
+
+		@param excludedFileTypeWildchardLst:
+		@return:
+		"""
 		regexpPatternLst = []
 		
 		for fileTypeWildchardExpr in excludedFileTypeWildchardLst:
@@ -144,6 +192,11 @@ class FileLister:
 		return regexpPatternLst
 			
 	def convertWildcardExprStrToRegexpStr(self, wildcardExpression):
+		"""
+
+		@param wildcardExpression:
+		@return:
+		"""
 		regexpStr = wildcardExpression.replace("\\", "\\\\")
 		regexpStr = regexpStr.replace(".", "\.")
 		regexpStr = regexpStr.replace("*", ".*")
