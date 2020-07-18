@@ -39,7 +39,7 @@ class FileLister:
 			'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
 			'*.py': ('/', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
 		"""
-		filePatternDirDic = self.configManager.getFilePatternLocalDestinations(projectName)
+		filePatternDirDic = self.configManager.getFilePatternLocalDestinationDic(projectName)
 		
 		# converting the file pattern dir dictionary to a list of (key, value)
 		# tuples in order to then sort the tuples.

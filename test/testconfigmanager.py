@@ -107,7 +107,7 @@ class TestConfigManager(unittest.TestCase):
 		
 		self.assertEqual([], cm.getExcludedDirLst(projectName))
 			
-	def testGetFilePatternLocalDestinations(self):
+	def testGetFilePatternLocalDestinationDic(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
@@ -117,9 +117,9 @@ class TestConfigManager(unittest.TestCase):
 		projectName = 'transFileCloudTestProject'
 		
 		if os.name == 'posix':
-			self.assertEqual({'test*.py': '/test', '*.py': '', '*.md': '', '*.docx': '/doc', '*.jpg': '/images', 'aa*.jpg': '/images/aa',}, cm.getFilePatternLocalDestinations(projectName))
+			self.assertEqual({'test*.py': '/test', '*.py': '', '*.md': '', '*.docx': '/doc', '*.jpg': '/images', 'aa*.jpg': '/images/aa'}, cm.getFilePatternLocalDestinationDic(projectName))
 		else:
-			self.assertEqual({'test*.py': '\\test', '*.py': '', '*.md': '', '*.docx': '\\doc', '*.jpg': '\\images',  'aa*.jpg': '\\images\\aa',}, cm.getFilePatternLocalDestinations(projectName))
+			self.assertEqual({'test*.py': '\\test', '*.py': '', '*.md': '', '*.docx': '\\doc', '*.jpg': '\\images',  'aa*.jpg': '\\images\\aa'}, cm.getFilePatternLocalDestinationDic(projectName))
 
 if __name__ == '__main__':
 	unittest.main()

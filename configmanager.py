@@ -86,34 +86,63 @@ class ConfigManager:
 		self.config.write()
 
 	def getExcludedDirLst(self, projectName):
+		"""
+		Returns the list of excluded dirs. Those directories will be excluded
+		from searching modified files to be uploaded to the cloud.
+		 
+		@param projectName: project name as defined in local configuration file
+		
+		@return: list of full path excluded dirs
+		"""
 		try:
-			excludedDirSectionLst = self.projects[projectName]['upload']['exclude']['directories']
+			excludedDirSectionDic = self.projects[projectName]['upload']['exclude']['directories']
 		except KeyError:
 			# the case if no exclude section is defined for this project in the config file
 			return []
 
 		excludedDirLst = []
-		
-		for dirSection in excludedDirSectionLst:
-			excludedDirLst.append(self.getProjectLocalDir(projectName) + self.removeExcessiveBackslash(excludedDirSectionLst[dirSection]['path']))
+		projectLocalDir = self.getProjectLocalDir(projectName)
+
+		for exclDirKey in excludedDirSectionDic.keys():
+			excludedDirLst.append(projectLocalDir + self.removeExcessiveBackslash(excludedDirSectionDic[exclDirKey]['path']))
 			
 		return excludedDirLst
 
 	def getExcludedFileTypeWildchardLst(self, projectName):
+		"""
+		Returns the list of excluded file type for the passed project name.
+		
+		@param projectName: project name as defined in local configuration file
+		
+		@return example: ['*.pyc', '*.ini', '*.tmp']
+		"""
 		try:
-			excludedFileTypesSection = self.projects[projectName]['upload']['exclude']['filePatterns']
+			excludedFileTypesSectionDic = self.projects[projectName]['upload']['exclude']['filePatterns']
 		except KeyError:
 			# the case if no exclude section is defined for this project in the config file
 			return []
 			
 		excludedFileTypeWildchardLst = []
 		
-		for wildchardFileType in excludedFileTypesSection:
-			excludedFileTypeWildchardLst.append(excludedFileTypesSection[wildchardFileType])
+		for wildchardFileTypeKey in excludedFileTypesSectionDic.keys():
+			excludedFileTypeWildchardLst.append(excludedFileTypesSectionDic[wildchardFileTypeKey])
 			
 		return excludedFileTypeWildchardLst
 		
-	def getFilePatternLocalDestinations(self, projectName):
+	def getFilePatternLocalDestinationDic(self, projectName):
+		"""
+		Returns a dictionary whose keys are file wildchard patterns and values
+		the corresponding directory destination project sub-dirs.
+		
+		@param projectName: project name as defined in local configuration file
+			
+		@return examplee: {'test*.py': '/test', 
+							'*.py': '', 
+							'*.md': '', 
+							'*.docx': '/doc', 
+							'*.jpg': '/images', 
+							'aa*.jpg': '/images/aa'
+		"""
 		filePatternLocalDestinationsDic = self.projects[projectName]['download']['filePatterns']
 
 		for key in filePatternLocalDestinationsDic.keys():
