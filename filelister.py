@@ -11,7 +11,7 @@ from constants import DIR_SEP, DATE_TIME_FORMAT
 class FileLister:
 	"""
 	This class manages the lists of files which will be moved to specific
-	directories
+	directories by the FileMover class.
 	"""
 	def __init__(self, configManager):
 		"""
@@ -61,20 +61,35 @@ class FileLister:
 			{'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']), 
 			'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
 			'*.rd': ('/', ['README_2.rd']),
-			'aa*.jpg': ('/images/aa', ['aa_current.jpg']),
+			'aa*.jpg': ('/images/diraa', ['aa_current.jpg']),
 			'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
 			'*.py': ('/', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
 		"""
 		filePatternDirDic = self.configManager.getFilePatternLocalDestinationDic(projectName)
 		
 		# converting the file pattern dir dictionary to a list of (key, value)
-		# tuples in order to then sort the tuples.
+		# tuples in order to then sort the tuples based on the key tuple element.
 		#
-		# Ex: {'test*.py': '/test', '*.py': '/'} --> [('test*.py', '/test'), ('*.py', '/')]
+		# Ex: 
+		# filePatternDirTupleLst = {'test*.py': '/test', '*.py': '/'} --> 
+		# filePatternDirTupleSortedLst = [('test*.py', '/test'), ('*.py', '/')]
+		
 		filePatternDirTupleLst = [item for item in filePatternDirDic.items()]
 		filePatternDirTupleSortedLst = self.sortFilePatternDirTupleLst(filePatternDirTupleLst)
+		
+		# extracting the tuple key element only in a key ordered list (first
+		# returned data structure)
+		
 		orderedFileTypeWildchardExprLst = [x[0] for x in filePatternDirTupleSortedLst]
+		
+		# obtaining the list of files dowloaded from the cloud and now contained
+		# in the download dir
+		
 		allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + '*.*')]
+		
+		# now building the second returned data structure), the file type
+		# dictionary
+		
 		fileTypeDic = {}
 		
 		for fileTypeWildchardExpr in orderedFileTypeWildchardExprLst:
@@ -83,23 +98,50 @@ class FileLister:
 			matchingFileNameLst = [x for x in allFileNameLst if regexpPattern.match(x)]
 			matchingFileNameLst.sort()
 			fileTypeDic[fileTypeWildchardExpr] = (filePatternDirDic[fileTypeWildchardExpr], matchingFileNameLst)
+			
+			# removing the files matched by the more specific pattern from
+			# the allFileNameLst so that are not "moved" twice, once in the
+			# more specific dir and once in the more general dir ...
 			allFileNameLst = [x for x in allFileNameLst if x not in matchingFileNameLst]			
 
 		return orderedFileTypeWildchardExprLst, fileTypeDic
 	
 	def sortFilePatternDirTupleLst(self, filePatternDirTupleLst):
 		"""
+		This method return the filePatternDirTupleLst input tuple list reversely
+		sorted according to the first tuple element, which is the file wildchard
+		pattern. So, if we have two patterns like '*.py' and 'test*.py', 
+		'test*.py' will be ordered before the more general pattern '*.py'. The
+		effect is that the files destinated to the more specific directory
+		will be moved to this directory before the files destinated to the
+		more general directory. This is required since the more general pattern
+		includes files matched by the more specific pattern.
+		
+		@param filePatternDirTupleLst example:
+			[('*.py', '/'), ('test*.py', '/test'), ('*.jpg', '/images'), ('sub*.jpg', '/images/sub'), ('*.docx', '/doc')]
 
-		@param filePatternDirTupleLst:
-		@return:
+		@return value example:
+			[('test*.py', '/test'),  ('sub*.jpg', '/images/sub'),  ('*.jpg', '/images'),  ('*.docx', '/doc'),  ('*.py', '/')]
 		"""
 		return sorted(filePatternDirTupleLst, key=lambda tup: tup[1], reverse=True)
 
 	def getModifiedFileLst(self, projectName):
 		"""
-
-		@param projectName:
-		@return:
+		This method controls the listing of the files whose modification date is
+		after the last synch time date stored in the local configuration file.
+		
+		Only files which are not in excluded dirs or whose name does not match
+		an exclusion pattern, both criteria defined in the local configuration
+		file, will be included in the returned list.
+		
+		@param projectName: project name as defined in the local configuration
+							file
+			
+		@return: list of modified and not excluded file names
+				 list of modified and not excluded file path names
+				 lastSyncTimeStr as obtained from the config manager. This
+				 is only useful to avoid reasking this information
+				 in the caller of the method !
 		"""
 		projectDir = self.configManager.getProjectLocalDir(projectName)
 		lastSyncTimeStr = self.configManager.getLastSynchTime(projectName)
@@ -126,6 +168,14 @@ class FileLister:
 			2/ their name does not match the passed excluded file name pattern
 			   list
 			3/ their modification time is after the passed last synch time
+			
+		@param projectDir: local project dir containing the modified files
+		@param lastSyncTime: obtained as string from the local config file
+		@param excludedDirLst: obtained from the local config file
+		@param excludedFileNamePatternLst: obtained from the local config file
+
+		@return: list of modified and not excluded file names
+				 list of modified and not excluded file path names
 		"""
 		fileNameLst = []
 		filePathNameLst = []
@@ -146,20 +196,27 @@ class FileLister:
 
 		return fileNameLst, filePathNameLst
 
-	def isRootAsDirOrSubDirInExcludedDirLst(self, root, excludedDirLst):
+	def isRootAsDirOrSubDirInExcludedDirLst(self, subDir, excludedDirLst):
 		"""
+		Returns True if the passed subDir is listed in the passed excludedDirLst
+		or if it is a sub dir of one of the dir listed in excludedDirLst.
 
-		@param root:
+		Typically, the method will be useful to exclude the .git directory and all
+		its sub directories.
+
+		@param subDir:
 		@param excludedDirLst:
 		@return:
 		"""
-		if root in excludedDirLst:
+		if subDir in excludedDirLst:
 			return True
 			
-		for dir in excludedDirLst:
-			parentDir = Path(dir)
-			childDir = Path(root)
-			if parentDir in childDir.parents:
+		subDirPath = Path(subDir)
+			
+		for exclDir in excludedDirLst:
+			exclDirPath = Path(exclDir)
+			
+			if exclDirPath in subDirPath.parents:
 				return True
 
 		return False

@@ -219,5 +219,28 @@ class TestFileLister(unittest.TestCase):
 		filePatternDirTupleLst =  [('sub*.jpg', '/images/sub'), ('*.docx', '/doc'), ('*.jpg', '/images'), ('aa*.docx', '/doc/aa_sub_dir'), ('test*.py', '/test'), ('*.py', '/')]
 		self.assertEqual([('test*.py', '/test'), ('sub*.jpg', '/images/sub'), ('*.jpg', '/images'), ('aa*.docx', '/doc/aa_sub_dir'), ('*.docx', '/doc'), ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 
+	def testIsRootAsDirOrSubDirInExcludedDirLst(self):
+		if os.name == 'posix':
+			configFilePathName = '/sdcard/transfiles.ini'
+		else:
+			configFilePathName = 'c:\\temp\\transfiles.ini'
+			excludedDirLst = ['D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir',
+			 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved']
+
+			subDir1 = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir\\fromSubDir'
+			subDir2 = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved\\fromSubDir'
+			subDir3 = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir_saved\\fromSubDir'
+			dir1 = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
+			dir2 = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2'
+
+		cm = ConfigManager(configFilePathName)
+		fl = FileLister(cm)
+
+		self.assertTrue(fl.isRootAsDirOrSubDirInExcludedDirLst(subDir1, excludedDirLst))
+		self.assertTrue(fl.isRootAsDirOrSubDirInExcludedDirLst(subDir2, excludedDirLst))
+		self.assertTrue(fl.isRootAsDirOrSubDirInExcludedDirLst(dir1, excludedDirLst))
+		self.assertFalse(fl.isRootAsDirOrSubDirInExcludedDirLst(subDir3, excludedDirLst))
+		self.assertFalse(fl.isRootAsDirOrSubDirInExcludedDirLst(dir2, excludedDirLst))
+
 if __name__ == '__main__':
 	unittest.main()

@@ -136,12 +136,12 @@ class ConfigManager:
 		
 		@param projectName: project name as defined in local configuration file
 			
-		@return examplee: {'test*.py': '/test', 
+		@return example: {'test*.py': '/test', 
 							'*.py': '', 
 							'*.md': '', 
 							'*.docx': '/doc', 
 							'*.jpg': '/images', 
-							'aa*.jpg': '/images/aa'
+							'aa*.jpg': '/images/diraa'
 		"""
 		filePatternLocalDestinationsDic = self.projects[projectName]['download']['filePatterns']
 
