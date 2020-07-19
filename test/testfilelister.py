@@ -222,6 +222,14 @@ class TestFileLister(unittest.TestCase):
 	def testIsRootAsDirOrSubDirInExcludedDirLst(self):
 		if os.name == 'posix':
 			configFilePathName = '/sdcard/transfiles.ini'
+			excludedDirLst = ['/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir',
+			 '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved']
+
+			subDir1 = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir/fromSubDir'
+			subDir2 = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved/fromSubDir'
+			subDir3 = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir_saved/fromSubDir'
+			dir1 = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			dir2 = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2'
 		else:
 			configFilePathName = 'c:\\temp\\transfiles.ini'
 			excludedDirLst = ['D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir',
