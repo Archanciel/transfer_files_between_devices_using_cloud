@@ -11,9 +11,7 @@ code on your tablet or smartphone aswell as using an IDE on your Windows pc.
 More generally, it can be used to transfer any type of files between your 
 devices without having each time to care for the destination dir.
 
-## Current development state
-xR and yR mean x and y range respectively. The values are displayed as coord system titles.
-
+## Project class diagram
 <p align="center">
   <img src="images/class_diagram.jpg" width="600" title="Transfer File class diagram">
 </p>
