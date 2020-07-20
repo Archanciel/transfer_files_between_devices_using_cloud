@@ -19,8 +19,8 @@ class FileLister:
 		"""
 		FileLister constructor.
 		
-		@configManager: ConfigManager giving access to the local configuration
-						file data
+		@param configManager: ConfigManager giving access to the local configuration
+							  file data
 		"""
 		self.configManager = configManager
 
@@ -50,10 +50,10 @@ class FileLister:
 			raise NotADirectoryError(projectDir)
 
 		excludedDirLst = self.configManager.getExcludedDirLst(projectName)
-		excludedFileNameWildchardLst = self.configManager.getExcludedFileTypeWildchardLst(projectName)
-		excludedFileNameRegexpCompiledPatternLst = self.createRegexpPatternLstFromWildchardExprLst(excludedFileNameWildchardLst)
+		excludedFileTypeWildchardLst = self.configManager.getExcludedFileTypeWildchardLst(projectName)
+		excludedFileTypePatternLst = self.createRegexpPatternLstFromWildchardExprLst(excludedFileTypeWildchardLst)
 
-		fileNameLst, filePathNameLst = self.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileNameRegexpCompiledPatternLst)
+		fileNameLst, filePathNameLst = self.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
 
 		return fileNameLst, filePathNameLst, lastSyncTimeStr
 	
@@ -108,7 +108,7 @@ class FileLister:
 	
 		return regexpStr
 
-	def getModifiedAndNotExcludedFileLst(self, projectDir, lastSyncTime, excludedDirLst, excludedFileNameRegexpCompiledPatternLst):
+	def getModifiedAndNotExcludedFileLst(self, projectDir, lastSyncTime, excludedDirLst, excludedFileNamePatternLst):
 		"""
 		Returns two lists, one containing file names only, the other containing
 		corresponding file path names. The returned files satisfy three
@@ -122,9 +122,7 @@ class FileLister:
 		@param projectDir: local project dir containing the modified files
 		@param lastSyncTime: obtained as string from the local config file
 		@param excludedDirLst: obtained from the local config file
-		@param excludedFileNameRegexpCompiledPatternLst: obtained from the local config file
-														 and compiled to regexp patterns after
-														 conversion to regexp expression
+		@param excludedFileNamePatternLst: obtained from the local config file
 
 		@return: list of modified and not excluded file names
 				 list of modified and not excluded file path names
@@ -137,7 +135,7 @@ class FileLister:
 				continue
 
 			for fileName in files:
-				if self.excludeFile(fileName, excludedFileNameRegexpCompiledPatternLst):
+				if self.excludeFile(fileName, excludedFileNamePatternLst):
 					continue
 
 				pathfileName = os.path.join(root, fileName)
@@ -176,18 +174,17 @@ class FileLister:
 
 		return False
 
-	def excludeFile(self, fileName, excludedFileNameRegexpCompiledPatternLst):
+	def excludeFile(self, fileName, excludedFileNamePatternLst):
 		"""
 		Returns True if the passed fileName is matched by one of the regexp
-		pattern contained in the passed excludedFileNameRegexpCompiledPatternLst.
+		pattern contained in the passed excludedFileNamePatternLst.
 		
 		@param fileName: file name to test for exclusion
-		@param excludedFileNameRegexpCompiledPatternLst: list of compiled regexp pattern
-														 corresponding
-
-		@return:TrueorFalse
+		@param excludedFileNamePatternLst: list of compiled regexp pattern corresponding to the passed
+				 excludedFileTypeWildchardLst
+		@return:
 		"""
-		for pattern in excludedFileNameRegexpCompiledPatternLst:
+		for pattern in excludedFileNamePatternLst:
 			if pattern.match(fileName):
 				return True
 				
@@ -223,9 +220,9 @@ class FileLister:
 		adequate order the files contained in the download dir to their correct
 		local destination dir.
 		
-		@orderedTypeLst example: see below
+		@return orderedTypeLst example: see below
 		
-		@fileTypeDic example: see below
+		@return fileTypeDic example: see below
 		
 		Example of returned data structures for project 'transFileCloudTestProject'
 		and downloadDir '/test/testproject_2/fromdir':
@@ -294,7 +291,7 @@ class FileLister:
 		@param filePatternDirTupleLst example:
 			[('*.py', '/'), ('test*.py', '/test'), ('*.jpg', '/images'), ('sub*.jpg', '/images/sub'), ('*.docx', '/doc')]
 
-		@return corresponding sorted tuple list example:
+		@return value example:
 			[('test*.py', '/test'),  ('sub*.jpg', '/images/sub'),  ('*.jpg', '/images'),  ('*.docx', '/doc'),  ('*.py', '/')]
 		"""
 		return sorted(filePatternDirTupleLst, key=lambda tup: tup[1], reverse=True)			
