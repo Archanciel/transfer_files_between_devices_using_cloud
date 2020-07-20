@@ -3,6 +3,7 @@ import glob
 import re
 from pathlib import Path
 import functools
+import os
 
 from configmanager import *
 from constants import DIR_SEP, DATE_TIME_FORMAT
@@ -10,14 +11,187 @@ from constants import DIR_SEP, DATE_TIME_FORMAT
 
 class FileLister:
 	"""
-	This class manages the lists of files which will be moved to specific
-	directories by the FileMover class.
+	This class manages the lists of files which will either be uploaded to the 
+	cloud or be moved from the download directory to specific directories by the 
+	FileMover class.
 	"""
 	def __init__(self, configManager):
 		"""
 		FileLister constructor.
+		
+		@configManager: ConfigManager giving access to the local configuration
+						file data
 		"""
 		self.configManager = configManager
+
+	def getModifiedFileLst(self, projectName):
+		"""
+		This method controls the listing of the files whose modification date is
+		after the last synch time date stored in the local configuration file.
+		
+		Only files which are not in excluded dirs or whose name does not match
+		an exclusion pattern, both criteria defined in the local configuration
+		file, will be included in the returned list.
+		
+		@param projectName: project name as defined in the local configuration
+							file
+			
+		@return: list of modified and not excluded file names
+				 list of modified and not excluded file path names
+				 lastSyncTimeStr as obtained from the config manager. This
+				 is only useful to avoid reasking this information
+				 in the caller of the method !
+		"""
+		projectDir = self.configManager.getProjectLocalDir(projectName)
+		lastSyncTimeStr = self.configManager.getLastSynchTime(projectName)
+		lastSyncTime = datetime.datetime.strptime(lastSyncTimeStr, DATE_TIME_FORMAT)
+
+		if not os.path.isdir(projectDir):
+			raise NotADirectoryError(projectDir)
+
+		excludedDirLst = self.configManager.getExcludedDirLst(projectName)
+		excludedFileNameWildchardLst = self.configManager.getExcludedFileTypeWildchardLst(projectName)
+		excludedFileNameRegexpCompiledPatternLst = self.createRegexpPatternLstFromWildchardExprLst(excludedFileNameWildchardLst)
+
+		fileNameLst, filePathNameLst = self.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileNameRegexpCompiledPatternLst)
+
+		return fileNameLst, filePathNameLst, lastSyncTimeStr
+	
+	def createRegexpPatternLstFromWildchardExprLst(self, excludedFileTypeWildchardLst):
+		"""
+		Returns a list of compiled regexp pattern corresponding to the wildchard
+		file name patterns specified in the project upload exclude filePattern
+		sub-section as defined in the local configuration file.
+		
+		@param excludedFileTypeWildchardLst: list containing the wildchard
+											 file name patterns specified in the 
+											 project upload exclude filePattern
+										 	sub-section as defined in the local 
+										 	configuration file
+										 	
+		@return: a list of compiled regexp pattern corresponding to the passed
+				 excludedFileTypeWildchardLst:
+		"""
+		regexpPatternLst = []
+		
+		for fileTypeWildchardExpr in excludedFileTypeWildchardLst:
+			regexpStr = self.convertWildcardExprStrToRegexpStr(fileTypeWildchardExpr)
+			regexpPatternLst.append(re.compile(regexpStr))
+			
+		return regexpPatternLst
+			
+	def convertWildcardExprStrToRegexpStr(self, wildcardExpression):
+		"""
+		Converts a passed wildcardExpression specified in the project upload 
+		exclude filePattern sub-section as defined in the local configuration 
+		file to a regexp conform regpexp expression. See the examples
+		below ...
+		
+		'test*.py' --> 'test.*\.py\Z'
+		'/excldir/subdir/*.py' --> /excldir/subdir/.*\.py\Z'
+		'd:\\excldir\\subdir\\*.py' --> 'd:\\\\excldir\\\\subdir\\\\.*\.py\Z'
+		'/excldir/subdir/*.*' --> /excldir/subdir/.*\..*\Z'
+		'd:\\excldir\\subdir\\*.*' --> 'd:\\\\excldir\\\\subdir\\\\.*\..*\Z'
+		 
+		@param wildcardExpression: expression specified in the project upload 
+								   exclude filePattern sub-section
+								   
+		@return: corresponding regexp conform expression
+		"""
+		regexpStr = wildcardExpression.replace("\\", "\\\\")
+		regexpStr = regexpStr.replace(".", "\.")
+		regexpStr = regexpStr.replace("*", ".*")
+		regexpStr += "\Z"
+	
+		# no effect !
+		# regexpStr = "\A" + regexpStr
+	
+		return regexpStr
+
+	def getModifiedAndNotExcludedFileLst(self, projectDir, lastSyncTime, excludedDirLst, excludedFileNameRegexpCompiledPatternLst):
+		"""
+		Returns two lists, one containing file names only, the other containing
+		corresponding file path names. The returned files satisfy three
+		constraints:
+		
+			1/ they are not in any of the passed excluded dir list
+			2/ their name does not match the passed excluded file name pattern
+			   list
+			3/ their modification time is after the passed last synch time
+			
+		@param projectDir: local project dir containing the modified files
+		@param lastSyncTime: obtained as string from the local config file
+		@param excludedDirLst: obtained from the local config file
+		@param excludedFileNameRegexpCompiledPatternLst: obtained from the local config file
+														 and compiled to regexp patterns after
+														 conversion to regexp expression
+
+		@return: list of modified and not excluded file names
+				 list of modified and not excluded file path names
+		"""
+		fileNameLst = []
+		filePathNameLst = []
+
+		for root, dirs, files in os.walk(projectDir):
+			if self.isRootAsDirOrSubDirInExcludedDirLst(root, excludedDirLst):
+				continue
+
+			for fileName in files:
+				if self.excludeFile(fileName, excludedFileNameRegexpCompiledPatternLst):
+					continue
+
+				pathfileName = os.path.join(root, fileName)
+				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
+				if (file_mtime > lastSyncTime):
+					fileNameLst.append(fileName)
+					filePathNameLst.append(pathfileName)
+
+		return fileNameLst, filePathNameLst
+
+	def isRootAsDirOrSubDirInExcludedDirLst(self, subDir, excludedDirLst):
+		"""
+		Returns True if the passed subDir is listed in the passed excludedDirLst
+		or if it is a sub dir of one of the dir listed in excludedDirLst.
+
+		Typically, the method will be useful to exclude the .git directory and all
+		its sub directories.
+
+		@param subDir: directory to test for exclusion
+		@param excludedDirLst: list of dirs to exclude as specified in the project
+							   upload exclude directories sub-section defined
+							   the local config file
+							   
+		@return: True or False
+		"""
+		if subDir in excludedDirLst:
+			return True
+			
+		subDirPath = Path(subDir)
+			
+		for exclDir in excludedDirLst:
+			exclDirPath = Path(exclDir)
+			
+			if exclDirPath in subDirPath.parents:
+				return True
+
+		return False
+
+	def excludeFile(self, fileName, excludedFileNameRegexpCompiledPatternLst):
+		"""
+		Returns True if the passed fileName is matched by one of the regexp
+		pattern contained in the passed excludedFileNameRegexpCompiledPatternLst.
+		
+		@param fileName: file name to test for exclusion
+		@param excludedFileNameRegexpCompiledPatternLst: list of compiled regexp pattern
+														 corresponding
+
+		@return:TrueorFalse
+		"""
+		for pattern in excludedFileNameRegexpCompiledPatternLst:
+			if pattern.match(fileName):
+				return True
+				
+		return False		
 
 	def getFilesByOrderedTypes(self, projectName, downloadDir):
 		"""
@@ -120,150 +294,10 @@ class FileLister:
 		@param filePatternDirTupleLst example:
 			[('*.py', '/'), ('test*.py', '/test'), ('*.jpg', '/images'), ('sub*.jpg', '/images/sub'), ('*.docx', '/doc')]
 
-		@return value example:
+		@return corresponding sorted tuple list example:
 			[('test*.py', '/test'),  ('sub*.jpg', '/images/sub'),  ('*.jpg', '/images'),  ('*.docx', '/doc'),  ('*.py', '/')]
 		"""
-		return sorted(filePatternDirTupleLst, key=lambda tup: tup[1], reverse=True)
-
-	def getModifiedFileLst(self, projectName):
-		"""
-		This method controls the listing of the files whose modification date is
-		after the last synch time date stored in the local configuration file.
-		
-		Only files which are not in excluded dirs or whose name does not match
-		an exclusion pattern, both criteria defined in the local configuration
-		file, will be included in the returned list.
-		
-		@param projectName: project name as defined in the local configuration
-							file
-			
-		@return: list of modified and not excluded file names
-				 list of modified and not excluded file path names
-				 lastSyncTimeStr as obtained from the config manager. This
-				 is only useful to avoid reasking this information
-				 in the caller of the method !
-		"""
-		projectDir = self.configManager.getProjectLocalDir(projectName)
-		lastSyncTimeStr = self.configManager.getLastSynchTime(projectName)
-		lastSyncTime = datetime.datetime.strptime(lastSyncTimeStr, DATE_TIME_FORMAT)
-
-		if not os.path.isdir(projectDir):
-			raise NotADirectoryError(projectDir)
-
-		excludedDirLst = self.configManager.getExcludedDirLst(projectName)
-		excludedFileTypeWildchardLst = self.configManager.getExcludedFileTypeWildchardLst(projectName)
-		excludedFileTypePatternLst = self.createRegexpPatternLstFromWildchardExprLst(excludedFileTypeWildchardLst)
-
-		fileNameLst, filePathNameLst = self.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
-
-		return fileNameLst, filePathNameLst, lastSyncTimeStr
-
-	def getModifiedAndNotExcludedFileLst(self, projectDir, lastSyncTime, excludedDirLst, excludedFileNamePatternLst):
-		"""
-		Returns two lists, one containing file names only, the other containing
-		corresponding file path names. The returned files satisfy three
-		constraints:
-		
-			1/ they are not in any of the passed excluded dir list
-			2/ their name does not match the passed excluded file name pattern
-			   list
-			3/ their modification time is after the passed last synch time
-			
-		@param projectDir: local project dir containing the modified files
-		@param lastSyncTime: obtained as string from the local config file
-		@param excludedDirLst: obtained from the local config file
-		@param excludedFileNamePatternLst: obtained from the local config file
-
-		@return: list of modified and not excluded file names
-				 list of modified and not excluded file path names
-		"""
-		fileNameLst = []
-		filePathNameLst = []
-
-		for root, dirs, files in os.walk(projectDir):
-			if self.isRootAsDirOrSubDirInExcludedDirLst(root, excludedDirLst):
-				continue
-
-			for fileName in files:
-				if self.excludeFile(fileName, excludedFileNamePatternLst):
-					continue
-
-				pathfileName = os.path.join(root, fileName)
-				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
-				if (file_mtime > lastSyncTime):
-					fileNameLst.append(fileName)
-					filePathNameLst.append(pathfileName)
-
-		return fileNameLst, filePathNameLst
-
-	def isRootAsDirOrSubDirInExcludedDirLst(self, subDir, excludedDirLst):
-		"""
-		Returns True if the passed subDir is listed in the passed excludedDirLst
-		or if it is a sub dir of one of the dir listed in excludedDirLst.
-
-		Typically, the method will be useful to exclude the .git directory and all
-		its sub directories.
-
-		@param subDir:
-		@param excludedDirLst:
-		@return:
-		"""
-		if subDir in excludedDirLst:
-			return True
-			
-		subDirPath = Path(subDir)
-			
-		for exclDir in excludedDirLst:
-			exclDirPath = Path(exclDir)
-			
-			if exclDirPath in subDirPath.parents:
-				return True
-
-		return False
-
-	def excludeFile(self, fileName, excludedFileNamePatternLst):
-		"""
-
-		@param fileName:
-		@param excludedFileNamePatternLst:
-		@return:
-		"""
-		for pattern in excludedFileNamePatternLst:
-			if pattern.match(fileName):
-				return True
-				
-		return False		
-	
-	def createRegexpPatternLstFromWildchardExprLst(self, excludedFileTypeWildchardLst):
-		"""
-
-		@param excludedFileTypeWildchardLst:
-		@return:
-		"""
-		regexpPatternLst = []
-		
-		for fileTypeWildchardExpr in excludedFileTypeWildchardLst:
-			regexpStr = self.convertWildcardExprStrToRegexpStr(fileTypeWildchardExpr)
-			regexpPatternLst.append(re.compile(regexpStr))
-			
-		return regexpPatternLst
-			
-	def convertWildcardExprStrToRegexpStr(self, wildcardExpression):
-		"""
-
-		@param wildcardExpression:
-		@return:
-		"""
-		regexpStr = wildcardExpression.replace("\\", "\\\\")
-		regexpStr = regexpStr.replace(".", "\.")
-		regexpStr = regexpStr.replace("*", ".*")
-		regexpStr += "\Z"
-	
-		# no effect !
-		# regexpStr = "\A" + regexpStr
-	
-		return regexpStr
-			
+		return sorted(filePatternDirTupleLst, key=lambda tup: tup[1], reverse=True)			
 	
 if __name__ == "__main__":
 	if os.name == 'posix':
