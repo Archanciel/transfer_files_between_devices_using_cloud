@@ -13,7 +13,7 @@ class TransferFiles:
 	
 	The TransferFiles utility is used to transfer files from one device to 
 	another device using the cloud as intermediary location. What makes 
-	TransferFiles unique is that the directory structures on both source
+	TransferFiles unique is that the directory structures on both source and
 	target devices can be different. A local configuration file (transfiles.ini)
 	stores the information required for the transfer to be done correctly.
 	"""
