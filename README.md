@@ -16,6 +16,10 @@ devices without having each time to care for the destination dir.
   <img src="images/class_diagram.jpg" width="600" title="Transfer File class diagram">
 </p>
 
+## Required libraries
+- configobj
+- dropbox
+
 ## Version history
 - 1.1 Added handling command line arguments
 - 1.0 Working and unit tested version
