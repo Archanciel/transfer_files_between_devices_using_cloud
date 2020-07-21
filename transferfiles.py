@@ -107,6 +107,11 @@ class TransferFiles:
 		Finally, the last synch date is updated to now in the local configuration
 		file.
 		
+		But the user may be nn the situation where he uploaded some modified files
+		and then modified some uploaded files again or changed new files. In this
+		case, he does not accept the download and will then be prompted for
+		uploading the new modified files.
+		
 		@param cloudFileLst: contains the list of file names for the files
 							 available on the cloud
 		"""
@@ -123,7 +128,7 @@ class TransferFiles:
 
 			# moving file from dowload dir to project dest dir and sub-dirs
 			fileMover = FileMover(self.configManager, self.projectName)
-			fileMover.moveFiles()
+			fileMover.moveFilesToLocalDirs()
 
 			# updating last synch time for the project in the local config file
 			self.updateLastSynchTime()

@@ -76,7 +76,7 @@ class TestFileMover(unittest.TestCase):
 		outputCapturingString = StringIO()
 		sys.stdout = outputCapturingString
 
-		fm.moveFiles()
+		fm.moveFilesToLocalDirs()
 
 		sys.stdout = stdout
 				

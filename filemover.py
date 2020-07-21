@@ -24,7 +24,7 @@ class FileMover:
 		self.projectDir = configManager.getProjectLocalDir(projectName)
 		self.fileNameLister = FileLister(configManager)
 
-	def moveFiles(self):
+	def moveFilesToLocalDirs(self):
 		"""
 		This method performs the physical moving of the files from the local
 		download dir to the correct target dirs which depend on the file type or
@@ -82,4 +82,4 @@ if __name__ == "__main__":
 	projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/'
 
 	fm = FileMover(ConfigManager('/sdcard/transfiles.ini'), fromDir, projectDir)
-	fm.moveFiles()
+	fm.moveFilesToLocalDirs()
