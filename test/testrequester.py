@@ -136,6 +136,37 @@ class TestRequester(unittest.TestCase):
 		sys.stdout = stdout
 		self.assertEqual('Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 
+	def testGetUserConfirmation_uploadFiles(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+
+		configManager = ConfigManager(configFilePathName)
+		rq = Requester(configManager)
+
+		# simulating user input
+		stdin = sys.stdin
+		sys.stdin = StringIO('y')
+
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+
+		updatedFileNameLst = ['constants_2.py', 'filelister_2.py', 'testfilelister_2.py']
+		updatedFilePathNameLst = ['/project/constants_2.py', '/project/filelister_2.py', '/project/test/testfilelister_2.py']
+		questionStr = '^^^ {} files were modified locally after {}\nand will be uploaded to the cloud.\nChoose P to display the path or U to update the last sync time'.format(
+			len(updatedFileNameLst), '2020-07-22 15:30:22')
+		doUpload, lastSynchTimeChoice = rq.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
+
+		sys.stdin = stdin
+		sys.stdout = stdout
+
+		self.assertEqual('\nconstants_2.py\nfilelister_2.py\ntestfilelister_2.py\n\n^^^ 3 files were modified locally after 2020-07-22 15:30:22\nand will be uploaded to the cloud.\nChoose P to display the path or U to update the last sync time.\n\nContinue (Y/N/P/U) ',
+			outputCapturingString.getvalue())
+		self.assertTrue(doUpload)
+		self.assertEqual('',lastSynchTimeChoice)
+
 if __name__ == '__main__':
 	unittest.main()
 	#tst = TestRequester()

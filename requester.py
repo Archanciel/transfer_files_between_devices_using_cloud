@@ -9,9 +9,12 @@ class Requester:
 		
 	def getProjectName(self, commandLineArgs=None):
 		"""
-
-		@param commandLineArgs: used for unit testing
-		@return:
+		Unless a command line arg is available this method ask the user to 
+		select the project on which to apply the Transfer Files utility.
+		
+		@param commandLineArgs: used for unit testing only
+		
+		@return: selected project name or None if user entered Q for quit
 		"""
 		if commandLineArgs == None:
 			# we are not unit testing ...
@@ -53,6 +56,15 @@ class Requester:
 		return projectName
 
 	def getCreateCloudFolderConfirmation(self, folderName):
+		"""
+		This method ask the user if a new cloud directory has to be created
+		or not. The method is called the very first time a project is handled
+		by the Transfer Files utility. This is useful to enable the user to
+		make sure the project name as defined in the local configuration file
+		is correct, since the cloud dir is named with the project name.
+		
+		@param folderName: name of cloud dir, same as project name
+		"""
 		questionStr = 'Cloud project directory {} does not exist and will be created'.format(folderName)
 		userPrompt = '\n' + questionStr + '.\n\nContinue (Y/N) '
 		userChoice = input(userPrompt).upper()
@@ -64,11 +76,25 @@ class Requester:
 										
 	def getUserConfirmation(self, questionStr, fileNameLst=[], filePathNameLst=[]):
 		"""
-
+		This method handles user confirmation in case of both uploading localy
+		modified files to the cloud and downloading files from the cloud.
+		
+		In case of modified files upload, the user has several choices:
+			
+			o he can approve the upload
+			o he can ask to list the modified files with their path
+			o he can choose to update the last synch time
+		
+		In case of downloading files from the cloud, the user can simply 
+		accept the download and move to the correct dirs. In case he refuses
+		the download, he will then have the possibility to upload modified
+		files instead. This enables the user to upload files, then modify
+		additional or same files and upload or re-upload them on the cloud.
+			
 		@param questionStr:
 		@param fileNameLst:
 		@param filePathNameLst:
-		@return: True if user confims files upload and '' for new synch time
+		@return: True if user confirms files upload and '' for new synch time
 				 False if user cancels files upload and '' for new synch time
 				 False and new synch time answer if user wants to update the
 				 project synch time without uploading any file.
@@ -99,6 +125,11 @@ class Requester:
 		return self.handleUserChoice(userChoice)
 
 	def handleUserChoice(self, userChoice):
+		"""
+
+		@param userChoice:
+		@return:
+		"""
 		if 'U' in userChoice:
 			return self.askUserNewSyncTime()
 		elif userChoice == 'Y':
@@ -142,6 +173,10 @@ class Requester:
 		return userPrompt
 		
 	def askUserNewSyncTime(self):
+		"""
+
+		@return:
+		"""
 		userPrompt = '\nUpdating the project last synch time.\nType Enter to leave it unchanged, N to update it to Now and\nyyyy-mm-dd hh:mm:ss to fully specify the date '
 
 		return False, input(userPrompt).upper()
