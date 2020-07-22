@@ -1,4 +1,5 @@
 from datetime import datetime
+import requests
 
 from constants import *
 from requester import Requester
@@ -234,4 +235,8 @@ class TransferFiles:
 
 if __name__ == "__main__":
 	tf = TransferFiles()
-	tf.transferFiles()
+
+	try:
+		tf.transferFiles()
+	except requests.exceptions.ConnectionError:
+		print("No internet access. Fix the problem and retry !")
