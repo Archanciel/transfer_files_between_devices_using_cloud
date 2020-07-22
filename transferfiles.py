@@ -178,7 +178,7 @@ class TransferFiles:
 			# here, neither modified files upload nor cloud files download is adequate. Instead
 			# of simply closing the utility, we give the user the possibility to update the last 
 			# synch time
-			questionStr = 'No files modified locally since last sync time {}.\nChoose U to update the last sync time, Q to quit.'.format(lastSyncTimeStr)
+			questionStr = 'No files modified locally since last sync time {}.\nChoose U to update the last sync time, Q or Enter to quit.'.format(lastSyncTimeStr)
 			_, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
 			self.handleLastSynchTimeChoice(lastSynchTimeChoice)
 
