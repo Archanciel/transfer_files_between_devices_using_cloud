@@ -58,11 +58,15 @@ class FileMover:
 			for fileToMoveName in fileToMoveNameLst:
 				fromFilePath = self.downloadDir + DIR_SEP + fileToMoveName
 				toFilePath = destinationDir + DIR_SEP + fileToMoveName
-				shutil.move(fromFilePath, toFilePath)
-				
-				fromFilePathShortened = self.shortenFileNamePath(fromFilePath)
-				toFilePathShortened = self.shortenFileNamePath(toFilePath)
-				print('moving {} to {}'.format(fromFilePathShortened, toFilePathShortened))
+				try:
+					shutil.move(fromFilePath, toFilePath)
+					fromFilePathShortened = self.shortenFileNamePath(fromFilePath)
+					toFilePathShortened = self.shortenFileNamePath(toFilePath)
+					print('moving {} to {}'.format(fromFilePathShortened, toFilePathShortened))
+				except PermissionError:
+					# May happen on Windows if file desktop.ini is in download dir and download
+					# filePatterns contain *.ini
+					pass
 
 	def shortenFileNamePath(self, completeFilePathName):
 		"""
