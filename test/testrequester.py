@@ -167,6 +167,36 @@ class TestRequester(unittest.TestCase):
 		self.assertTrue(doUpload)
 		self.assertEqual('',lastSynchTimeChoice)
 
+	def testGetUserConfirmation_downloadFiles(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+
+		configManager = ConfigManager(configFilePathName)
+		rq = Requester(configManager)
+
+		# simulating user input
+		stdin = sys.stdin
+		sys.stdin = StringIO('y')
+
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+
+		cloudFileLst = ['constants_2.py', 'filelister_2.py', 'testfilelister_2.py']
+		questionStr = 'vvv {} files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}.\nIf you want to upload new modified files instead, type N'.format(
+			len(cloudFileLst), 'ru.iiec.pydroid3/files/trans_file_cloud')
+		doDownload, lastSynchTimeChoice = rq.getUserConfirmation(questionStr, cloudFileLst)
+
+		sys.stdin = stdin
+		sys.stdout = stdout
+
+		self.assertEqual('\nconstants_2.py\nfilelister_2.py\ntestfilelister_2.py\n\nvvv 3 files will be transferred from the cloud and then moved to the correct dir and sub-dir of ru.iiec.pydroid3/files/trans_file_cloud.\nIf you want to upload new modified files instead, type N.\n\nContinue (Y/N) ',
+			outputCapturingString.getvalue())
+		self.assertTrue(doDownload)
+		self.assertEqual('',lastSynchTimeChoice)
+
 if __name__ == '__main__':
 	unittest.main()
 	#tst = TestRequester()
