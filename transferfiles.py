@@ -156,16 +156,15 @@ class TransferFiles:
 		cloud in the cloud dir specific to the project (having the same name
 		than the project name) and the last update date stored in the local
 		configuration file is set to now.
+		
+		In case no files were modified locally, we give the user the possibility
+		to modify the last synch time. This can be useful if the user wants to
+		move backward the last synch time in order to upload local files he
+		modified during the last hours ...
 		"""
 		updatedFileNameLst, updatedFilePathNameLst, lastSyncTimeStr = self.fileLister.getModifiedFileLst(self.projectName)
 		
-		if updatedFileNameLst == []:
-			# here, neither modified files upload nor cloud files download is adequate. We give
-			# the user the possibility to update the last synch time
-			questionStr = 'No files modified locally since last sync time {}.\nChoose U to update the last sync time, Q to quit.'.format(lastSyncTimeStr)
-			_, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
-			self.handleLastSynchTimeChoice(lastSynchTimeChoice)
-		else:
+		if updatedFileNameLst != []:
 			questionStr = '^^^ {} files were modified locally after {}\nand will be uploaded to the cloud.\nChoose P to display the path or U to update the last sync time'.format(
 				len(updatedFileNameLst), lastSyncTimeStr)
 			doUpload, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
@@ -175,6 +174,13 @@ class TransferFiles:
 				self.uploadToCloud(updatedFilePathNameLst)
 			else:
 				self.handleLastSynchTimeChoice(lastSynchTimeChoice)
+		else:
+			# here, neither modified files upload nor cloud files download is adequate. Instead
+			# of simply closing the utility, we give the user the possibility to update the last 
+			# synch time
+			questionStr = 'No files modified locally since last sync time {}.\nChoose U to update the last sync time, Q to quit.'.format(lastSyncTimeStr)
+			_, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
+			self.handleLastSynchTimeChoice(lastSynchTimeChoice)
 
 	def handleLastSynchTimeChoice(self, lastSynchTimeChoice):
 		if lastSynchTimeChoice == '':

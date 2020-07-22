@@ -94,8 +94,9 @@ class Requester:
 		@param questionStr:
 		@param fileNameLst:
 		@param filePathNameLst:
-		@return: True if user confirms files upload and '' for new synch time
-				 False if user cancels files upload and '' for new synch time
+			
+		@return: True and '' for new synch time if user confirms files upload
+				 False and '' for new synch time if user cancels files upload
 				 False and new synch time answer if user wants to update the
 				 project synch time without uploading any file.
 		"""
@@ -130,9 +131,14 @@ class Requester:
 
 	def handleUserChoice(self, userChoice):
 		"""
-
-		@param userChoice:
-		@return:
+		This method determines if the user choosed to upload the modified files,
+		to stop the utility or to update the last synch time in the local config
+		file.
+		
+		@param userChoice: the letter the user typed when prompted
+		
+		@return: True or False for upload confirmation and last synch time
+				 update value if any
 		"""
 		if 'U' in userChoice:
 			return self.askUserNewSyncTime()
@@ -143,11 +149,14 @@ class Requester:
 		
 	def addFilesToUserPrompt(self, questionStr, fileNameLst, path='', upload=''):
 		"""
-
-		@param questionStr:
-		@param fileNameLst:
-		@param detail:
-		@return:
+		This method adds upload or dowload file names to the user prompt.
+		
+		@param questionStr: the question displayed to the user
+		@param fileNameLst: file names to print before asking the question
+		@param path: either empty or '/P'
+		@param upload: either empty or '/U'
+		
+		@return: the full user prompt
 		"""
 		userPrompt = '\n'
 				
