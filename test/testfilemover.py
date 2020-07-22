@@ -16,7 +16,7 @@ else:
 	CONFIG_FILE_PATH_NAME = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_FileMover.ini'
 
 class TestFileMover(unittest.TestCase):
-	def testMoveFiles(self):
+	def testMoveFilesToLocalDirs(self):
 		if os.name == 'posix':
 			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
 			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
