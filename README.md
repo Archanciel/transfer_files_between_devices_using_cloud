@@ -21,5 +21,6 @@ devices without having each time to care for the destination dir.
 - dropbox
 
 ## Version history
+- 1.2 Added update synch time option if no files should be uploaded
 - 1.1 Added handling command line arguments
 - 1.0 Working and unit tested version
