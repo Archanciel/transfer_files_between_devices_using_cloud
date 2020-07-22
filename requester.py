@@ -116,9 +116,13 @@ class Requester:
 				userPrompt = self.addFilesToUserPrompt(questionStr, filePathNameLst,path='', upload='/U')
 			else:
 				return self.handleUserChoice(userChoice)
-		else:
+		elif fileNameLst != []:
 			# here, we are prompting for downloading files from the cloud
 			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst)
+		else:
+			# here, neither modified files upload nor cloud files download is adequate. We give
+			# the user the possibility to update the last synch time
+			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst, upload='/U')
 		
 		userChoice = input(userPrompt).upper()
 					
@@ -156,9 +160,14 @@ class Requester:
 				fileName = DIR_SEP.join(filePathNameElementLst)
  
 			userPrompt += fileName + '\n'
-						
-		userPrompt += '\n' + questionStr + '.\n\nContinue (Y/N{}{}) '.format(path, upload)
-					
+
+		if fileNameLst == []:
+			# here, neither modified files upload nor cloud files download is adequate. We give
+			# the user the possibility to update the last synch time
+			userPrompt += '\n' + questionStr + '.\n\nContinue (Q{}) '.format(upload)
+		else:
+			userPrompt += '\n' + questionStr + '.\n\nContinue (Y/N{}{}) '.format(path, upload)
+
 		return userPrompt
 	
 	def addErrorToUserPrompt(self, userPrompt):

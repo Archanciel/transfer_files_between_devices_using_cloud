@@ -160,7 +160,11 @@ class TransferFiles:
 		updatedFileNameLst, updatedFilePathNameLst, lastSyncTimeStr = self.fileLister.getModifiedFileLst(self.projectName)
 		
 		if updatedFileNameLst == []:
-			print('\nNo files modified locally since last sync time {}'.format(lastSyncTimeStr))
+			# here, neither modified files upload nor cloud files download is adequate. We give
+			# the user the possibility to update the last synch time
+			questionStr = 'No files modified locally since last sync time {}.\nChoose U to update the last sync time, Q to quit.'.format(lastSyncTimeStr)
+			_, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
+			self.handleLastSynchTimeChoice(lastSynchTimeChoice)
 		else:
 			questionStr = '^^^ {} files were modified locally after {}\nand will be uploaded to the cloud.\nChoose P to display the path or U to update the last sync time'.format(
 				len(updatedFileNameLst), lastSyncTimeStr)
@@ -169,16 +173,20 @@ class TransferFiles:
 			if doUpload: 
 				print('')  # empty line
 				self.uploadToCloud(updatedFilePathNameLst)
-			elif lastSynchTimeChoice == '':
-				# the user did choose not to upload anything and to leave the last sync
-				# time unchanged
-				return
-			elif lastSynchTimeChoice == 'N':
-				# the user did choose to update the last sync time to current time (now)
-				self.updateLastSynchTime()
 			else:
-				# the user did enter a last sync time manually
-				self.updateLastSynchTime(lastSynchTimeChoice)
+				self.handleLastSynchTimeChoice(lastSynchTimeChoice)
+
+	def handleLastSynchTimeChoice(self, lastSynchTimeChoice):
+		if lastSynchTimeChoice == '':
+			# the user did choose not to upload anything and to leave the last sync
+			# time unchanged
+			return
+		elif lastSynchTimeChoice == 'N':
+			# the user did choose to update the last sync time to current time (now)
+			self.updateLastSynchTime()
+		else:
+			# the user did enter a last sync time manually
+			self.updateLastSynchTime(lastSynchTimeChoice)
 
 	def uploadToCloud(self, updatedFilePathNameLst):
 		"""
