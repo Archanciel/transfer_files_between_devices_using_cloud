@@ -24,7 +24,7 @@ class FileMover:
 		self.projectDir = configManager.getProjectLocalDir(projectName)
 		self.fileNameLister = FileLister(configManager)
 
-	def moveFilesToLocalDirs(self):
+	def moveFilesToLocalDirs(self, cloudFileLst):
 		"""
 		This method performs the physical moving of the files from the local
 		download dir to the correct target dirs which depend on the file type or
@@ -47,8 +47,11 @@ class FileMover:
 		'aa*.jpg': ('/images/aa', ['aa_current.jpg']),
 		'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
 		'*.py': ('/', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
+
+		@param cloudFileLst: list of files downloaded from the cloud to the download dir which
+							 must be moved to their destination dir
 		"""
-		orderedFileTypeWildchardExprLst, fileTypeDic = self.fileNameLister.getFilesByOrderedTypes(self.projectName, self.downloadDir)
+		orderedFileTypeWildchardExprLst, fileTypeDic = self.fileNameLister.getFilesByOrderedTypes(self.projectName, cloudFileLst=cloudFileLst)
 		
 		for fileTypeWildchardExpr in orderedFileTypeWildchardExprLst:
 			fileTypeEntryTuple = fileTypeDic[fileTypeWildchardExpr]
@@ -58,15 +61,10 @@ class FileMover:
 			for fileToMoveName in fileToMoveNameLst:
 				fromFilePath = self.downloadDir + DIR_SEP + fileToMoveName
 				toFilePath = destinationDir + DIR_SEP + fileToMoveName
-				try:
-					shutil.move(fromFilePath, toFilePath)
-					fromFilePathShortened = self.shortenFileNamePath(fromFilePath)
-					toFilePathShortened = self.shortenFileNamePath(toFilePath)
-					print('moving {} to {}'.format(fromFilePathShortened, toFilePathShortened))
-				except PermissionError:
-					# May happen on Windows if file desktop.ini is in download dir and download
-					# filePatterns contain *.ini
-					pass
+				shutil.move(fromFilePath, toFilePath)
+				fromFilePathShortened = self.shortenFileNamePath(fromFilePath)
+				toFilePathShortened = self.shortenFileNamePath(toFilePath)
+				print('moving {} to {}'.format(fromFilePathShortened, toFilePathShortened))
 
 	def shortenFileNamePath(self, completeFilePathName):
 		"""

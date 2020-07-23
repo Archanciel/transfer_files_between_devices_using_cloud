@@ -129,7 +129,7 @@ class TransferFiles:
 
 			# moving file from dowload dir to project dest dir and sub-dirs
 			fileMover = FileMover(self.configManager, self.projectName)
-			fileMover.moveFilesToLocalDirs()
+			fileMover.moveFilesToLocalDirs(cloudFileLst)
 
 			# updating last synch time for the project in the local config file
 			self.updateLastSynchTime()

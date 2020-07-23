@@ -132,15 +132,14 @@ class TestFileLister(unittest.TestCase):
 	def testGetFilesByOrderedTypes(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
+		cloudFileLst = ['aa_current.jpg', 'constants_2.py', 'current_state_21.jpg', 'current_state_22.jpg', 'doc_21.docx', 'doc_22.docx', 'filelister_2.py', 'filemover_2.py', 'README_2.md', 'testfilelister_2.py', 'testfilemover_2.py']
 
-		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
+		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', cloudFileLst=cloudFileLst)
 
 		self.assertEqual(['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
 
@@ -162,15 +161,14 @@ class TestFileLister(unittest.TestCase):
 	def testGetFilesByOrderedTypes_order_in_configFile_not_respected(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
 
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
+		cloudFileLst = ['aa_current.jpg', 'constants_2.py', 'current_state_21.jpg', 'current_state_22.jpg', 'doc_21.docx', 'doc_22.docx', 'filelister_2.py', 'filemover_2.py', 'README_2.md', 'testfilelister_2.py', 'testfilemover_2.py']
 
-		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
+		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', cloudFileLst=cloudFileLst)
 
 		self.assertEqual(['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
 

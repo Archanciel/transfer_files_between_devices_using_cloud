@@ -18,8 +18,8 @@ else:
 class TestFileMover(unittest.TestCase):
 	def testMoveFilesToLocalDirs(self):
 		if os.name == 'posix':
-			fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
-			fromDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
+			downloadDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			downloadDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
 			projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir'
 			projectDirEmpty = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir_empty'
 
@@ -28,8 +28,8 @@ class TestFileMover(unittest.TestCase):
 			DOC_SUB_DIR = '/doc'
 		else:
 			# Windows
-			fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
-			fromDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
+			downloadDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
+			downloadDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
 			projectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir'
 			projectDirEmpty = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir_empty'
 
@@ -39,12 +39,12 @@ class TestFileMover(unittest.TestCase):
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 
-		# deleting fromDir
-		if os.path.exists(fromDir):
-			shutil.rmtree(fromDir)
+		# deleting downloadDir
+		if os.path.exists(downloadDir):
+			shutil.rmtree(downloadDir)
 
-		# restoring fromDir from its saved version
-		shutil.copytree(fromDirSaved, fromDir)
+		# restoring downloadDir from its saved version
+		shutil.copytree(downloadDirSaved, downloadDir)
 
 		# deleting projectDir
 		if os.path.exists(projectDir):
@@ -53,11 +53,12 @@ class TestFileMover(unittest.TestCase):
 		# restoring a directory structure only project dir (no files) from its saved empty version
 		shutil.copytree(projectDirEmpty, projectDir)
 
-		# ensuring fromDir contains the required files
+		# ensuring downloadDir contains the required files
 		
 		fl = FileLister(configManager)
 		projectName = 'transFileCloudTestProject'
-		_, fileTypeDic = fl.getFilesByOrderedTypes(projectName, fromDir)
+		cloudFileLst = ['constants_1.py', 'current_state_11.jpg', 'current_state_12.jpg', 'doc_11.docx', 'doc_12.docx', 'filelister_1.py', 'filemover_1.py', 'README_1.md', 'testfilelister_1.py', 'testfilemover_1.py']
+		_, fileTypeDic = fl.getFilesByOrderedTypes(projectName, cloudFileLst=cloudFileLst)
 		
 		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), fileTypeDic['*.py'][1])
 		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), fileTypeDic['test*.py'][1])
@@ -66,7 +67,6 @@ class TestFileMover(unittest.TestCase):
 		self.assertEqual(sorted(['README_1.md']), fileTypeDic['*.md'][1])
 
 		fm = FileMover(configManager, projectName)
-		fm.downloadDir = fromDir
 		fm.projectDir = projectDir
 
 		# capturing stdout into StringIO to avoid outputing in terminal
@@ -76,7 +76,7 @@ class TestFileMover(unittest.TestCase):
 		outputCapturingString = StringIO()
 		sys.stdout = outputCapturingString
 
-		fm.moveFilesToLocalDirs()
+		fm.moveFilesToLocalDirs(cloudFileLst)
 
 		sys.stdout = stdout
 				
@@ -87,28 +87,28 @@ class TestFileMover(unittest.TestCase):
 
 		# verifying project dir
 		flp = FileLister(configManager)
-		_, projectDirFileTypeDic = flp.getFilesByOrderedTypes(projectName, projectDir)
+		_, projectDirFileTypeDic = flp.getFilesByOrderedTypes(projectName, localDir=projectDir)
 		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), projectDirFileTypeDic['*.py'][1])
 		self.assertEqual(sorted(['README_1.md']), projectDirFileTypeDic['*.md'][1])
 
 		# verifying project test sub dir
 		flt = FileLister(configManager)
-		_, projectTestDirFileTypeDic = flt.getFilesByOrderedTypes(projectName, projectDir + TEST_SUB_DIR)
+		_, projectTestDirFileTypeDic = flt.getFilesByOrderedTypes(projectName, localDir=projectDir + TEST_SUB_DIR)
 		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), projectTestDirFileTypeDic['test*.py'][1])
 
 		# verifying project images sub dir
 		fli = FileLister(configManager)
-		_, projectImagesDirFileTypeDic = fli.getFilesByOrderedTypes(projectName, projectDir + IMG_SUB_DIR)
+		_, projectImagesDirFileTypeDic = fli.getFilesByOrderedTypes(projectName, localDir=projectDir + IMG_SUB_DIR)
 		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), projectImagesDirFileTypeDic['*.jpg'][1])
 
 		# verifying project doc s	ub dir
 		fld = FileLister(configManager)
-		_, projectDocDirFileTypeDic = fld.getFilesByOrderedTypes(projectName, projectDir + DOC_SUB_DIR)
+		_, projectDocDirFileTypeDic = fld.getFilesByOrderedTypes(projectName, localDir=projectDir + DOC_SUB_DIR)
 		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), projectDocDirFileTypeDic['*.docx'][1])
 
 		# testing that download is now empty
 		fld = FileLister(configManager)
-		_, downloadDirFileTypeDic = fld.getFilesByOrderedTypes(projectName, fromDir)
+		_, downloadDirFileTypeDic = fld.getFilesByOrderedTypes(projectName, localDir=downloadDir)
 		self.assertEqual([], downloadDirFileTypeDic['*.py'][1])
 		self.assertEqual([], downloadDirFileTypeDic['test*.py'][1])
 		self.assertEqual([], downloadDirFileTypeDic['*.jpg'][1])

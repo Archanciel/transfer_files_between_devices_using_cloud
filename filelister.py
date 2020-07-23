@@ -190,46 +190,59 @@ class FileLister:
 				
 		return False		
 
-	def getFilesByOrderedTypes(self, projectName, downloadDir):
+	def getFilesByOrderedTypes(self, projectName, cloudFileLst=None, localDir=None):
 		"""
-		This method handles one of the key functionality of the TransferFiles 
+		This method handles one of the key functionality of the TransferFiles
 		utility. It returns two data structures. The first one is an ordered
 		list of wildchard file patterns. The list is ordered so that the file
-		pattern to handle first are positioned in the list before the more 
+		pattern to handle first are positioned in the list before the more
 		general file pattern.
-		
+
 		Lets take the example of 'test*.py' which is positioned before the more
 		general pattern '*.py'. This means that the files whose name starts with
-		'test' wiLl be moved from the download dir to their destination path before 
-		the other '*.py' files. If this order was not available, unit test Python 
-		files whose name start with 'test' would be moved from the download dir to
-		the project path root dir instead of being moved to the /test project 
-		sub-dir.
+		'test' wiLl be moved from the download dir to their destination path 
+		before the other '*.py' files. If this order was not applied, the unit 
+		test Python files whose name start with 'test' would be moved from the 
+		download dir to the project path root dir instead of being moved to the
+		/test project sub-dir.
+
+		Same remark for the 'aa*.jpg' files which would be moved from the 
+		download dir to the /images project sub-dir instead of being moved to 
+		the /images/aa project sub-dir.
+
+		The second data structure is a dictionary whose key is the wildchard 
+		file pattern listed in the first data structure and the value is a 
+		tuple of two elements: the first one is the project dir or sub-dir 
+		destination for this file nàme pattern and the second element is a 
+		list of files corresppnding to the file pattern and contained in the 
+		download dir.
+
+		The FileMover class will use those two data structures to move in the
+		adequate order to their correct local destination dir the files
+		downloaded from the cloud and contained in the download dir.
 		
-		Same remark for the 'aa*.jpg' files which would be moved from the download
-		dir to the /images project sub-dir instead of being moved to the
-		/images/aa project sub-dir.
+		Since the download dir may contain files matching the wildchard file
+		pattern but which were not downloaded from the cloud, the passed
+		cloudFileLst is used instead of the content of the download dir
+		in order to populate second element of the tuple value in the returned
+		dictionary.
 		
-		The second data structure is a dictionary whose key is the wildchard file 
-		pattern listed in the first data structure and the value is a tuple of two
-		elements: the first one is the project dir or sub-dir destination for this
-		file nàme pattern and the second element is a liet of files corresppnding
-		to the file pattern and contained in the download dir.
+		The optional localDir parameter is provided if the method is called
+		to return a dictionary whose file list values are based on the
+		content of the passed local dir, presently only used from unit tests.
 		
-		The FileMover class will use those two data etructure to move in the
-		adequate order the files contained in the download dir to their correct
-		local destination dir.
-		
+		@param cloudFileLst: list of files downloaded from the cloud to the 
+							 download dir which must be moved to their 
+							 destination dir
+
 		@return orderedTypeLst example: see below
-		
 		@return fileTypeDic example: see below
-		
+
 		Example of returned data structures for project 'transFileCloudTestProject'
 		and downloadDir '/test/testproject_2/fromdir':
-			
-			['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.rd']
 
-			{'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']), 
+			['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.rd']
+			{'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']),
 			'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
 			'*.rd': ('/', ['README_2.rd']),
 			'aa*.jpg': ('/images/diraa', ['aa_current.jpg']),
@@ -237,43 +250,46 @@ class FileLister:
 			'*.py': ('/', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
 		"""
 		filePatternDirDic = self.configManager.getFilePatternLocalDestinationDic(projectName)
-		
+
 		# converting the file pattern dir dictionary to a list of (key, value)
 		# tuples in order to then sort the tuples based on the key tuple element.
 		#
-		# Ex: 
-		# filePatternDirTupleLst = {'test*.py': '/test', '*.py': '/'} --> 
+		# Ex:
+		# filePatternDirTupleLst = {'test*.py': '/test', '*.py': '/'} -->
 		# filePatternDirTupleSortedLst = [('test*.py', '/test'), ('*.py', '/')]
-		
+
 		filePatternDirTupleLst = [item for item in filePatternDirDic.items()]
 		filePatternDirTupleSortedLst = self.sortFilePatternDirTupleLst(filePatternDirTupleLst)
-		
+
 		# extracting the tuple key element only in a key ordered list (first
 		# returned data structure)
-		
+
 		orderedFileTypeWildchardExprLst = [x[0] for x in filePatternDirTupleSortedLst]
-		
+
 		# obtaining the list of files dowloaded from the cloud and now contained
 		# in the download dir
-		
-		allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + '*.*')]
-		
+
+		if localDir:
+			allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(localDir + DIR_SEP + '*.*')]
+		else:
+			allFileNameLst = cloudFileLst
+
 		# now building the second returned data structure), the file type
 		# dictionary
-		
+
 		fileTypeDic = {}
-		
+
 		for fileTypeWildchardExpr in orderedFileTypeWildchardExprLst:
 			regexpStr = self.convertWildcardExprStrToRegexpStr(fileTypeWildchardExpr)
 			regexpPattern = re.compile(regexpStr)
 			matchingFileNameLst = [x for x in allFileNameLst if regexpPattern.match(x)]
 			matchingFileNameLst.sort()
 			fileTypeDic[fileTypeWildchardExpr] = (filePatternDirDic[fileTypeWildchardExpr], matchingFileNameLst)
-			
+
 			# removing the files matched by the more specific pattern from
 			# the allFileNameLst so that are not "moved" twice, once in the
 			# more specific dir and once in the more general dir ...
-			allFileNameLst = [x for x in allFileNameLst if x not in matchingFileNameLst]			
+			allFileNameLst = [x for x in allFileNameLst if x not in matchingFileNameLst]
 
 		return orderedFileTypeWildchardExprLst, fileTypeDic
 	
@@ -307,7 +323,7 @@ if __name__ == "__main__":
 	cm = ConfigManager(configFilePathName)
 	fl = FileLister(cm)
 	
-	orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', fromDir)
+	orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', localDir=fromDir)
 	
 	print(orderedFileTypeWildchardExprLst)
 	print(fileTypeDic)
