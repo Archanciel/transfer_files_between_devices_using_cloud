@@ -31,7 +31,7 @@ class FileMover:
 		name pattern as defined in the local configuration file.
 		
 		It uses a FileLister instance to obtain the required information for 
-		transfering the files at their right destination.
+		transferring the files at their right destination.
 		
 		Here are an example of the two data structures returned by FileLister 
 		and used by FileMover to transfer files in the adequate order at their 
@@ -78,10 +78,3 @@ class FileMover:
 		filePathNameElementLst = completeFilePathName.split(DIR_SEP)
 		
 		return DIR_SEP.join(filePathNameElementLst[-4:])									
-		
-if __name__ == "__main__":
-	fromDir = '/storage/emulated/0/Download'
-	projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/'
-
-	fm = FileMover(ConfigManager('/sdcard/transfiles.ini'), fromDir, projectDir)
-	fm.moveFilesToLocalDirs()

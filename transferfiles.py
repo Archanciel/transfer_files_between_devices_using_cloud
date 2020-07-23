@@ -21,6 +21,7 @@ class TransferFiles:
 	def __init__(self, configFilePath=None, projectName=None):
 		"""
 			TransferFiles constructor.
+
 		    @param configFilePath: used for unit testing only
 		    @param projectName used for unit testing only
 		"""
@@ -61,7 +62,7 @@ class TransferFiles:
 		"""
 		This is the main TransferFiles method. Depending on the content of the
 		cloud space for the current project, the user is prompted for uploading
-		files modified locally or for downloading and transfering to the right
+		files modified locally or for downloading and transferring to the right
 		local dirs of the files contained on the cloud.
 		"""
 		if self.projectName == None:
@@ -99,7 +100,7 @@ class TransferFiles:
 		provided that local files exist whose modification date is after
 		the last update date stored in the local configuration file.
 		
-		If the user confirms the download, the cloud files are dowloaded to
+		If the user confirms the download, the cloud files are downloaded to
 		the local download dir and then deleted from the cloud. Then, the
 		files are moved from the download dir to the correct project dir and
 		sub-dirs, using the information specified in the download section of
@@ -141,7 +142,7 @@ class TransferFiles:
 
 	def uploadModifiedFilesToCloud(self):
 		"""
-		This method first obtain the list of localfiles whose modification date
+		This method first obtain the list of local files whose modification date
 		is after the last update date stored in the local configuration file.
 		
 		If this list is not empty, an upload confirmation is asked to the user.
@@ -212,8 +213,8 @@ class TransferFiles:
 	def updateLastSynchTime(self, lastSynchTimeStr=''):
 		"""
 		If the passed lastSynchTimeStr is empty, sets the last update date
-		stored in the configuration file to now. Else, if the user specifiej
-		a synch date, validates it before settnng it in the config file.
+		stored in the configuration file to now. Else, if the user specified
+		a synch date, validates it before setting it in the config file.
 		
 		@param lastSynchTimeStr
 		"""

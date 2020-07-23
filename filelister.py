@@ -66,8 +66,8 @@ class FileLister:
 		@param excludedFileTypeWildchardLst: list containing the wildchard
 											 file name patterns specified in the 
 											 project upload exclude filePattern
-										 	sub-section as defined in the local 
-										 	configuration file
+										 	 sub-section as defined in the local
+										 	 configuration file
 										 	
 		@return: a list of compiled regexp pattern corresponding to the passed
 				 excludedFileTypeWildchardLst:
@@ -84,7 +84,7 @@ class FileLister:
 		"""
 		Converts a passed wildcardExpression specified in the project upload 
 		exclude filePattern sub-section as defined in the local configuration 
-		file to a regexp conform regpexp expression. See the examples
+		file to a regexp conform regexp expression. See the examples
 		below ...
 		
 		'test*.py' --> 'test.*\.py\Z'
@@ -180,9 +180,11 @@ class FileLister:
 		pattern contained in the passed excludedFileNamePatternLst.
 		
 		@param fileName: file name to test for exclusion
-		@param excludedFileNamePatternLst: list of compiled regexp pattern corresponding to the passed
-				 excludedFileTypeWildchardLst
-		@return:
+		@param excludedFileNamePatternLst: list of compiled regexp pattern
+			   corresponding to the passed excludedFileTypeWildchardLst
+
+		@return: True if the passed file name is matched by one of the passed
+				 compiled pattern
 		"""
 		for pattern in excludedFileNamePatternLst:
 			if pattern.match(fileName):
@@ -213,8 +215,8 @@ class FileLister:
 		The second data structure is a dictionary whose key is the wildchard 
 		file pattern listed in the first data structure and the value is a 
 		tuple of two elements: the first one is the project dir or sub-dir 
-		destination for this file nàme pattern and the second element is a 
-		list of files corresppnding to the file pattern and contained in the 
+		destination for this file name pattern and the second element is a
+		list of files corresponding to the file pattern and contained in the
 		download dir.
 
 		The FileMover class will use those two data structures to move in the
@@ -299,8 +301,8 @@ class FileLister:
 		sorted according to the first tuple element, which is the file wildchard
 		pattern. So, if we have two patterns like '*.py' and 'test*.py', 
 		'test*.py' will be ordered before the more general pattern '*.py'. The
-		effect is that the files destinated to the more specific directory
-		will be moved to this directory before the files destinated to the
+		effect is that the files destined to the more specific directory
+		will be moved to this directory before the files destined to the
 		more general directory. This is required since the more general pattern
 		includes files matched by the more specific pattern.
 		
@@ -311,19 +313,3 @@ class FileLister:
 			[('test*.py', '/test'),  ('sub*.jpg', '/images/sub'),  ('*.jpg', '/images'),  ('*.docx', '/doc'),  ('*.py', '/')]
 		"""
 		return sorted(filePatternDirTupleLst, key=lambda tup: tup[1], reverse=True)			
-	
-if __name__ == "__main__":
-	if os.name == 'posix':
-		configFilePathName = '/sdcard/transfiles.ini'
-		fromDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/fromdir'
-	else:
-		configFilePathName = 'c:\\temp\\transfiles.ini'
-		fromDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\fromdir'
-
-	cm = ConfigManager(configFilePathName)
-	fl = FileLister(cm)
-	
-	orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', localDir=fromDir)
-	
-	print(orderedFileTypeWildchardExprLst)
-	print(fileTypeDic)
