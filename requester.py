@@ -149,7 +149,7 @@ class Requester:
 		
 	def addFilesToUserPrompt(self, questionStr, fileNameLst, path='', upload=''):
 		"""
-		This method adds upload or dowload file names to the user prompt.
+		This method adds upload or download file names to the user prompt.
 		
 		@param questionStr: the question displayed to the user
 		@param fileNameLst: file names to print before asking the question
