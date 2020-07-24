@@ -80,7 +80,34 @@ class TestFileMover(unittest.TestCase):
 		fm.moveFilesToLocalDirs(cloudFileLst)
 
 		sys.stdout = stdout
-				
+
+		if os.name == 'posix':
+			self.assertEqual([
+								 'moving test/testproject_1/fromdir/testfilelister_1.py to testproject_1/projectdir/test/testfilelister_1.py',
+								 'moving test/testproject_1/fromdir/testfilemover_1.py to testproject_1/projectdir/test/testfilemover_1.py',
+								 'moving test/testproject_1/fromdir/current_state_11.jpg to testproject_1/projectdir/images/current_state_11.jpg',
+								 'moving test/testproject_1/fromdir/current_state_12.jpg to testproject_1/projectdir/images/current_state_12.jpg',
+								 'moving test/testproject_1/fromdir/doc_11.docx to testproject_1/projectdir/doc/doc_11.docx',
+								 'moving test/testproject_1/fromdir/doc_12.docx to testproject_1/projectdir/doc/doc_12.docx',
+								 'moving test/testproject_1/fromdir/constants_1.py to test/testproject_1/projectdir/constants_1.py',
+								 'moving test/testproject_1/fromdir/filelister_1.py to test/testproject_1/projectdir/filelister_1.py',
+								 'moving test/testproject_1/fromdir/filemover_1.py to test/testproject_1/projectdir/filemover_1.py',
+								 'moving test/testproject_1/fromdir/README_1.md to test/testproject_1/projectdir/README_1.md',
+								 ''],
+							 outputCapturingString.getvalue().split('\n'))
+		else:
+			self.assertEqual(['moving test\\testproject_1\\fromdir\\testfilelister_1.py to testproject_1\\projectdir\\test\\testfilelister_1.py',
+							  'moving test\\testproject_1\\fromdir\\testfilemover_1.py to testproject_1\\projectdir\\test\\testfilemover_1.py',
+							  'moving test\\testproject_1\\fromdir\\current_state_11.jpg to testproject_1\\projectdir\\images\\current_state_11.jpg',
+							  'moving test\\testproject_1\\fromdir\\current_state_12.jpg to testproject_1\\projectdir\\images\\current_state_12.jpg',
+							  'moving test\\testproject_1\\fromdir\\doc_11.docx to testproject_1\\projectdir\\doc\\doc_11.docx',
+							  'moving test\\testproject_1\\fromdir\\doc_12.docx to testproject_1\\projectdir\\doc\\doc_12.docx',
+							  'moving test\\testproject_1\\fromdir\\constants_1.py to test\\testproject_1\\projectdir\\constants_1.py',
+							  'moving test\\testproject_1\\fromdir\\filelister_1.py to test\\testproject_1\\projectdir\\filelister_1.py',
+							  'moving test\\testproject_1\\fromdir\\filemover_1.py to test\\testproject_1\\projectdir\\filemover_1.py',
+							  'moving test\\testproject_1\\fromdir\\README_1.md to test\\testproject_1\\projectdir\\README_1.md', ''],
+							 outputCapturingString.getvalue().split('\n'))
+
 		# verifying project dir
 		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + DIR_SEP + '*.*')]
 		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py', 'README_1.md']), sorted(fileNameLst))
