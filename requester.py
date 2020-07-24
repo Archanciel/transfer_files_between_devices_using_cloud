@@ -141,7 +141,7 @@ class Requester:
 				 update value if any
 		"""
 		if 'U' in userChoice:
-			return self.askUserNewSyncTime()
+			return False, self.askUserNewSyncTime()
 		elif userChoice == 'Y':
 			return True, ''
 		else:
@@ -181,9 +181,12 @@ class Requester:
 	
 	def addErrorToUserPrompt(self, userPrompt):
 		"""
-
-		@param userPrompt:
-		@return:
+		This method ensures that 'Invalid selection. ' is put only once in the
+		user prompt, at its beginning.
+		
+		@param userPrompt: current user prompt
+		
+		@return: updated user prompt
 		"""
 		userPrompt = userPrompt.replace('Invalid selection. ', '')
 		userPrompt = 'Invalid selection. ' + userPrompt
@@ -192,12 +195,16 @@ class Requester:
 		
 	def askUserNewSyncTime(self):
 		"""
-
-		@return:
+		This method prompts the user for setting a new last synch time in the
+		local config file.
+		
+		@return: the user choice for updating the last synch time. Possible
+				 values are '' for no change, 'N' for Now and a
+				 yyyy-mm-dd hh:mm:ss specified date time value
 		"""
 		userPrompt = '\nUpdating the project last synch time.\nType Enter to leave it unchanged, N to update it to Now and\nyyyy-mm-dd hh:mm:ss to fully specify the date '
 
-		return False, input(userPrompt).upper()
+		return input(userPrompt).upper()
 				
 	def decodeCommandLineArgs(self, argList):
 		"""
