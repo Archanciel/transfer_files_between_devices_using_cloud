@@ -199,7 +199,7 @@ class Requester:
 		local config file.
 		
 		@return: the user choice for updating the last synch time. Possible
-				 values are '' for no change, 'N' for Now and a
+				 values are '' (Enter) for no change, 'N' for Now and a
 				 yyyy-mm-dd hh:mm:ss specified date time value
 		"""
 		userPrompt = '\nUpdating the project last synch time.\nType Enter to leave it unchanged, N to update it to Now and\nyyyy-mm-dd hh:mm:ss to fully specify the date '
@@ -211,6 +211,7 @@ class Requester:
 		Uses argparse to acquire the user optional command line arguments.
 
 		:param argList: were acquired from sys.argv or set by test code
+		
 		:return: document name (may be None), insertion point and image numbers list to add/insert
 		"""
 		parser = argparse.ArgumentParser(
