@@ -192,7 +192,7 @@ class FileLister:
 				
 		return False		
 
-	def getFilesByOrderedTypes(self, projectName, cloudFileLst=None, localDir=None):
+	def getFilesByOrderedTypes(self, projectName, cloudFileLst):
 		"""
 		This method handles one of the key functionality of the TransferFiles
 		utility. It returns two data structures. The first one is an ordered
@@ -229,10 +229,6 @@ class FileLister:
 		in order to populate second element of the tuple value in the returned
 		dictionary.
 		
-		The optional localDir parameter is provided if the method is called
-		to return a dictionary whose file list values are based on the
-		content of the passed local dir, presently only used from unit tests.
-		
 		@param cloudFileLst: list of files downloaded from the cloud to the 
 							 download dir which must be moved to their 
 							 destination dir
@@ -268,14 +264,6 @@ class FileLister:
 
 		orderedFileTypeWildchardExprLst = [x[0] for x in filePatternDirTupleSortedLst]
 
-		# obtaining the list of files dowloaded from the cloud and now contained
-		# in the download dir
-
-		if localDir:
-			allFileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(localDir + DIR_SEP + '*.*')]
-		else:
-			allFileNameLst = cloudFileLst
-
 		# now building the second returned data structure), the file type
 		# dictionary
 
@@ -284,14 +272,14 @@ class FileLister:
 		for fileTypeWildchardExpr in orderedFileTypeWildchardExprLst:
 			regexpStr = self.convertWildcardExprStrToRegexpStr(fileTypeWildchardExpr)
 			regexpPattern = re.compile(regexpStr)
-			matchingFileNameLst = [x for x in allFileNameLst if regexpPattern.match(x)]
+			matchingFileNameLst = [x for x in cloudFileLst if regexpPattern.match(x)]
 			matchingFileNameLst.sort()
 			fileTypeDic[fileTypeWildchardExpr] = (filePatternDirDic[fileTypeWildchardExpr], matchingFileNameLst)
 
 			# removing the files matched by the more specific pattern from
 			# the allFileNameLst so that are not "moved" twice, once in the
 			# more specific dir and once in the more general dir ...
-			allFileNameLst = [x for x in allFileNameLst if x not in matchingFileNameLst]
+			cloudFileLst = [x for x in cloudFileLst if x not in matchingFileNameLst]
 
 		return orderedFileTypeWildchardExprLst, fileTypeDic
 	

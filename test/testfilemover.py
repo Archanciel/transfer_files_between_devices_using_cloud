@@ -1,5 +1,5 @@
 import unittest
-import os, sys, inspect, shutil
+import os, sys, inspect, shutil, glob
 from io import StringIO
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -9,6 +9,7 @@ sys.path.insert(0, parentdir)
 from configmanager import ConfigManager
 from filemover import FileMover
 from filelister import FileLister
+from constants import DIR_SEP
 
 if os.name == 'posix':
 	CONFIG_FILE_PATH_NAME = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_FileMover.ini'
@@ -39,7 +40,7 @@ class TestFileMover(unittest.TestCase):
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 
-		# deleting downloadDir
+		# purging downloadDir
 		if os.path.exists(downloadDir):
 			shutil.rmtree(downloadDir)
 
@@ -80,40 +81,25 @@ class TestFileMover(unittest.TestCase):
 
 		sys.stdout = stdout
 				
-		# using FileLister to test that the expected files were correctly moved
-		# to the previously empty project dir. Remember that FileLister.getFilesByOrderedTypes()
-		# only works on the passed directory, not on its sub directories. For this reason,
-		# several instances of FileLister are used below.
-
 		# verifying project dir
-		flp = FileLister(configManager)
-		_, projectDirFileTypeDic = flp.getFilesByOrderedTypes(projectName, localDir=projectDir)
-		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py']), projectDirFileTypeDic['*.py'][1])
-		self.assertEqual(sorted(['README_1.md']), projectDirFileTypeDic['*.md'][1])
+		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + DIR_SEP + '*.*')]
+		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py', 'README_1.md']), sorted(fileNameLst))
 
 		# verifying project test sub dir
-		flt = FileLister(configManager)
-		_, projectTestDirFileTypeDic = flt.getFilesByOrderedTypes(projectName, localDir=projectDir + TEST_SUB_DIR)
-		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), projectTestDirFileTypeDic['test*.py'][1])
+		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + TEST_SUB_DIR + DIR_SEP + '*.*')]
+		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), sorted(fileNameLst))
 
 		# verifying project images sub dir
-		fli = FileLister(configManager)
-		_, projectImagesDirFileTypeDic = fli.getFilesByOrderedTypes(projectName, localDir=projectDir + IMG_SUB_DIR)
-		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), projectImagesDirFileTypeDic['*.jpg'][1])
+		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + IMG_SUB_DIR + DIR_SEP + '*.*')]
+		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fileNameLst))
 
 		# verifying project doc s	ub dir
-		fld = FileLister(configManager)
-		_, projectDocDirFileTypeDic = fld.getFilesByOrderedTypes(projectName, localDir=projectDir + DOC_SUB_DIR)
-		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), projectDocDirFileTypeDic['*.docx'][1])
+		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + DOC_SUB_DIR + DIR_SEP + '*.*')]
+		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fileNameLst))
 
 		# testing that download is now empty
-		fld = FileLister(configManager)
-		_, downloadDirFileTypeDic = fld.getFilesByOrderedTypes(projectName, localDir=downloadDir)
-		self.assertEqual([], downloadDirFileTypeDic['*.py'][1])
-		self.assertEqual([], downloadDirFileTypeDic['test*.py'][1])
-		self.assertEqual([], downloadDirFileTypeDic['*.jpg'][1])
-		self.assertEqual([], downloadDirFileTypeDic['*.docx'][1])
-		self.assertEqual([], downloadDirFileTypeDic['*.md'][1])
+		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + '*.*')]
+		self.assertEqual([], fileNameLst)
 
 if __name__ == '__main__':
 	unittest.main()
