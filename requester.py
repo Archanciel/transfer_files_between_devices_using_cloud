@@ -24,7 +24,7 @@ class Requester:
 			projectName = self.decodeCommandLineArgs(commandLineArgs)
 		else:
 			projectNameList = [x for x in self.configManager.projects]
-			userPrompt = "Select project (Q to quit):\n\n"
+			userPrompt = "Select project (Q or Enter to quit):\n\n"
 			
 			for (i, projectName) in enumerate(projectNameList): 
 				userPrompt += str(i + 1) + ' ' + projectName + '\n'
@@ -37,7 +37,7 @@ class Requester:
 			while int(selection) <= 0:
 				selection = input(userPrompt).upper()
 				
-				if selection == 'Q':
+				if selection == 'Q' or selection == '':
 					return None
 					
 				try:
