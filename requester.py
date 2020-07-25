@@ -208,7 +208,8 @@ class Requester:
 				
 	def decodeCommandLineArgs(self, argList):
 		"""
-		Uses argparse to acquire the user optional command line arguments.
+		 This method ses argparse to acquire the user optional command line 
+		 arguments.
 
 		:param argList: were acquired from sys.argv or set by test code
 		
