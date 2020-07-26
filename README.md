@@ -46,6 +46,8 @@ Though, there's is an additional action the user can perform: he can choose
 to modify the last synch date time for the selected project. Then, relaunching
 the utility will potentially display a different list of modified files.
 
+## Usage scenarios
+
 ## Project class diagram
 <p align="center">
   <img src="images/class_diagram.jpg" width="600" title="Transfer File class diagram">

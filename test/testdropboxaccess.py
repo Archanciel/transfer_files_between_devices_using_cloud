@@ -88,7 +88,7 @@ class TestDropboxAccess(unittest.TestCase):
 		# now deleting the newly created folder so that other tests are not
 		# impacted
 		drpa = DropboxAccess(cm, projectName)
-		drpa.deleteFolder(newFolderName)
+		drpa.deleteProjectSubFolder(newFolderName)
 
 	def testCreateAndDeleteProjectFolder(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox

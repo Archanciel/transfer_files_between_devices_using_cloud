@@ -37,21 +37,23 @@ class DropboxAccess(CloudAccess):
 
 	def deleteFile(self, fileName):
 		"""
-
+7
 		@param fileName:
 		"""
 		cloudFilePathName = self.cloudTransferDir + '/' + fileName
 		self.dbx.files_delete_v2(cloudFilePathName)
 
-	def deleteFolder(self, folder):
+	def deleteProjectSubFolder(self, subFolder):
 		"""
+		This method is currently only used in unit tests.
 
-		@param folder:
+		@param subFolder:
 		"""
-		self.dbx.files_delete_v2(self.cloudTransferDir + '/' + folder)
+		self.dbx.files_delete_v2(self.cloudTransferDir + '/' + subFolder)
 
 	def deleteProjectFolder(self):
 		"""
+		This method is currently only used in unit tests.
 
 		"""
 		self.dbx.files_delete_v2(self.cloudTransferDir)
@@ -77,6 +79,7 @@ class DropboxAccess(CloudAccess):
 
 	def createEmptyFolder(self, folderName):
 		"""
+		This method is currently only used in unit tests.
 
 		@param folderName:
 		"""

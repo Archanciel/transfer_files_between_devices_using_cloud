@@ -17,7 +17,7 @@ class CloudAccess(metaclass=ABCMeta):
 		pass
 
 	@abstractmethod
-	def deleteFolder(self, folder):
+	def deleteProjectSubFolder(self, folder):
 		pass
 
 	@abstractmethod
