@@ -61,8 +61,8 @@ class TestFileLister(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
 
-		wildchardLst = ['test*.py', '/excldir/subdir/*.py', 'd:\\excldir\\subdir\\*.py', '/excldir/subdir/*.*', 'd:\\excldir\\subdir\\*.*']
-		expectedRegexpLst = ['test.*\.py\Z', '/excldir/subdir/.*\.py\Z', 'd:\\\\excldir\\\\subdir\\\\.*\.py\Z', '/excldir/subdir/.*\..*\Z', 'd:\\\\excldir\\\\subdir\\\\.*\..*\Z']
+		wildchardLst = ['*Solemne*.mp3', 'test*.py', '/excldir/subdir/*.py', 'd:\\excldir\\subdir\\*.py', '/excldir/subdir/*.*', 'd:\\excldir\\subdir\\*.*']
+		expectedRegexpLst = ['.*Solemne.*\.mp3\Z', 'test.*\.py\Z', '/excldir/subdir/.*\.py\Z', 'd:\\\\excldir\\\\subdir\\\\.*\.py\Z', '/excldir/subdir/.*\..*\Z', 'd:\\\\excldir\\\\subdir\\\\.*\..*\Z']
 
 		for wildchardExpr, expectedRegexp in zip(wildchardLst, expectedRegexpLst):
 			self.assertEqual(expectedRegexp, fl.convertWildcardExprStrToRegexpStr(wildchardExpr))
@@ -76,8 +76,8 @@ class TestFileLister(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
 
-		wildchardLst = ['test*.py', '/excldir/subdir/*.py', 'd:\\excldir\\subdir\\*.py', '/excldir/subdir/*.*', 'd:\\excldir\\subdir\\*.*']
-		expectedPatternLst = [re.compile('test.*\.py\Z'), re.compile('/excldir/subdir/.*\.py\Z'), re.compile('d:\\\\excldir\\\\subdir\\\\.*\.py\Z'), re.compile('/excldir/subdir/.*\..*\Z'), re.compile('d:\\\\excldir\\\\subdir\\\\.*\..*\Z')]
+		wildchardLst = ['*Solemne*.mp3', 'test*.py', '/excldir/subdir/*.py', 'd:\\excldir\\subdir\\*.py', '/excldir/subdir/*.*', 'd:\\excldir\\subdir\\*.*']
+		expectedPatternLst = [re.compile('.*Solemne.*\.mp3\Z'),    re.compile('test.*\.py\Z'), re.compile('/excldir/subdir/.*\.py\Z'), re.compile('d:\\\\excldir\\\\subdir\\\\.*\.py\Z'), re.compile('/excldir/subdir/.*\..*\Z'), re.compile('d:\\\\excldir\\\\subdir\\\\.*\..*\Z')]
 
 		self.assertEqual(expectedPatternLst, fl.createRegexpPatternLstFromWildchardExprLst(wildchardLst))
 		
@@ -130,6 +130,7 @@ class TestFileLister(unittest.TestCase):
 		self.assertEqual(sorted(expectedAllFilePathNameLst), sorted(actualAllFilePathNameLst))
 
 	def testGetFilesByOrderedTypes(self):
+		# ADD HANDLING CORRECTLY '.*Solemne.*\.mp3\Z'
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
