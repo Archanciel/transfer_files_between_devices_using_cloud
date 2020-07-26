@@ -12,24 +12,27 @@ class DropboxAccess(CloudAccess):
 
 	def uploadFile(self, localFilePathName):
 		"""
-		Uploads a file to Dropbox using API v2. to avoid a conflict error if
-		the file already exists on the cloud, the mode is set to 
-		dropbox.files.WriteMode.overwrite.
+		Uploads a file to project folder on Dropbox using API v2. 
+		To avoid a conflict error if the file already exists on the cloud, the 
+		mode is set to dropbox.files.WriteMode.overwrite.
 
-		@param localFilePathName:
+		@param localFilePathName: file path name of file to upload
 		"""
-		cloudFilePathName = self.cloudTransferDir + '/' + localFilePathName.split(DIR_SEP)[-1]
+		cloudFilePathName = self.cloudProjectDir + '/' + localFilePathName.split(DIR_SEP)[-1]
 
 		with open(localFilePathName, 'rb') as f:
 			self.dbx.files_upload(f.read(), cloudFilePathName, mode=dropbox.files.WriteMode.overwrite)
 
 	def downloadFile(self, cloudFileName, destFilePathName):
 		"""
-
-		@param cloudFileName:
-		@param destFilePathName:
+		Downloads the file whose name is cloudFileName to the passed destination 
+		path name.
+		
+		@param cloudFileName: name of file to download
+		@param destFilePathName: local directory in which the file will be
+								 downloaded
 		"""
-		cloudFilePathName = self.cloudTransferDir + '/' + cloudFileName
+		cloudFilePathName = self.cloudProjectDir + '/' + cloudFileName
 
 		with open(destFilePathName, "wb") as f:
 			metadata, res = self.dbx.files_download(path=cloudFilePathName)
@@ -37,57 +40,64 @@ class DropboxAccess(CloudAccess):
 
 	def deleteFile(self, fileName):
 		"""
-7
-		@param fileName:
+		Deletes the file whose name is fileName from the cloud project dir.
+		
+		@param fileName: name of file to remove from the cloud project dir
 		"""
-		cloudFilePathName = self.cloudTransferDir + '/' + fileName
+		cloudFilePathName = self.cloudProjectDir + '/' + fileName
 		self.dbx.files_delete_v2(cloudFilePathName)
 
-	def deleteProjectSubFolder(self, subFolder):
+	def deleteProjectSubFolder(self, subFolderName):
 		"""
-		This method is currently only used in unit tests.
+		Deletes a sub directory of the project cloud directory. This method 
+		is currently only used in unit tests.
 
-		@param subFolder:
+		@param subFolder: name of the sub directory to remove from project 
+						  cloud directory
 		"""
-		self.dbx.files_delete_v2(self.cloudTransferDir + '/' + subFolder)
+		self.dbx.files_delete_v2(self.cloudProjectDir + '/' + subFolderName)
 
 	def deleteProjectFolder(self):
 		"""
-		This method is currently only used in unit tests.
-
+		Deletes the cloud project directory. This method is currently only used
+		in unit tests.
 		"""
-		self.dbx.files_delete_v2(self.cloudTransferDir)
+		self.dbx.files_delete_v2(self.cloudProjectDir)
 
 	def getCloudFileList(self):
 		"""
-
-		@return:
+		Returns the list of file names of files contained in the cloud project 
+		directory.
+		
+		@return: list of string file names
 		"""
 		fileNameLst = []
 		fileListMetaData = None
 		
 		try:			
-			fileListMetaData = self.dbx.files_list_folder(path=self.cloudTransferDir)
+			fileListMetaData = self.dbx.files_list_folder(path=self.cloudProjectDir)
 		except dropbox.exceptions.ApiError as e:
 			if isinstance(e.error, dropbox.files.ListFolderError):
-				raise NotADirectoryError("Dropbox directory {} does not exist".format(self.cloudTransferDir))
+				raise NotADirectoryError("Dropbox directory {} does not exist".format(self.cloudProjectDir))
 			
 		for fileMetaData in fileListMetaData.entries:
 			fileNameLst.append(fileMetaData.name)
 			
 		return fileNameLst
 
-	def createEmptyFolder(self, folderName):
+	def createProjectSubFolder(self, subFolderName):
 		"""
-		This method is currently only used in unit tests.
+		Uses a multi step procedure to create an empty sub directory of
+		the cloud project dir. This method is currently only used in unit 
+		tests.
 
-		@param folderName:
+		@param subFolderName
 		"""
-		# ensuring folderName does not contain /
-		folderName = folderName.replace('/', '')
+		# ensuring subFolderName does not contain /
+		subFolderName = subFolderName.replace('/', '')
 		
 		# creating a temp dummy destination file path
-		dummyFileTo = self.cloudTransferDir + '/' + folderName + '/' + 'temp.bin'
+		dummyFileTo = self.cloudProjectDir + '/' + subFolderName + '/' + 'temp.bin'
 
 		# creating a virtual in-memory binary file
 		f = io.BytesIO(b"\x00")
@@ -100,10 +110,12 @@ class DropboxAccess(CloudAccess):
 
 	def createProjectFolder(self):
 		"""
-
+		Uses a multi step procedure to create an empty cloud project dir. This
+		method is used when handling a new project added in the local configuration 
+		file when this project does not yet have an existing cloud project dir.
 		"""
 		# creating a temp dummy destination file path
-		dummyFileTo = self.cloudTransferDir + '/temp.bin'
+		dummyFileTo = self.cloudProjectDir + '/temp.bin'
 
 		# creating a virtual in-memory binary file
 		f = io.BytesIO(b"\x00")

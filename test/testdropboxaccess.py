@@ -76,7 +76,7 @@ class TestDropboxAccess(unittest.TestCase):
 		drpa = DropboxAccess(cm, projectName)
 		
 		# then create the new folder and ensure it is accessible
-		drpa.createEmptyFolder(newFolderName)
+		drpa.createProjectSubFolder(newFolderName)
 		
 		# creating a DropboxAccess on the newly created Dropbox folder
 		# to ensure the folder now exists

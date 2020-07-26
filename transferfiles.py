@@ -56,7 +56,7 @@ class TransferFiles:
 
 		# currently, only Dropbox as cloud space is implemented
 		self.cloudAccess = DropboxAccess(self.configManager, self.projectName)
-		self.fileLister = FileLister(configManager=self.configManager)
+		self.fileLister = FileLister(self.configManager)
 
 	def transferFiles(self):
 		"""

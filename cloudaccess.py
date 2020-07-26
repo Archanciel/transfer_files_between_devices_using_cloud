@@ -3,7 +3,18 @@ from abc import abstractmethod
 
 class CloudAccess(metaclass=ABCMeta):
 	def __init__(self, cloudTransferBaseDir, projectName):
-		self.cloudTransferDir = cloudTransferBaseDir + '/' + projectName
+		"""
+		CloudAccess constructor. Initialises the project cloud directory
+		path name using information obtained by the CloudAccess subclass
+		from the configuration manager.
+		
+		@param cloudTransferBaseDir: information defined in the local 
+									 configuration file
+		@param projectName: name of the project for which the CloudAccess
+							class is initialized
+		"""
+		self.cloudProjectDir = cloudTransferBaseDir + '/' + projectName
+		
 	@abstractmethod	
 	def uploadFile(self, localFilePathName):
 		pass
@@ -17,7 +28,7 @@ class CloudAccess(metaclass=ABCMeta):
 		pass
 
 	@abstractmethod
-	def deleteProjectSubFolder(self, folder):
+	def deleteProjectSubFolder(self, subFolderName):
 		pass
 
 	@abstractmethod
@@ -29,5 +40,5 @@ class CloudAccess(metaclass=ABCMeta):
 		pass
 		
 	@abstractmethod
-	def createEmptyFolder(self, folderName):
+	def createProjectSubFolder(self, subFolderName):
 		pass
