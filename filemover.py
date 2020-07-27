@@ -67,7 +67,9 @@ class FileMover:
 					toFilePathShortened = self.shortenFileNamePath(toFilePath)
 					print('moving {} to {}'.format(fromFilePathShortened, toFilePathShortened))
 		except FileNotFoundError as e:
-			print(str(e), ' does not exist. Program stopped.')
+			pathElemLst = e.filename.split(DIR_SEP)
+			pathOnly = DIR_SEP.join(pathElemLst[:-1])
+			print('Destination dir {} does not exist. Program stopped.'.format(pathOnly))
 
 	def shortenFileNamePath(self, completeFilePathName):
 		"""

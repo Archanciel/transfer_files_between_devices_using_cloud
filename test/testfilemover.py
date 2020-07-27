@@ -126,7 +126,57 @@ class TestFileMover(unittest.TestCase):
 
 		# testing that download is now empty
 		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + '*.*')]
-		self.assertEqual([], fileNameLst)
+		self.assertEqual(['constants_1.mp3'], fileNameLst)
+
+	def testMoveFilesToLocalDirs_dirNotExist(self):
+		if os.name == 'posix':
+			downloadDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			downloadDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
+			projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir'
+			projectDirEmpty = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir_empty'
+
+			SUB_DIR_NOT_EXIST = '/not_exist'
+		else:
+			# Windows
+			downloadDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
+			downloadDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
+			projectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir'
+			projectDirEmpty = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir_empty'
+
+			SUB_DIR_NOT_EXIST = '\\not_exist'
+
+		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
+
+		# purging downloadDir
+		if os.path.exists(downloadDir):
+			shutil.rmtree(downloadDir)
+
+		# restoring downloadDir from its saved version
+		shutil.copytree(downloadDirSaved, downloadDir)
+
+		projectName = 'transFileCloudTestProject'
+		fm = FileMover(configManager, projectName)
+		fm.projectDir = projectDir
+
+		# capturing stdout into StringIO to avoid outputing in terminal
+		# window while unit testing
+
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+
+		cloudFileLst = ['constants_1.mp3']
+
+		fm.moveFilesToLocalDirs(cloudFileLst)
+
+		sys.stdout = stdout
+
+		if os.name == 'posix':
+			self.assertEqual(['Destination dir /storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir/not_exist does not exist. Program stopped.'],
+							 outputCapturingString.getvalue().split('\n')[:-1])
+		else:
+			self.assertEqual(['Destination dir D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir\\not_exist does not exist. Program stopped.'],
+							 outputCapturingString.getvalue().split('\n')[:-1])
 
 if __name__ == '__main__':
 	unittest.main()
