@@ -202,7 +202,7 @@ class Requester:
 				 values are '' (Enter) for no change, 'N' for Now and a
 				 yyyy-mm-dd hh:mm:ss specified date time value
 		"""
-		userPrompt = '\nUpdating the project last synch time.\nType Enter to leave it unchanged, N to update it to Now and\nyyyy-mm-dd hh:mm:ss to fully specify the date '
+		userPrompt = '\nUpdating the project last synch time.\nType Enter to leave it unchanged, N to update it to Now and\nyyyy-mm-dd hh:mm:ss or yy-mm-dd to fully specify the date '
 
 		return input(userPrompt).upper()
 				

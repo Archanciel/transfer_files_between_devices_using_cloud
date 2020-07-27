@@ -219,21 +219,28 @@ class TransferFiles:
 		@param lastSynchTimeStr
 		"""
 		if lastSynchTimeStr == '':
-			lastSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)
-		elif not self.validateLastSynchTimeStr(lastSynchTimeStr):
-			print('\nSynch time format invalid {}. Nothing changed.'.format(lastSynchTimeStr))
+			validSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)
+		else:
+			isValid, validSynchTimeStr = self.validateLastSynchTimeStr(lastSynchTimeStr)
 
-			return
-		
-		self.configManager.updateLastSynchTime(self.projectName, lastSynchTimeStr)
-		print('\nUpdated last synch time to ' + lastSynchTimeStr)
+			if not isValid:
+				print('\nSynch time format invalid {}. Nothing changed.'.format(lastSynchTimeStr))
+
+				return
+
+		self.configManager.updateLastSynchTime(self.projectName, validSynchTimeStr)
+		print('\nUpdated last synch time to ' + validSynchTimeStr)
 
 	def validateLastSynchTimeStr(self, lastSynchTimeStr):
 		try:
-			datetime.strptime(lastSynchTimeStr, DATE_TIME_FORMAT)
-			return True
+			dateTimeMod = datetime.strptime(lastSynchTimeStr, DATE_TIME_FORMAT)
+			return True, dateTimeMod.strftime(DATE_TIME_FORMAT)
 		except ValueError:
-			return False
+			try:
+				dateTimeMod = datetime.strptime(lastSynchTimeStr, DATE_TIME_FORMAT_SHORT)
+				return True, dateTimeMod.strftime(DATE_TIME_FORMAT)
+			except ValueError:
+				return False, ''
 		
 	def downloadAndDeleteFilesFromCloud(self):
 		"""

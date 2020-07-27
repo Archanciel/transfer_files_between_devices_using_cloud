@@ -52,19 +52,22 @@ class FileMover:
 							 must be moved to their destination dir
 		"""
 		orderedFileTypeWildchardExprLst, fileTypeDic = self.fileNameLister.getFilesByOrderedTypes(self.projectName, cloudFileLst=cloudFileLst)
-		
-		for fileTypeWildchardExpr in orderedFileTypeWildchardExprLst:
-			fileTypeEntryTuple = fileTypeDic[fileTypeWildchardExpr]
-			destinationDir = self.projectDir + fileTypeEntryTuple[0]
-			fileToMoveNameLst = fileTypeEntryTuple[1]
-			
-			for fileToMoveName in fileToMoveNameLst:
-				fromFilePath = self.downloadDir + DIR_SEP + fileToMoveName
-				toFilePath = destinationDir + DIR_SEP + fileToMoveName
-				shutil.move(fromFilePath, toFilePath)
-				fromFilePathShortened = self.shortenFileNamePath(fromFilePath)
-				toFilePathShortened = self.shortenFileNamePath(toFilePath)
-				print('moving {} to {}'.format(fromFilePathShortened, toFilePathShortened))
+
+		try:
+			for fileTypeWildchardExpr in orderedFileTypeWildchardExprLst:
+				fileTypeEntryTuple = fileTypeDic[fileTypeWildchardExpr]
+				destinationDir = self.projectDir + fileTypeEntryTuple[0]
+				fileToMoveNameLst = fileTypeEntryTuple[1]
+
+				for fileToMoveName in fileToMoveNameLst:
+					fromFilePath = self.downloadDir + DIR_SEP + fileToMoveName
+					toFilePath = destinationDir + DIR_SEP + fileToMoveName
+					shutil.move(fromFilePath, toFilePath)
+					fromFilePathShortened = self.shortenFileNamePath(fromFilePath)
+					toFilePathShortened = self.shortenFileNamePath(toFilePath)
+					print('moving {} to {}'.format(fromFilePathShortened, toFilePathShortened))
+		except FileNotFoundError as e:
+			print(str(e), ' does not exist. Program stopped.')
 
 	def shortenFileNamePath(self, completeFilePathName):
 		"""
