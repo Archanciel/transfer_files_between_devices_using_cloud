@@ -130,7 +130,6 @@ class TestFileLister(unittest.TestCase):
 		self.assertEqual(sorted(expectedAllFilePathNameLst), sorted(actualAllFilePathNameLst))
 
 	def testGetFilesByOrderedTypes(self):
-		# ADD HANDLING CORRECTLY '.*Solemne.*\.mp3\Z'
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
 		else:
@@ -142,22 +141,26 @@ class TestFileLister(unittest.TestCase):
 
 		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', cloudFileLst=cloudFileLst)
 
-		self.assertEqual(['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
+		self.assertEqual(['test*.py', '*Solemne*.mp3', '*.mp3', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
 
 		if os.name == 'posix':
 			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
 							'*.md': ('', ['README_2.md']),
+							'*.mp3': ('/other', []),
 							'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
 							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
-							'aa*.jpg': ('/images/aa', ['aa_current.jpg'])}, fileTypeDic)
+							'*Solemne*.mp3': ('/solemne', []),
+							 'aa*.jpg': ('/images/aa', ['aa_current.jpg'])}, fileTypeDic)
 		else:
 			self.assertEqual({'*.jpg': ('\\images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']),
 							'*.md': ('', ['README_2.md']),
+							'*.mp3': ('\\other', []),
 							'test*.py': ('\\test', ['testfilelister_2.py', 'testfilemover_2.py']),
 							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
-							'aa*.jpg': ('\\images\\aa', ['aa_current.jpg'])}, fileTypeDic)
+							'*Solemne*.mp3': ('\\solemne', []),
+							 'aa*.jpg': ('\\images\\aa', ['aa_current.jpg'])}, fileTypeDic)
 
 	def testGetFilesByOrderedTypes_order_in_configFile_not_respected(self):
 		if os.name == 'posix':
@@ -171,22 +174,26 @@ class TestFileLister(unittest.TestCase):
 
 		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', cloudFileLst=cloudFileLst)
 
-		self.assertEqual(['test*.py', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
+		self.assertEqual(['test*.py', '*Solemne*.mp3', '*.mp3', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
 
 		if os.name == 'posix':
-			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']), 
+			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
 							'*.md': ('', ['README_2.md']),
-							'aa*.jpg': ('/images/aa', ['aa_current.jpg']),
+							'*.mp3': ('/other', []),
 							'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
-							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
+							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
+							'*Solemne*.mp3': ('/solemne', []),
+							 'aa*.jpg': ('/images/aa', ['aa_current.jpg'])}, fileTypeDic)
 		else:
 			self.assertEqual({'*.jpg': ('\\images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']),
 							'*.md': ('', ['README_2.md']),
-							'aa*.jpg': ('\\images\\aa', ['aa_current.jpg']),
+							'*.mp3': ('\\other', []),
 							'test*.py': ('\\test', ['testfilelister_2.py', 'testfilemover_2.py']),
-							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py'])}, fileTypeDic)
+							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
+							'*Solemne*.mp3': ('\\solemne', []),
+							 'aa*.jpg': ('\\images\\aa', ['aa_current.jpg'])}, fileTypeDic)
 
 	def testSortFilePatternDirTupleLst_2_items(self):
 		if os.name == 'posix':
