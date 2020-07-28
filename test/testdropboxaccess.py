@@ -7,7 +7,7 @@ sys.path.insert(0, parentdir)
 		
 import warnings 		
 
-from constants import DIR_SEP, DATE_TIME_FORMAT
+from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE
 from configmanager import *
 from dropboxaccess import DropboxAccess
 			
@@ -193,7 +193,7 @@ class TestDropboxAccess(unittest.TestCase):
 		# dropbox.files_upload, no WriteConflictError is raised
 		# when uploading the modified file.
 		with open(localFilePathName, 'w') as f:
-			f.write('modified at date {}'.format(datetime.datetime.now().strftime(DATE_TIME_FORMAT)))
+			f.write('modified at date {}'.format(datetime.datetime.now().strftime(DATE_TIME_FORMAT_CONFIG_FILE)))
 			f.close()
 
 		drpa.uploadFile(localFilePathName)

@@ -8,7 +8,7 @@ sys.path.insert(0, parentdir)
 		
 import warnings 		
 
-from constants import DIR_SEP, DATE_TIME_FORMAT
+from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE
 from configmanager import *
 			
 class TestConfigManager(unittest.TestCase):

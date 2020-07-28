@@ -9,7 +9,7 @@ sys.path.insert(0, parentdir)
 		
 import warnings 		
 
-from constants import DIR_SEP, DATE_TIME_FORMAT
+from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE
 from configmanager import *
 from transferfiles import TransferFiles
 from dropboxaccess import DropboxAccess
@@ -50,8 +50,8 @@ class TestTransferFiles(unittest.TestCase):
 		tf = TransferFiles(configFilePath=configFilePathName, projectName=projectName)
 		lastSynchTimeStr = '20-6-4 8:5:3'
 		isValid, validLastSynchTimeStr = tf.validateLastSynchTimeStr(lastSynchTimeStr)
-		self.assertFalse(isValid)
-		self.assertEqual('', validLastSynchTimeStr)
+		self.assertTrue(isValid)
+		self.assertEqual('2020-06-04 08:05:03', validLastSynchTimeStr)
 
 	def testValidateLastSynchTimeStrDateOnly(self):
 		if os.name == 'posix':
@@ -166,7 +166,7 @@ class TestTransferFiles(unittest.TestCase):
 		# storing the last synch update time to compare it to the new update 
 		# time once download and move has been performed
 		storedLastSynchTimeStr = cm.getLastSynchTime(projectName)
-		storedLastSyncTime = datetime.datetime.strptime(storedLastSynchTimeStr, DATE_TIME_FORMAT)
+		storedLastSyncTime = datetime.datetime.strptime(storedLastSynchTimeStr, DATE_TIME_FORMAT_CONFIG_FILE)
 		
 		# cleaning up the cloud folder before uploading the test files
 				
@@ -236,7 +236,7 @@ class TestTransferFiles(unittest.TestCase):
 		
 		cm_reloaded = ConfigManager(configFilePathName)
 		newLastSynchTimeStr = cm_reloaded.getLastSynchTime(projectName)
-		newLastSyncTime = datetime.datetime.strptime(newLastSynchTimeStr, DATE_TIME_FORMAT)
+		newLastSyncTime = datetime.datetime.strptime(newLastSynchTimeStr, DATE_TIME_FORMAT_CONFIG_FILE)
 		self.assertTrue(newLastSyncTime > storedLastSyncTime)
 		
 		# now testing that the files downloaded from the cloud and moved to

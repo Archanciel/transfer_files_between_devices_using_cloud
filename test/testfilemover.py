@@ -124,7 +124,7 @@ class TestFileMover(unittest.TestCase):
 		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + DOC_SUB_DIR + DIR_SEP + '*.*')]
 		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fileNameLst))
 
-		# testing that download is now empty
+		# testing that download no longer contains the files defined in cloudFileLst
 		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + '*.*')]
 		self.assertEqual(['constants_1.mp3'], fileNameLst)
 

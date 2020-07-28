@@ -7,7 +7,7 @@ sys.path.insert(0, parentdir)
 
 from configmanager import *
 from filelister import FileLister
-from constants import DIR_SEP, DATE_TIME_FORMAT
+from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE
 			
 class TestFileLister(unittest.TestCase):
 	def testGetModifiedFileLst(self):
@@ -123,7 +123,7 @@ class TestFileLister(unittest.TestCase):
 		excludedFileTypeWildchardLst = ['*.ini', '*.tmp', '*.jpg', '*.docx']
 
 		excludedFileTypePatternLst = fl.createRegexpPatternLstFromWildchardExprLst(excludedFileTypeWildchardLst)			
-		lastSyncTime = datetime.datetime.strptime('2020-06-15 08:45:23', DATE_TIME_FORMAT)
+		lastSyncTime = datetime.datetime.strptime('2020-06-15 08:45:23', DATE_TIME_FORMAT_CONFIG_FILE)
 
 		actualAllFileNameLst, actualAllFilePathNameLst = fl.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
 		self.assertEqual(sorted(expectedAllFileNameLst), sorted(actualAllFileNameLst))

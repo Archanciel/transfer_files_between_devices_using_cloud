@@ -210,35 +210,35 @@ class TransferFiles:
 		# updating last synch time for the project in config file
 		self.updateLastSynchTime()
 
-	def updateLastSynchTime(self, lastSynchTimeStr=''):
+	def updateLastSynchTime(self, userInpuLlastSynchTimeStr=''):
 		"""
 		If the passed lastSynchTimeStr is empty, sets the last update date
 		stored in the configuration file to now. Else, if the user specified
 		a synch date, validates it before setting it in the config file.
 		
-		@param lastSynchTimeStr
+		@param userInpuLlastSynchTimeStr
 		"""
-		if lastSynchTimeStr == '':
-			validSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT)
+		if userInpuLlastSynchTimeStr == '':
+			validSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT_CONFIG_FILE)
 		else:
-			isValid, validSynchTimeStr = self.validateLastSynchTimeStr(lastSynchTimeStr)
+			isValid, validSynchTimeStr = self.validateLastSynchTimeStr(userInpuLlastSynchTimeStr)
 
 			if not isValid:
-				print('\nSynch time format invalid {}. Nothing changed.'.format(lastSynchTimeStr))
+				print('\nSynch time format invalid {}. Nothing changed.'.format(userInpuLlastSynchTimeStr))
 
 				return
 
 		self.configManager.updateLastSynchTime(self.projectName, validSynchTimeStr)
 		print('\nUpdated last synch time to ' + validSynchTimeStr)
 
-	def validateLastSynchTimeStr(self, lastSynchTimeStr):
+	def validateLastSynchTimeStr(self, userInputLastSynchTimeStr):
 		try:
-			dateTimeMod = datetime.strptime(lastSynchTimeStr, DATE_TIME_FORMAT)
-			return True, dateTimeMod.strftime(DATE_TIME_FORMAT)
+			dateTimeMod = datetime.strptime(userInputLastSynchTimeStr, DATE_TIME_FORMAT_USER_INPUT)
+			return True, dateTimeMod.strftime(DATE_TIME_FORMAT_CONFIG_FILE)
 		except ValueError:
 			try:
-				dateTimeMod = datetime.strptime(lastSynchTimeStr, DATE_TIME_FORMAT_SHORT)
-				return True, dateTimeMod.strftime(DATE_TIME_FORMAT)
+				dateTimeMod = datetime.strptime(userInputLastSynchTimeStr, DATE_TIME_FORMAT_USER_INPUT_SHORT)
+				return True, dateTimeMod.strftime(DATE_TIME_FORMAT_CONFIG_FILE)
 			except ValueError:
 				return False, ''
 		

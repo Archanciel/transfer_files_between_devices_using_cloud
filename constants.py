@@ -1,8 +1,9 @@
 import os
 
 VERSION_NUMBER = 1.1
-DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
-DATE_TIME_FORMAT_SHORT = '%y-%m-%d'
+DATE_TIME_FORMAT_CONFIG_FILE = '%Y-%m-%d %H:%M:%S'
+DATE_TIME_FORMAT_USER_INPUT = '%y-%m-%d %H:%M:%S'
+DATE_TIME_FORMAT_USER_INPUT_SHORT = '%y-%m-%d'
 
 if os.name == 'posix':
 	DIR_SEP = '/'

@@ -6,7 +6,7 @@ import functools
 import os
 
 from configmanager import *
-from constants import DIR_SEP, DATE_TIME_FORMAT
+from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE
 
 
 class FileLister:
@@ -44,7 +44,7 @@ class FileLister:
 		"""
 		projectDir = self.configManager.getProjectLocalDir(projectName)
 		lastSyncTimeStr = self.configManager.getLastSynchTime(projectName)
-		lastSyncTime = datetime.datetime.strptime(lastSyncTimeStr, DATE_TIME_FORMAT)
+		lastSyncTime = datetime.datetime.strptime(lastSyncTimeStr, DATE_TIME_FORMAT_CONFIG_FILE)
 
 		if not os.path.isdir(projectDir):
 			raise NotADirectoryError(projectDir)
