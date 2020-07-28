@@ -120,30 +120,24 @@ class TestFileMover(unittest.TestCase):
 		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + IMG_SUB_DIR + DIR_SEP + '*.*')]
 		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fileNameLst))
 
-		# verifying project doc s	ub dir
+		# verifying project doc sub dir
 		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + DOC_SUB_DIR + DIR_SEP + '*.*')]
 		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fileNameLst))
 
 		# testing that download no longer contains the files defined in cloudFileLst
 		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + '*.*')]
-		self.assertEqual(['constants_1.mp3'], fileNameLst)
+		self.assertEqual(sorted(['constants_1.mp3', 'Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3']), sorted(fileNameLst))
 
 	def testMoveFilesToLocalDirs_dirNotExist(self):
 		if os.name == 'posix':
 			downloadDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
 			downloadDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
 			projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir'
-			projectDirEmpty = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir_empty'
-
-			SUB_DIR_NOT_EXIST = '/not_exist'
 		else:
 			# Windows
 			downloadDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
 			downloadDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
 			projectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir'
-			projectDirEmpty = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir_empty'
-
-			SUB_DIR_NOT_EXIST = '\\not_exist'
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 
@@ -177,6 +171,68 @@ class TestFileMover(unittest.TestCase):
 		else:
 			self.assertEqual(['Destination dir D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir\\not_exist does not exist. Program stopped.'],
 							 outputCapturingString.getvalue().split('\n')[:-1])
+
+	def testMoveFilesToLocalDirs_mp3_file_bug(self):
+		if os.name == 'posix':
+			downloadDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			downloadDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
+			projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir'
+			projectDirEmpty = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir_empty'
+
+			SUB_DIR_RIMSKY = '/Rimsky-Korsakov'
+		else:
+			# Windows
+			downloadDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
+			downloadDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
+			projectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir'
+			projectDirEmpty = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir_empty'
+
+			SUB_DIR_RIMSKY = '\\Rimsky-Korsakov'
+
+		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
+
+		# purging downloadDir
+		if os.path.exists(downloadDir):
+			shutil.rmtree(downloadDir)
+
+		# restoring downloadDir from its saved version
+		shutil.copytree(downloadDirSaved, downloadDir)
+
+		# deleting projectDir
+		if os.path.exists(projectDir):
+			shutil.rmtree(projectDir)
+
+		# restoring a directory structure only project dir (no files) from its saved empty version
+		shutil.copytree(projectDirEmpty, projectDir)
+
+		projectName = 'transFileCloudTestProject'
+		fm = FileMover(configManager, projectName)
+		fm.projectDir = projectDir
+
+		# capturing stdout into StringIO to avoid outputing in terminal
+		# window while unit testing
+
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+
+		cloudFileLst = ['Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3']
+
+		fm.moveFilesToLocalDirs(cloudFileLst)
+
+		sys.stdout = stdout
+
+
+		if os.name == 'posix':
+			self.assertEqual(['moving test/testproject_1/fromdir/Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3 to testproject_1/projectdir/Rimsky-Korsakov/Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3'],
+							 outputCapturingString.getvalue().split('\n'))
+		else:
+			self.assertEqual(['moving test\\testproject_1\\fromdir\\Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3 to testproject_1\\projectdir\\Rimsky-Korsakov\\Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3'],
+							 outputCapturingString.getvalue().split('\n'))
+
+		# verifying project Rimsky-Korsakov sub dir
+		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + SUB_DIR_RIMSKY + DIR_SEP + '*.*')]
+		self.assertEqual(sorted(['Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3']), sorted(fileNameLst))
 
 if __name__ == '__main__':
 	unittest.main()
