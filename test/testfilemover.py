@@ -239,7 +239,7 @@ class TestFileMover(unittest.TestCase):
 
 
 		if os.name == 'posix':
-			self.assertEqual(['moving test/testproject_1/fromdir/Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3 to testproject_1/projectdir/Rimsky-Korsakov/Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3'],
+			self.assertEqual(['moving test/testproject_1/fromdir/Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3 to projectdir/mp3/Rimsky-Korsakov/Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3', ''],
 							 outputCapturingString.getvalue().split('\n'))
 		else:
 			self.assertEqual(['moving test\\testproject_1\\fromdir\\Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3 to projectdir\\mp3\\Rimsky-Korsakov\\Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3', ''], outputCapturingString.getvalue().split('\n'))

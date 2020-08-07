@@ -196,11 +196,11 @@ class TestFileLister(unittest.TestCase):
 		fl = FileLister(cm)
 
 		if os.name == 'posix':
-			filePatternDirTupleLst = [('*.mp3', '/'), ('*Rimsky-Korsakov*.mp3', '/rim')]
-			self.assertEqual([('*Rimsky-Korsakov*.mp3', '/rim'), ('*.mp3', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			filePatternDirTupleLst = [('*.mp3', ''), ('*Rimsky-Korsakov*.mp3', '/rim')]
+			self.assertEqual([('*Rimsky-Korsakov*.mp3', '/rim'), ('*.mp3', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 	
-			filePatternDirTupleLst = [('*Rimsky-Korsakov*.mp3', '/rim'), ('*.mp3', '/')]
-			self.assertEqual([('*Rimsky-Korsakov*.mp3', '/rim'), ('*.mp3', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			filePatternDirTupleLst = [('*Rimsky-Korsakov*.mp3', '/rim'), ('*.mp3', '')]
+			self.assertEqual([('*Rimsky-Korsakov*.mp3', '/rim'), ('*.mp3', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 		else:
 			filePatternDirTupleLst = [('*.mp3', ''), ('*Rimsky-Korsakov*.mp3', '\\rim')]
 			self.assertEqual([('*Rimsky-Korsakov*.mp3', '\\rim'), ('*.mp3', '')],
@@ -222,7 +222,7 @@ class TestFileLister(unittest.TestCase):
 		if os.name == 'posix':
 			filePatternDirTupleLst = [('*.py', ''), ('test*.py', '/test'), ('*.jpg', '/images'), ('sub*.jpg', '/images/sub'), ('*.docx', '/doc')]
 			self.assertEqual([('sub*.jpg', '/images/sub'), ('test*.py', '/test'), ('*.jpg', '/images'), ('*.docx', '/doc'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
-			filePatternDirTupleLst = [('sub*.jpg', '/images/sub'), ('*.docx', '/doc'), ('*.jpg', '/images'), ('aa*.docx', '/doc/aa_sub_dir'), ('test*.py', '/test'), ('*.py', '')]
+			filePatternDirTupleLst = [('sub*.jpg', '/images/sub'), ('*.jpg', '/images'), ('*.docx', '/doc'), ('aa*.docx', '/doc/aa_sub_dir'), ('test*.py', '/test'), ('*.py', '')]
 			self.assertEqual([('sub*.jpg', '/images/sub'), ('aa*.docx', '/doc/aa_sub_dir'), ('*.jpg', '/images'), ('*.docx', '/doc'), ('test*.py', '/test'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 		else:
 			filePatternDirTupleLst = [('*.py', ''), ('test*.py', '\\test'), ('*.jpg', '\\images'), ('sub*.jpg', '\\images\\sub'), ('*.docx', '\\doc')]
@@ -240,7 +240,7 @@ class TestFileLister(unittest.TestCase):
 		fl = FileLister(cm)
 
 		if os.name == 'posix':
-			filePatternDirTupleLst = [('sub*.jpg', '/images/sub'), ('*.docx', '/doc'), ('*.jpg', '/images'), ('aa*.docx', '/doc/aa_sub_dir'), ('test*.py', '/test'), ('*.py', '')]
+			filePatternDirTupleLst = [('test*.py', '/test'), ('*.py', ''), ('*.md', ''), ('*.docx', '/doc'), ('*.jpg', '/images'), ('sub*.jpg', '/images/sub'), ('*.mp3', '/mp3'), ('*Rimsky-Korsakov*.mp3', '/mp3/Rimsky-Korsakov')]
 			self.assertEqual([('sub*.jpg', '/images/sub'), ('*Rimsky-Korsakov*.mp3', '/mp3/Rimsky-Korsakov'), ('test*.py', '/test'), ('*.docx', '/doc'), ('*.jpg', '/images'), ('*.mp3', '/mp3'), ('*.py', ''), ('*.md', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 		else:
 			filePatternDirTupleLst = [('test*.py', '\\test'), ('*.py', ''), ('*.md', ''), ('*.docx', '\\doc'), ('*.jpg', '\\images'), ('sub*.jpg', '\\images\\sub'), ('*.mp3', '\\mp3'), ('*Rimsky-Korsakov*.mp3', '\\mp3\\Rimsky-Korsakov')]
