@@ -141,58 +141,25 @@ class TestFileLister(unittest.TestCase):
 
 		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', cloudFileLst=cloudFileLst)
 
-		self.assertEqual(['test*.py', '*Solemne*.mp3', '*.mp3', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
+		self.assertEqual(['aa*.jpg', '*Solemne*.mp3', 'test*.py', '*.docx', '*.jpg', '*.mp3', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
 
 		if os.name == 'posix':
 			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
 							'*.md': ('', ['README_2.md']),
-							'*.mp3': ('/other', []),
+							'*.mp3': ('/mp3', []),
 							'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
 							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
-							'*Solemne*.mp3': ('/solemne', []),
+							'*Solemne*.mp3': ('/mp3/solemne', []),
 							 'aa*.jpg': ('/images/aa', ['aa_current.jpg'])}, fileTypeDic)
 		else:
 			self.assertEqual({'*.jpg': ('\\images', ['current_state_21.jpg', 'current_state_22.jpg']),
 							'*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']),
 							'*.md': ('', ['README_2.md']),
-							'*.mp3': ('\\other', []),
+							'*.mp3': ('\\mp3', []),
 							'test*.py': ('\\test', ['testfilelister_2.py', 'testfilemover_2.py']),
 							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
-							'*Solemne*.mp3': ('\\solemne', []),
-							 'aa*.jpg': ('\\images\\aa', ['aa_current.jpg'])}, fileTypeDic)
-
-	def testGetFilesByOrderedTypes_order_in_configFile_not_respected(self):
-		if os.name == 'posix':
-			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-		else:
-			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
-
-		cm = ConfigManager(configFilePathName)
-		fl = FileLister(cm)
-		cloudFileLst = ['aa_current.jpg', 'constants_2.py', 'current_state_21.jpg', 'current_state_22.jpg', 'doc_21.docx', 'doc_22.docx', 'filelister_2.py', 'filemover_2.py', 'README_2.md', 'testfilelister_2.py', 'testfilemover_2.py']
-
-		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', cloudFileLst=cloudFileLst)
-
-		self.assertEqual(['test*.py', '*Solemne*.mp3', '*.mp3', 'aa*.jpg', '*.jpg', '*.docx', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
-
-		if os.name == 'posix':
-			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']),
-							'*.docx': ('/doc', ['doc_21.docx', 'doc_22.docx']),
-							'*.md': ('', ['README_2.md']),
-							'*.mp3': ('/other', []),
-							'test*.py': ('/test', ['testfilelister_2.py', 'testfilemover_2.py']),
-							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
-							'*Solemne*.mp3': ('/solemne', []),
-							 'aa*.jpg': ('/images/aa', ['aa_current.jpg'])}, fileTypeDic)
-		else:
-			self.assertEqual({'*.jpg': ('\\images', ['current_state_21.jpg', 'current_state_22.jpg']),
-							'*.docx': ('\\doc', ['doc_21.docx', 'doc_22.docx']),
-							'*.md': ('', ['README_2.md']),
-							'*.mp3': ('\\other', []),
-							'test*.py': ('\\test', ['testfilelister_2.py', 'testfilemover_2.py']),
-							'*.py': ('', ['constants_2.py', 'filelister_2.py', 'filemover_2.py']),
-							'*Solemne*.mp3': ('\\solemne', []),
+							'*Solemne*.mp3': ('\\mp3\\solemne', []),
 							 'aa*.jpg': ('\\images\\aa', ['aa_current.jpg'])}, fileTypeDic)
 
 	def testSortFilePatternDirTupleLst_2_items(self):
@@ -204,11 +171,44 @@ class TestFileLister(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
 		
-		filePatternDirTupleLst = [('*.py', '/'), ('test*.py', '/test')]		
-		self.assertEqual([('test*.py', '/test'), ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+		if os.name == 'posix':
+			filePatternDirTupleLst = [('*.py', ''), ('test*.py', '/test')]
+			self.assertEqual([('test*.py', '/test'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 
-		filePatternDirTupleLst = [('test*.py', '/test'), ('*.py', '/')]		
-		self.assertEqual([('test*.py', '/test'), ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			filePatternDirTupleLst = [('test*.py', '/test'), ('*.py', '')]
+			self.assertEqual([('test*.py', '/test'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+		else:
+			filePatternDirTupleLst = [('*.py', ''), ('test*.py', '\\test')]
+			self.assertEqual([('test*.py', '\\test'), ('*.py', '')],
+							 fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+
+			filePatternDirTupleLst = [('test*.py', '\\test'), ('*.py', '')]
+			self.assertEqual([('test*.py', '\\test'), ('*.py', '')],
+							 fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+
+	def testSortFilePatternDirTupleLst_2_items_one_start_With_star(self):
+		if os.name == 'posix':
+			configFilePathName = '/sdcard/transfiles.ini'
+		else:
+			configFilePathName = 'c:\\temp\\transfiles.ini'
+
+		cm = ConfigManager(configFilePathName)
+		fl = FileLister(cm)
+
+		if os.name == 'posix':
+			filePatternDirTupleLst = [('*.mp3', '/'), ('*Rimsky-Korsakov*.mp3', '/rim')]
+			self.assertEqual([('*Rimsky-Korsakov*.mp3', '/rim'), ('*.mp3', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+	
+			filePatternDirTupleLst = [('*Rimsky-Korsakov*.mp3', '/rim'), ('*.mp3', '/')]
+			self.assertEqual([('*Rimsky-Korsakov*.mp3', '/rim'), ('*.mp3', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+		else:
+			filePatternDirTupleLst = [('*.mp3', ''), ('*Rimsky-Korsakov*.mp3', '\\rim')]
+			self.assertEqual([('*Rimsky-Korsakov*.mp3', '\\rim'), ('*.mp3', '')],
+							 fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+
+			filePatternDirTupleLst = [('*Rimsky-Korsakov*.mp3', '\\rim'), ('*.mp3', '')]
+			self.assertEqual([('*Rimsky-Korsakov*.mp3', '\\rim'), ('*.mp3', '')],
+							 fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 
 	def testSortFilePatternDirTupleLst_n_items(self):
 		if os.name == 'posix':
@@ -219,11 +219,32 @@ class TestFileLister(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)
 		fl = FileLister(cm)
 
-		filePatternDirTupleLst = [('*.py', '/'), ('test*.py', '/test'), ('*.jpg', '/images'), ('sub*.jpg', '/images/sub'), ('*.docx', '/doc')]
-		self.assertEqual([('test*.py', '/test'),  ('sub*.jpg', '/images/sub'),  ('*.jpg', '/images'),  ('*.docx', '/doc'),  ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+		if os.name == 'posix':
+			filePatternDirTupleLst = [('*.py', ''), ('test*.py', '/test'), ('*.jpg', '/images'), ('sub*.jpg', '/images/sub'), ('*.docx', '/doc')]
+			self.assertEqual([('sub*.jpg', '/images/sub'), ('test*.py', '/test'), ('*.jpg', '/images'), ('*.docx', '/doc'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			filePatternDirTupleLst = [('sub*.jpg', '/images/sub'), ('*.docx', '/doc'), ('*.jpg', '/images'), ('aa*.docx', '/doc/aa_sub_dir'), ('test*.py', '/test'), ('*.py', '')]
+			self.assertEqual([('sub*.jpg', '/images/sub'), ('aa*.docx', '/doc/aa_sub_dir'), ('*.jpg', '/images'), ('*.docx', '/doc'), ('test*.py', '/test'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+		else:
+			filePatternDirTupleLst = [('*.py', ''), ('test*.py', '\\test'), ('*.jpg', '\\images'), ('sub*.jpg', '\\images\\sub'), ('*.docx', '\\doc')]
+			self.assertEqual([('sub*.jpg', '\\images\\sub'), ('test*.py', '\\test'), ('*.jpg', '\\images'), ('*.docx', '\\doc'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			filePatternDirTupleLst = [('sub*.jpg', '\\images\\sub'), ('*.jpg', '\\images'), ('*.docx', '\\doc'), ('aa*.docx', '\\doc\\aa_sub_dir'), ('test*.py', '\\test'), ('*.py', '')]
+			self.assertEqual([('sub*.jpg', '\\images\\sub'), ('aa*.docx', '\\doc\\aa_sub_dir'), ('*.jpg', '\\images'), ('*.docx', '\\doc'), ('test*.py', '\\test'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 
-		filePatternDirTupleLst =  [('sub*.jpg', '/images/sub'), ('*.docx', '/doc'), ('*.jpg', '/images'), ('aa*.docx', '/doc/aa_sub_dir'), ('test*.py', '/test'), ('*.py', '/')]
-		self.assertEqual([('test*.py', '/test'), ('sub*.jpg', '/images/sub'), ('*.jpg', '/images'), ('aa*.docx', '/doc/aa_sub_dir'), ('*.docx', '/doc'), ('*.py', '/')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+	def testSortFilePatternDirTupleLst_n_items_one_start_With_star(self):
+		if os.name == 'posix':
+			configFilePathName = '/sdcard/transfiles.ini'
+		else:
+			configFilePathName = 'c:\\temp\\transfiles.ini'
+
+		cm = ConfigManager(configFilePathName)
+		fl = FileLister(cm)
+
+		if os.name == 'posix':
+			filePatternDirTupleLst = [('sub*.jpg', '/images/sub'), ('*.docx', '/doc'), ('*.jpg', '/images'), ('aa*.docx', '/doc/aa_sub_dir'), ('test*.py', '/test'), ('*.py', '')]
+			self.assertEqual([('sub*.jpg', '/images/sub'), ('*Rimsky-Korsakov*.mp3', '/mp3/Rimsky-Korsakov'), ('test*.py', '/test'), ('*.docx', '/doc'), ('*.jpg', '/images'), ('*.mp3', '/mp3'), ('*.py', ''), ('*.md', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+		else:
+			filePatternDirTupleLst = [('test*.py', '\\test'), ('*.py', ''), ('*.md', ''), ('*.docx', '\\doc'), ('*.jpg', '\\images'), ('sub*.jpg', '\\images\\sub'), ('*.mp3', '\\mp3'), ('*Rimsky-Korsakov*.mp3', '\\mp3\\Rimsky-Korsakov')]
+			self.assertEqual([('sub*.jpg', '\\images\\sub'), ('*Rimsky-Korsakov*.mp3', '\\mp3\\Rimsky-Korsakov'), ('test*.py', '\\test'), ('*.docx', '\\doc'), ('*.jpg', '\\images'), ('*.mp3', '\\mp3'), ('*.py', ''), ('*.md', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 
 	def testIsRootAsDirOrSubDirInExcludedDirLst(self):
 		if os.name == 'posix':

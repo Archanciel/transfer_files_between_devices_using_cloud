@@ -117,9 +117,23 @@ class TestConfigManager(unittest.TestCase):
 		projectName = 'transFileCloudTestProject'
 		
 		if os.name == 'posix':
-			self.assertEqual({'test*.py': '/test',  '*.mp3': '/other', '*.py': '', '*Solemne*.mp3': '/solemne', '*.md': '', '*.docx': '/doc', '*.jpg': '/images', 'aa*.jpg': '/images/aa'}, cm.getFilePatternLocalDestinationDic(projectName))
+			self.assertEqual({'*.docx': '/doc',
+							 '*.jpg': '/images',
+							 '*.md': '',
+							 '*.mp3': '/mp3',
+							 '*.py': '',
+							 '*Solemne*.mp3': '/mp3/solemne',
+							 'aa*.jpg': '/images/aa',
+							 'test*.py': '/test'}, cm.getFilePatternLocalDestinationDic(projectName))
 		else:
-			self.assertEqual({'test*.py': '\\test', '*.mp3': '\\other', '*.py': '', '*Solemne*.mp3': '\\solemne', '*.md': '', '*.docx': '\\doc', '*.jpg': '\\images',  'aa*.jpg': '\\images\\aa'}, cm.getFilePatternLocalDestinationDic(projectName))
+			self.assertEqual({'*.docx': '\\doc',
+							 '*.jpg': '\\images',
+							 '*.md': '',
+							 '*.mp3': '\\mp3',
+							 '*.py': '',
+							 '*Solemne*.mp3': '\\mp3\\solemne',
+							 'aa*.jpg': '\\images\\aa',
+							 'test*.py': '\\test'}, cm.getFilePatternLocalDestinationDic(projectName))
 
 if __name__ == '__main__':
 	unittest.main()

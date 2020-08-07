@@ -14,7 +14,7 @@ from constants import DIR_SEP
 if os.name == 'posix':
 	CONFIG_FILE_PATH_NAME = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_FileMover.ini'
 else:
-	CONFIG_FILE_PATH_NAME = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_FileMover.ini'
+	CONFIG_FILE_PATH_NAME = 'D:/Development/Python/trans_file_cloud/test/test_FileMover.ini'
 
 class TestFileMover(unittest.TestCase):
 	def testMoveFilesToLocalDirs(self):
@@ -34,9 +34,9 @@ class TestFileMover(unittest.TestCase):
 			projectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir'
 			projectDirEmpty = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir_empty'
 
-			TEST_SUB_DIR = '\\test'
-			IMG_SUB_DIR = '\\images'
-			DOC_SUB_DIR = '\\doc'
+			TEST_SUB_DIR = '/test'
+			IMG_SUB_DIR = '/images'
+			DOC_SUB_DIR = '/doc'
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 
@@ -82,31 +82,47 @@ class TestFileMover(unittest.TestCase):
 		sys.stdout = stdout
 
 		if os.name == 'posix':
-			self.assertEqual([
-								 'moving test/testproject_1/fromdir/testfilelister_1.py to testproject_1/projectdir/test/testfilelister_1.py',
-								 'moving test/testproject_1/fromdir/testfilemover_1.py to testproject_1/projectdir/test/testfilemover_1.py',
-								 'moving test/testproject_1/fromdir/current_state_11.jpg to testproject_1/projectdir/images/current_state_11.jpg',
-								 'moving test/testproject_1/fromdir/current_state_12.jpg to testproject_1/projectdir/images/current_state_12.jpg',
-								 'moving test/testproject_1/fromdir/doc_11.docx to testproject_1/projectdir/doc/doc_11.docx',
-								 'moving test/testproject_1/fromdir/doc_12.docx to testproject_1/projectdir/doc/doc_12.docx',
-								 'moving test/testproject_1/fromdir/constants_1.py to test/testproject_1/projectdir/constants_1.py',
-								 'moving test/testproject_1/fromdir/filelister_1.py to test/testproject_1/projectdir/filelister_1.py',
-								 'moving test/testproject_1/fromdir/filemover_1.py to test/testproject_1/projectdir/filemover_1.py',
-								 'moving test/testproject_1/fromdir/README_1.md to test/testproject_1/projectdir/README_1.md',
-								 ''],
-							 outputCapturingString.getvalue().split('\n'))
+			self.assertEqual(['moving test/testproject_1/fromdir/testfilelister_1.py to '
+							 'testproject_1/projectdir/test/testfilelister_1.py',
+							 'moving test/testproject_1/fromdir/testfilemover_1.py to '
+							 'testproject_1/projectdir/test/testfilemover_1.py',
+							 'moving test/testproject_1/fromdir/doc_11.docx to '
+							 'testproject_1/projectdir/doc/doc_11.docx',
+							 'moving test/testproject_1/fromdir/doc_12.docx to '
+							 'testproject_1/projectdir/doc/doc_12.docx',
+							 'moving test/testproject_1/fromdir/current_state_11.jpg to '
+							 'testproject_1/projectdir/images/current_state_11.jpg',
+							 'moving test/testproject_1/fromdir/current_state_12.jpg to '
+							 'testproject_1/projectdir/images/current_state_12.jpg',
+							 'moving test/testproject_1/fromdir/constants_1.py to '
+							 'test/testproject_1/projectdir/constants_1.py',
+							 'moving test/testproject_1/fromdir/filelister_1.py to '
+							 'test/testproject_1/projectdir/filelister_1.py',
+							 'moving test/testproject_1/fromdir/filemover_1.py to '
+							 'test/testproject_1/projectdir/filemover_1.py',
+							 'moving test/testproject_1/fromdir/README_1.md to '
+							 'test/testproject_1/projectdir/README_1.md', ''], outputCapturingString.getvalue().split('\n'))
 		else:
-			self.assertEqual(['moving test\\testproject_1\\fromdir\\testfilelister_1.py to testproject_1\\projectdir\\test\\testfilelister_1.py',
-							  'moving test\\testproject_1\\fromdir\\testfilemover_1.py to testproject_1\\projectdir\\test\\testfilemover_1.py',
-							  'moving test\\testproject_1\\fromdir\\current_state_11.jpg to testproject_1\\projectdir\\images\\current_state_11.jpg',
-							  'moving test\\testproject_1\\fromdir\\current_state_12.jpg to testproject_1\\projectdir\\images\\current_state_12.jpg',
-							  'moving test\\testproject_1\\fromdir\\doc_11.docx to testproject_1\\projectdir\\doc\\doc_11.docx',
-							  'moving test\\testproject_1\\fromdir\\doc_12.docx to testproject_1\\projectdir\\doc\\doc_12.docx',
-							  'moving test\\testproject_1\\fromdir\\constants_1.py to test\\testproject_1\\projectdir\\constants_1.py',
-							  'moving test\\testproject_1\\fromdir\\filelister_1.py to test\\testproject_1\\projectdir\\filelister_1.py',
-							  'moving test\\testproject_1\\fromdir\\filemover_1.py to test\\testproject_1\\projectdir\\filemover_1.py',
-							  'moving test\\testproject_1\\fromdir\\README_1.md to test\\testproject_1\\projectdir\\README_1.md', ''],
-							 outputCapturingString.getvalue().split('\n'))
+			self.assertEqual(['moving test\\testproject_1\\fromdir\\testfilelister_1.py to '
+							 'testproject_1\\projectdir\\test\\testfilelister_1.py',
+							 'moving test\\testproject_1\\fromdir\\testfilemover_1.py to '
+							 'testproject_1\\projectdir\\test\\testfilemover_1.py',
+							 'moving test\\testproject_1\\fromdir\\doc_11.docx to '
+							 'testproject_1\\projectdir\\doc\\doc_11.docx',
+							 'moving test\\testproject_1\\fromdir\\doc_12.docx to '
+							 'testproject_1\\projectdir\\doc\\doc_12.docx',
+							 'moving test\\testproject_1\\fromdir\\current_state_11.jpg to '
+							 'testproject_1\\projectdir\\images\\current_state_11.jpg',
+							 'moving test\\testproject_1\\fromdir\\current_state_12.jpg to '
+							 'testproject_1\\projectdir\\images\\current_state_12.jpg',
+							 'moving test\\testproject_1\\fromdir\\constants_1.py to '
+							 'test\\testproject_1\\projectdir\\constants_1.py',
+							 'moving test\\testproject_1\\fromdir\\filelister_1.py to '
+							 'test\\testproject_1\\projectdir\\filelister_1.py',
+							 'moving test\\testproject_1\\fromdir\\filemover_1.py to '
+							 'test\\testproject_1\\projectdir\\filemover_1.py',
+							 'moving test\\testproject_1\\fromdir\\README_1.md to '
+							 'test\\testproject_1\\projectdir\\README_1.md', ''], outputCapturingString.getvalue().split('\n'))
 
 		# verifying project dir
 		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + DIR_SEP + '*.*')]
@@ -166,11 +182,10 @@ class TestFileMover(unittest.TestCase):
 		sys.stdout = stdout
 
 		if os.name == 'posix':
-			self.assertEqual(['Destination dir /storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir/not_exist does not exist. Program stopped.'],
+			self.assertEqual(['Destination dir /storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir/mp3/not_exist does not exist. Program stopped.'],
 							 outputCapturingString.getvalue().split('\n')[:-1])
 		else:
-			self.assertEqual(['Destination dir D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir\\not_exist does not exist. Program stopped.'],
-							 outputCapturingString.getvalue().split('\n')[:-1])
+			self.assertEqual(['Destination dir D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir\\mp3\\not_exist does not exist. Program stopped.'], outputCapturingString.getvalue().split('\n')[:-1])
 
 	def testMoveFilesToLocalDirs_mp3_file_bug(self):
 		if os.name == 'posix':
@@ -179,7 +194,7 @@ class TestFileMover(unittest.TestCase):
 			projectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir'
 			projectDirEmpty = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/projectdir_empty'
 
-			SUB_DIR_RIMSKY = '/Rimsky-Korsakov'
+			SUB_DIR_RIMSKY = '/mp3/Rimsky-Korsakov'
 		else:
 			# Windows
 			downloadDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir'
@@ -187,7 +202,7 @@ class TestFileMover(unittest.TestCase):
 			projectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir'
 			projectDirEmpty = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\projectdir_empty'
 
-			SUB_DIR_RIMSKY = '\\Rimsky-Korsakov'
+			SUB_DIR_RIMSKY = '\\mp3\\Rimsky-Korsakov'
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 
@@ -227,8 +242,7 @@ class TestFileMover(unittest.TestCase):
 			self.assertEqual(['moving test/testproject_1/fromdir/Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3 to testproject_1/projectdir/Rimsky-Korsakov/Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3'],
 							 outputCapturingString.getvalue().split('\n'))
 		else:
-			self.assertEqual(['moving test\\testproject_1\\fromdir\\Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3 to testproject_1\\projectdir\\Rimsky-Korsakov\\Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3'],
-							 outputCapturingString.getvalue().split('\n'))
+			self.assertEqual(['moving test\\testproject_1\\fromdir\\Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3 to projectdir\\mp3\\Rimsky-Korsakov\\Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3', ''], outputCapturingString.getvalue().split('\n'))
 
 		# verifying project Rimsky-Korsakov sub dir
 		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + SUB_DIR_RIMSKY + DIR_SEP + '*.*')]

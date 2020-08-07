@@ -300,4 +300,17 @@ class FileLister:
 		@return value example:
 			[('test*.py', '/test'),  ('sub*.jpg', '/images/sub'),  ('*.jpg', '/images'),  ('*.docx', '/doc'),  ('*.py', '/')]
 		"""
-		return sorted(filePatternDirTupleLst, key=lambda tup: tup[1], reverse=True)			
+		return sorted(filePatternDirTupleLst, key=functools.cmp_to_key(self.computeMoveOrder))
+
+	def computeMoveOrder(self, typeTupleOne, typeTupleTwo):
+		subDirNoOne = len(typeTupleOne[1].split(DIR_SEP))
+		subDirNoTwo = len(typeTupleTwo[1].split(DIR_SEP))
+
+		if subDirNoOne < subDirNoTwo:
+			return 1
+		elif subDirNoOne > subDirNoTwo:
+			return -1
+		else:
+			return 0
+
+
