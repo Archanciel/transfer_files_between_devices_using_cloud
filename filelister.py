@@ -311,6 +311,12 @@ class FileLister:
 		elif subDirNoOne > subDirNoTwo:
 			return -1
 		else:
-			return 0
-
-
+			wildchardOne = typeTupleOne[0]
+			wildchardTwo = typeTupleTwo[0]
+		
+			if wildchardOne < wildchardTwo:
+				return 1
+			elif wildchardOne > wildchardTwo:
+				return -1
+			else:
+				return 0

@@ -141,7 +141,14 @@ class TestFileLister(unittest.TestCase):
 
 		orderedFileTypeWildchardExprLst, fileTypeDic = fl.getFilesByOrderedTypes('transFileCloudTestProject', cloudFileLst=cloudFileLst)
 
-		self.assertEqual(['aa*.jpg', '*Solemne*.mp3', 'test*.py', '*.docx', '*.jpg', '*.mp3', '*.py', '*.md'], orderedFileTypeWildchardExprLst)
+		self.assertEqual(['aa*.jpg',
+						  '*Solemne*.mp3',
+						  'test*.py',
+						  '*.mp3',
+						  '*.jpg',
+						  '*.docx',
+						  '*.py',
+						  '*.md'], orderedFileTypeWildchardExprLst)
 
 		if os.name == 'posix':
 			self.assertEqual({'*.jpg': ('/images', ['current_state_21.jpg', 'current_state_22.jpg']),
@@ -221,14 +228,34 @@ class TestFileLister(unittest.TestCase):
 
 		if os.name == 'posix':
 			filePatternDirTupleLst = [('*.py', ''), ('test*.py', '/test'), ('*.jpg', '/images'), ('sub*.jpg', '/images/sub'), ('*.docx', '/doc')]
-			self.assertEqual([('sub*.jpg', '/images/sub'), ('test*.py', '/test'), ('*.jpg', '/images'), ('*.docx', '/doc'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			self.assertEqual([('sub*.jpg', '/images/sub'),
+							  ('test*.py', '/test'),
+							  ('*.jpg', '/images'),
+							  ('*.docx', '/doc'),
+							  ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+
 			filePatternDirTupleLst = [('sub*.jpg', '/images/sub'), ('*.jpg', '/images'), ('*.docx', '/doc'), ('aa*.docx', '/doc/aa_sub_dir'), ('test*.py', '/test'), ('*.py', '')]
-			self.assertEqual([('sub*.jpg', '/images/sub'), ('aa*.docx', '/doc/aa_sub_dir'), ('*.jpg', '/images'), ('*.docx', '/doc'), ('test*.py', '/test'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			self.assertEqual([('sub*.jpg', '/images/sub'),
+							  ('aa*.docx', '/doc/aa_sub_dir'),
+							  ('test*.py', '/test'),
+							  ('*.jpg', '/images'),
+							  ('*.docx', '/doc'),
+							  ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 		else:
 			filePatternDirTupleLst = [('*.py', ''), ('test*.py', '\\test'), ('*.jpg', '\\images'), ('sub*.jpg', '\\images\\sub'), ('*.docx', '\\doc')]
-			self.assertEqual([('sub*.jpg', '\\images\\sub'), ('test*.py', '\\test'), ('*.jpg', '\\images'), ('*.docx', '\\doc'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			self.assertEqual([('sub*.jpg', '\\images\\sub'),
+							  ('test*.py', '\\test'),
+							  ('*.jpg', '\\images'),
+							  ('*.docx', '\\doc'),
+							  ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+
 			filePatternDirTupleLst = [('sub*.jpg', '\\images\\sub'), ('*.jpg', '\\images'), ('*.docx', '\\doc'), ('aa*.docx', '\\doc\\aa_sub_dir'), ('test*.py', '\\test'), ('*.py', '')]
-			self.assertEqual([('sub*.jpg', '\\images\\sub'), ('aa*.docx', '\\doc\\aa_sub_dir'), ('*.jpg', '\\images'), ('*.docx', '\\doc'), ('test*.py', '\\test'), ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			self.assertEqual([('sub*.jpg', '\\images\\sub'),
+							  ('aa*.docx', '\\doc\\aa_sub_dir'),
+							  ('test*.py', '\\test'),
+							  ('*.jpg', '\\images'),
+							  ('*.docx', '\\doc'),
+							  ('*.py', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 
 	def testSortFilePatternDirTupleLst_n_items_one_start_With_star(self):
 		if os.name == 'posix':
@@ -241,10 +268,24 @@ class TestFileLister(unittest.TestCase):
 
 		if os.name == 'posix':
 			filePatternDirTupleLst = [('test*.py', '/test'), ('*.py', ''), ('*.md', ''), ('*.docx', '/doc'), ('*.jpg', '/images'), ('sub*.jpg', '/images/sub'), ('*.mp3', '/mp3'), ('*Rimsky-Korsakov*.mp3', '/mp3/Rimsky-Korsakov')]
-			self.assertEqual([('sub*.jpg', '/images/sub'), ('*Rimsky-Korsakov*.mp3', '/mp3/Rimsky-Korsakov'), ('test*.py', '/test'), ('*.docx', '/doc'), ('*.jpg', '/images'), ('*.mp3', '/mp3'), ('*.py', ''), ('*.md', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			self.assertEqual([('sub*.jpg', '/images/sub'),
+							  ('*Rimsky-Korsakov*.mp3', '/mp3/Rimsky-Korsakov'),
+							  ('test*.py', '/test'),
+							  ('*.mp3', '/mp3'),
+							  ('*.jpg', '/images'),
+							  ('*.docx', '/doc'),
+							  ('*.py', ''),
+							  ('*.md', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 		else:
 			filePatternDirTupleLst = [('test*.py', '\\test'), ('*.py', ''), ('*.md', ''), ('*.docx', '\\doc'), ('*.jpg', '\\images'), ('sub*.jpg', '\\images\\sub'), ('*.mp3', '\\mp3'), ('*Rimsky-Korsakov*.mp3', '\\mp3\\Rimsky-Korsakov')]
-			self.assertEqual([('sub*.jpg', '\\images\\sub'), ('*Rimsky-Korsakov*.mp3', '\\mp3\\Rimsky-Korsakov'), ('test*.py', '\\test'), ('*.docx', '\\doc'), ('*.jpg', '\\images'), ('*.mp3', '\\mp3'), ('*.py', ''), ('*.md', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
+			self.assertEqual([('sub*.jpg', '\\images\\sub'),
+							  ('*Rimsky-Korsakov*.mp3', '\\mp3\\Rimsky-Korsakov'),
+							  ('test*.py', '\\test'),
+							  ('*.mp3', '\\mp3'),
+							  ('*.jpg', '\\images'),
+							  ('*.docx', '\\doc'),
+							  ('*.py', ''),
+							  ('*.md', '')], fl.sortFilePatternDirTupleLst(filePatternDirTupleLst))
 
 	def testIsRootAsDirOrSubDirInExcludedDirLst(self):
 		if os.name == 'posix':

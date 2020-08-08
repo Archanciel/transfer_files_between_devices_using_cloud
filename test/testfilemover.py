@@ -86,14 +86,14 @@ class TestFileMover(unittest.TestCase):
 							 'testproject_1/projectdir/test/testfilelister_1.py',
 							 'moving test/testproject_1/fromdir/testfilemover_1.py to '
 							 'testproject_1/projectdir/test/testfilemover_1.py',
-							 'moving test/testproject_1/fromdir/doc_11.docx to '
-							 'testproject_1/projectdir/doc/doc_11.docx',
-							 'moving test/testproject_1/fromdir/doc_12.docx to '
-							 'testproject_1/projectdir/doc/doc_12.docx',
 							 'moving test/testproject_1/fromdir/current_state_11.jpg to '
 							 'testproject_1/projectdir/images/current_state_11.jpg',
 							 'moving test/testproject_1/fromdir/current_state_12.jpg to '
 							 'testproject_1/projectdir/images/current_state_12.jpg',
+							 'moving test/testproject_1/fromdir/doc_11.docx to '
+							 'testproject_1/projectdir/doc/doc_11.docx',
+							 'moving test/testproject_1/fromdir/doc_12.docx to '
+							 'testproject_1/projectdir/doc/doc_12.docx',
 							 'moving test/testproject_1/fromdir/constants_1.py to '
 							 'test/testproject_1/projectdir/constants_1.py',
 							 'moving test/testproject_1/fromdir/filelister_1.py to '
@@ -107,14 +107,14 @@ class TestFileMover(unittest.TestCase):
 							 'testproject_1\\projectdir\\test\\testfilelister_1.py',
 							 'moving test\\testproject_1\\fromdir\\testfilemover_1.py to '
 							 'testproject_1\\projectdir\\test\\testfilemover_1.py',
-							 'moving test\\testproject_1\\fromdir\\doc_11.docx to '
-							 'testproject_1\\projectdir\\doc\\doc_11.docx',
-							 'moving test\\testproject_1\\fromdir\\doc_12.docx to '
-							 'testproject_1\\projectdir\\doc\\doc_12.docx',
 							 'moving test\\testproject_1\\fromdir\\current_state_11.jpg to '
 							 'testproject_1\\projectdir\\images\\current_state_11.jpg',
 							 'moving test\\testproject_1\\fromdir\\current_state_12.jpg to '
 							 'testproject_1\\projectdir\\images\\current_state_12.jpg',
+							 'moving test\\testproject_1\\fromdir\\doc_11.docx to '
+							 'testproject_1\\projectdir\\doc\\doc_11.docx',
+							 'moving test\\testproject_1\\fromdir\\doc_12.docx to '
+							 'testproject_1\\projectdir\\doc\\doc_12.docx',
 							 'moving test\\testproject_1\\fromdir\\constants_1.py to '
 							 'test\\testproject_1\\projectdir\\constants_1.py',
 							 'moving test\\testproject_1\\fromdir\\filelister_1.py to '
