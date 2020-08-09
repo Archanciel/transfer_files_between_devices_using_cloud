@@ -10,15 +10,35 @@ class DropboxAccess(CloudAccess):
 		accessToken = configManager.dropboxApiKey
 		self.dbx = dropbox.Dropbox(accessToken)
 
-	def uploadFile(self, localFilePathName):
+	def uploadFileName(self, localFilePathName):
 		"""
-		Uploads a file to project folder on Dropbox using API v2. 
+		Uploads a file ignoring its path component to the project folder on Dropbox
+		using API v2.
+
 		To avoid a conflict error if the file already exists on the cloud, the 
 		mode is set to dropbox.files.WriteMode.overwrite.
 
 		@param localFilePathName: file path name of file to upload
 		"""
 		cloudFilePathName = self.cloudProjectDir + '/' + localFilePathName.split(DIR_SEP)[-1]
+
+		with open(localFilePathName, 'rb') as f:
+			self.dbx.files_upload(f.read(), cloudFilePathName, mode=dropbox.files.WriteMode.overwrite)
+
+	def uploadFilePathName(self, localFilePathName, localProjectDir):
+		"""
+		Uploads a file keeping its path component to the project folder on Dropbox
+		using API v2.
+
+		To avoid a conflict error if the file already exists on the cloud, the
+		mode is set to dropbox.files.WriteMode.overwrite.
+
+		@param localFilePathName: file path name of file to upload
+		"""
+		localProjectDir = localProjectDir + DIR_SEP
+		filePathName = localFilePathName.replace(localProjectDir, '')
+		filePathName = filePathName.replace('\\', '/')
+		cloudFilePathName = self.cloudProjectDir + '/' + filePathName
 
 		with open(localFilePathName, 'rb') as f:
 			self.dbx.files_upload(f.read(), cloudFilePathName, mode=dropbox.files.WriteMode.overwrite)
@@ -64,7 +84,7 @@ class DropboxAccess(CloudAccess):
 		"""
 		self.dbx.files_delete_v2(self.cloudProjectDir)
 
-	def getCloudFileList(self):
+	def getCloudFileNameList(self):
 		"""
 		Returns the list of file names of files contained in the cloud project 
 		directory.
@@ -83,6 +103,48 @@ class DropboxAccess(CloudAccess):
 		for fileMetaData in fileListMetaData.entries:
 			fileNameLst.append(fileMetaData.name)
 			
+		return fileNameLst
+
+	def getCloudFilePathNameList(self):
+		"""
+		Returns the list of file path names of files contained in the cloud project
+		directory.
+
+		@return: list of string file names
+		"""
+		fileNameLst = []
+		fileListMetaData = None
+
+		try:
+			fileListMetaData = self.dbx.files_list_folder(path=self.cloudProjectDir)
+		except dropbox.exceptions.ApiError as e:
+			if isinstance(e.error, dropbox.files.ListFolderError):
+				raise NotADirectoryError("Dropbox directory {} does not exist".format(self.cloudProjectDir))
+
+		for fileMetaData in fileListMetaData.entries:
+			fileNameLst.append(fileMetaData.name)
+
+		return fileNameLst
+
+	def getCloudFilePathNameList(self):
+		"""
+		Returns the list of file names of files contained in the cloud project
+		directory.
+
+		@return: list of string file names
+		"""
+		fileNameLst = []
+		fileListMetaData = None
+
+		try:
+			fileListMetaData = self.dbx.files_list_folder(path=self.cloudProjectDir, recursive=True)
+		except dropbox.exceptions.ApiError as e:
+			if isinstance(e.error, dropbox.files.ListFolderError):
+				raise NotADirectoryError("Dropbox directory {} does not exist".format(self.cloudProjectDir))
+
+		for fileMetaData in fileListMetaData.entries:
+			fileNameLst.append(fileMetaData.name)
+
 		return fileNameLst
 
 	def createProjectSubFolder(self, subFolderName):

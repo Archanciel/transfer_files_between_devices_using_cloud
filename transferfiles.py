@@ -72,7 +72,7 @@ class TransferFiles:
 		cloudFileLst = []
 
 		try:
-			cloudFileLst = self.cloudAccess.getCloudFileList()
+			cloudFileLst = self.cloudAccess.getCloudFileNameList()
 		except NotADirectoryError as e:
 			# means that the cloud project directory does not yet exist
 			if self.requester.getCreateCloudFolderConfirmation(self.projectName):
@@ -205,7 +205,7 @@ class TransferFiles:
 		"""
 		for localFilePathName in updatedFilePathNameLst:
 			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-1]))
-			self.cloudAccess.uploadFile(localFilePathName)
+			self.cloudAccess.uploadFileName(localFilePathName)
 
 		# updating last synch time for the project in config file
 		self.updateLastSynchTime()
@@ -248,7 +248,7 @@ class TransferFiles:
 		Physically downloads the files from the cloud and deletes them from
 		the cloud.
 		"""
-		cloudFileNameLst = self.cloudAccess.getCloudFileList()
+		cloudFileNameLst = self.cloudAccess.getCloudFileNameList()
 
 		for fileName in cloudFileNameLst:
 			destFileName = self.configManager.downloadPath + DIR_SEP + fileName

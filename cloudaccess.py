@@ -1,6 +1,8 @@
 from abc import ABCMeta
 from abc import abstractmethod
 
+from constants import DIR_SEP
+
 class CloudAccess(metaclass=ABCMeta):
 	def __init__(self, cloudTransferBaseDir, projectName):
 		"""
@@ -12,13 +14,19 @@ class CloudAccess(metaclass=ABCMeta):
 									 configuration file
 		@param projectName: name of the project for which the CloudAccess
 							class is initialized
+		@param localProjectDir: local project dir used when handling path
+								component of uploaded or downloaded files
 		"""
 		self.cloudProjectDir = cloudTransferBaseDir + '/' + projectName
-		
+
 	@abstractmethod	
-	def uploadFile(self, localFilePathName):
+	def uploadFileName(self, localFilePathName):
 		pass
-		
+
+	@abstractmethod
+	def uploadFilePathName(self, localFilePathName, localProjectDir):
+		pass
+
 	@abstractmethod	
 	def downloadFile(self):
 		pass
@@ -36,9 +44,13 @@ class CloudAccess(metaclass=ABCMeta):
 		pass
 
 	@abstractmethod
-	def getCloudFileList(self):
+	def getCloudFileNameList(self):
 		pass
-		
+
+	@abstractmethod
+	def getCloudFilePathNameList(self):
+		pass
+
 	@abstractmethod
 	def createProjectSubFolder(self, subFolderName):
 		pass

@@ -33,7 +33,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
  
-		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
+		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 		self.assertEqual('transFileCloudProject', projectName)
 	
 	def testGetProjectNameInvalidUserInput_zero(self):
@@ -60,7 +60,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
  
-		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
+		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 
 	def testGetProjectNameInvalidUserInput_minus_one(self):
 		if os.name == 'posix':
@@ -85,7 +85,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
 
-		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
+		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 
 	def testGetProjectNameInvalidUserInput_exeed_choice_number(self):
 		if os.name == 'posix':
@@ -110,7 +110,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
 
-		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
+		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 	
 	def testGetProjectNameInvalidUserInput_return(self):
 		if os.name == 'posix':
@@ -134,7 +134,7 @@ class TestRequester(unittest.TestCase):
  
 		sys.stdin = stdin
 		sys.stdout = stdout
-		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 cartesianAxesProject\n4 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
+		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 
 	def testGetUserConfirmation_uploadFiles(self):
 		if os.name == 'posix':

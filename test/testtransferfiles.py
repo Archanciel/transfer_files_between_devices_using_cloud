@@ -85,12 +85,12 @@ class TestTransferFiles(unittest.TestCase):
 		projectName = 'TransferFilesTestProject'
 		drpa = DropboxAccess(cm, projectName)
 		
-		cloudFileLst = drpa.getCloudFileList()
+		cloudFileLst = drpa.getCloudFileNameList()
 		
 		for file in cloudFileLst:
 			drpa.deleteFile(file)
 			
-		self.assertEqual([], drpa.getCloudFileList())
+		self.assertEqual([], drpa.getCloudFileNameList())
 
 		# reading and rewriting test project files to update their modification date
 
@@ -142,7 +142,89 @@ class TestTransferFiles(unittest.TestCase):
 		
 		expectedUploadedFileNameLst = tstFileToModifyLst + pythonFileToModifyLst + docFileToModifyLst + imgFileToModifyLst
 		
-		self.assertEqual(sorted(expectedUploadedFileNameLst), sorted(drpa.getCloudFileList()))
+		self.assertEqual(sorted(expectedUploadedFileNameLst), sorted(drpa.getCloudFileNameList()))
+
+		# now restoring the modified files dir to its saved version
+		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
+
+	@unittest.skip
+	def testPathUploadModifiedFilesToCloud(self):
+		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
+		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+
+		if os.name == 'posix':
+			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
+			localProjectDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir_saved'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
+			localProjectDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_saved'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+
+		# cleaning up the target cloud folder
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'TransferFilesTestProject'
+		drpa = DropboxAccess(cm, projectName)
+
+		cloudFileLst = drpa.getCloudFileNameList()
+
+		for file in cloudFileLst:
+			drpa.deleteFile(file)
+
+		self.assertEqual([], drpa.getCloudFileNameList())
+
+		# reading and rewriting test project files to update their modification date
+
+		tstFileToModifyLst = ['testfilemover_2.py']
+		pythonFileToModifyLst = ['filemover_2.py', 'filelister_2.py']
+		docFileToModifyLst = ['doc_21.docx', 'doc_22.docx']
+		imgFileToModifyLst = ['current_state_21.jpg']
+
+		tstFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToModifyLst]
+		pythonFilePathNameToModifyLst = [localProjectDir + DIR_SEP + x for x in pythonFileToModifyLst]
+		docFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToModifyLst]
+		imgFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToModifyLst]
+
+		filePathNameToModifyLst = tstFilePathNameToModifyLst + pythonFilePathNameToModifyLst + docFilePathNameToModifyLst + imgFilePathNameToModifyLst
+
+		for filePathName in filePathNameToModifyLst:
+			# opening file as readwrite in binary mode
+			with open(filePathName, 'rb+') as f:
+				content = f.read()
+				f.seek(0)
+				f.write(content)
+				f.close()
+
+		# simulating user input
+
+		stdin = sys.stdin
+
+		# selecting project 1 (the test project 'TransferFilesTestProject' is
+		# the first project defined in test_TransferFiles.ini !)
+		sys.stdin = StringIO('1')
+
+		print('\nstdout temporarily captured. Test is running ...')
+
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+
+		# now asking TransferFiles to upload the modified files
+
+		tf = TransferFiles(configFilePath=configFilePathName)
+
+		# confirming modified files upload
+		sys.stdin = StringIO('Y')
+
+		tf.pathUploadModifiedFilesToCloud()
+
+		sys.stdin = stdin
+		sys.stdout = stdout
+
+		expectedUploadedFileNameLst = tstFilePathNameToModifyLst + pythonFilePathNameToModifyLst + docFilePathNameToModifyLst + imgFilePathNameToModifyLst
+
+		self.assertEqual(sorted(expectedUploadedFileNameLst), sorted(drpa.getCloudFileNameList()))
 
 		# now restoring the modified files dir to its saved version
 		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
@@ -172,12 +254,12 @@ class TestTransferFiles(unittest.TestCase):
 				
 		drpa = DropboxAccess(cm, projectName)
 		
-		cloudFileLst = drpa.getCloudFileList()
+		cloudFileLst = drpa.getCloudFileNameList()
 		
 		for file in cloudFileLst:
 			drpa.deleteFile(file)
 			
-		self.assertEqual([], drpa.getCloudFileList())
+		self.assertEqual([], drpa.getCloudFileNameList())
 
 		# listing the test files which wiLl be uploaded to
 		# the cloud in order to be available for download
@@ -203,7 +285,7 @@ class TestTransferFiles(unittest.TestCase):
 		drpa = DropboxAccess(cm, projectName)
 		
 		for filePathName in filePathNameToUploadLst:
-			drpa.uploadFile(filePathName)
+			drpa.uploadFileName(filePathName)
 
 		# simulating user input
 
@@ -227,7 +309,7 @@ class TestTransferFiles(unittest.TestCase):
 		# confirming cloud files download
 		sys.stdin = StringIO('Y')
 		
-		tf.transferFilesFromCloudToLocalDirs(drpa.getCloudFileList())
+		tf.transferFilesFromCloudToLocalDirs(drpa.getCloudFileNameList())
 
 		sys.stdin = stdin
 		sys.stdout = stdout
