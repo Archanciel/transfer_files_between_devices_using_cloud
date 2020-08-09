@@ -1,5 +1,5 @@
 import unittest
-import os, sys, inspect, shutil, datetime, re
+import os, sys, inspect, shutil, datetime, re, functools
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -317,6 +317,120 @@ class TestFileLister(unittest.TestCase):
 		self.assertTrue(fl.isRootAsDirOrSubDirInExcludedDirLst(dir1, excludedDirLst))
 		self.assertFalse(fl.isRootAsDirOrSubDirInExcludedDirLst(subDir3, excludedDirLst))
 		self.assertFalse(fl.isRootAsDirOrSubDirInExcludedDirLst(dir2, excludedDirLst))
+
+	def testSortDirTupleListUsingComputeMoveOrder(self):
+		if os.name == 'posix':
+			configFilePathName = '/sdcard/transfiles.ini'
+			filePatternDirDic = {'test*.py': '/test',
+								 '*.py': '/',
+								 '*.rd': '/',
+								 '*.docx': '/doc',
+								 '*.jpg': '/images',
+								 'aacc*.mp3': '/aaccmp3',
+								 'cc*.mp3': '/ccmp3',
+								 '*.mp3': '/mp3',
+								 'aa*.mp3': '/aamp3',
+								 'bb*.mp3': '/bbmp3',
+								 ' *Rimsky-Korsakov*.mp3': '/mp3/Rimsky Korsakov'}
+		else:
+			configFilePathName = 'c:\\temp\\transfiles.ini'
+			filePatternDirDic = {'test*.py': '\\test',
+								 '*.py': '\\',
+								 '*.rd': '\\',
+								 '*.docx': '\\doc',
+								 '*.jpg': '\\images',
+								 'aacc*.mp3': '\\aaccmp3',
+								 'cc*.mp3': '\\ccmp3',
+								 '*.mp3': '\\mp3',
+								 'aa*.mp3': '\\aamp3',
+								 'bb*.mp3': '\\bbmp3',
+								 ' *Rimsky-Korsakov*.mp3': '\\mp3\\Rimsky Korsakov'}
+
+		filePatternDirTupleLst = [item for item in filePatternDirDic.items()]
+
+		cm = ConfigManager(configFilePathName)
+		fl = FileLister(cm)
+
+		if os.name == 'posix':
+			self.assertEqual([(' *Rimsky-Korsakov*.mp3', '/mp3/Rimsky Korsakov'), 
+								('test*.py', '/test'), 
+								('cc*.mp3', '/ccmp3'), 
+								('bb*.mp3', '/bbmp3'), 
+								('aacc*.mp3', '/aaccmp3'), 
+								('aa*.mp3', '/aamp3'), 
+								('*.rd', '/'), ('*.py', '/'), 
+								('*.mp3', '/mp3'), 
+								('*.jpg', '/images'), 
+								('*.docx', '/doc')], sorted(filePatternDirTupleLst, key=functools.cmp_to_key(fl.computeMoveOrder)))
+		else:
+			self.assertEqual([(' *Rimsky-Korsakov*.mp3', '\\mp3\\Rimsky Korsakov'), 
+								('test*.py', '\\test'), 
+								('cc*.mp3', '\\ccmp3'), 
+								('bb*.mp3', '\\bbmp3'), 
+								('aacc*.mp3', '\\aaccmp3'), 
+								('aa*.mp3', '\\aamp3'), 
+								('*.rd', '\\'), ('*.py', '\\'), 
+								('*.mp3', '\\mp3'), 
+								('*.jpg', '\\images'), 
+								('*.docx', '\\doc')], sorted(filePatternDirTupleLst, key=functools.cmp_to_key(fl.computeMoveOrder)))
+
+	def testSortDirTupleListUsingComputeMoveOrder_empty_root_dir(self):
+		if os.name == 'posix':
+			configFilePathName = '/sdcard/transfiles.ini'
+			filePatternDirDic = {'test*.py': '/test',
+								 '*.py': '',
+								 '*.rd': '',
+								 '*.docx': '/doc',
+								 '*.jpg': '/images',
+								 'aacc*.mp3': '/aaccmp3',
+								 'cc*.mp3': '/ccmp3',
+								 '*.mp3': '/mp3',
+								 'aa*.mp3': '/aamp3',
+								 'bb*.mp3': '/bbmp3',
+								 ' *Rimsky-Korsakov*.mp3': '/mp3/Rimsky Korsakov'}
+		else:
+			configFilePathName = 'c:\\temp\\transfiles.ini'
+			filePatternDirDic = {'test*.py': '\\test',
+								 '*.py': '',
+								 '*.rd': '',
+								 '*.docx': '\\doc',
+								 '*.jpg': '\\images',
+								 'aacc*.mp3': '\\aaccmp3',
+								 'cc*.mp3': '\\ccmp3',
+								 '*.mp3': '\\mp3',
+								 'aa*.mp3': '\\aamp3',
+								 'bb*.mp3': '\\bbmp3',
+								 ' *Rimsky-Korsakov*.mp3': '\\mp3\\Rimsky Korsakov'}
+
+		filePatternDirTupleLst = [item for item in filePatternDirDic.items()]
+
+		cm = ConfigManager(configFilePathName)
+		fl = FileLister(cm)
+
+		if os.name == 'posix':
+			self.assertEqual([(' *Rimsky-Korsakov*.mp3', '/mp3/Rimsky Korsakov'), 
+								('test*.py', '/test'), 
+								('cc*.mp3', '/ccmp3'), 
+								('bb*.mp3', '/bbmp3'), 
+								('aacc*.mp3', '/aaccmp3'), 
+								('aa*.mp3', '/aamp3'), 
+								('*.mp3', '/mp3'),
+								('*.jpg', '/images'), 
+								('*.docx', '/doc'),
+							  	('*.rd', ''),
+							  	('*.py', '')], sorted(filePatternDirTupleLst, key=functools.cmp_to_key(fl.computeMoveOrder)))
+		else:
+			self.assertEqual([(' *Rimsky-Korsakov*.mp3', '\\mp3\\Rimsky Korsakov'), 
+								('test*.py', '\\test'), 
+								('cc*.mp3', '\\ccmp3'), 
+								('bb*.mp3', '\\bbmp3'), 
+								('aacc*.mp3', '\\aaccmp3'), 
+								('aa*.mp3', '\\aamp3'), 
+								('*.mp3', '\\mp3'),
+								('*.jpg', '\\images'), 
+								('*.docx', '\\doc'),
+								('*.rd', ''),
+								('*.py', '')], sorted(filePatternDirTupleLst, key=functools.cmp_to_key(fl.computeMoveOrder)))
 
 if __name__ == '__main__':
 	unittest.main()
