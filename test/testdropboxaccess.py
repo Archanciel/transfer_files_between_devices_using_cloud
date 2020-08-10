@@ -205,7 +205,6 @@ class TestDropboxAccess(unittest.TestCase):
 		# should not raise any error
 		self.assertEqual([], drpa.getCloudFileNameList())		
 
-	@unittest.skip
 	def testUploadAndDeleteFilePathName(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
@@ -230,7 +229,8 @@ class TestDropboxAccess(unittest.TestCase):
 		# should not raise any error
 		self.assertEqual([], drpa.getCloudFileNameList())
 
-		# now, uploading a file
+		# now, uploading two files, one in the root of project dir, the other
+		# in a project sub dir
 		localProjectDir = cm.getProjectLocalDir(projectName)
 		uploadFileNameProjectRoot = 'filemover_2.py'
 		localFilePathName = localDir + DIR_SEP + uploadFileNameProjectRoot
@@ -248,7 +248,7 @@ class TestDropboxAccess(unittest.TestCase):
 		drpa.deleteFile(uploadFileNameProjectSubdirSlashDirSep)
 
 		# should not raise any error
-		self.assertEqual([], drpa.getCloudFileNameList())
+		self.assertEqual([], drpa.getCloudFilePathNameList())
 		drpa.deleteProjectFolder()
 
 if __name__ == '__main__':

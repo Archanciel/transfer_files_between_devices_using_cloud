@@ -107,27 +107,6 @@ class DropboxAccess(CloudAccess):
 
 	def getCloudFilePathNameList(self):
 		"""
-		Returns the list of file path names of files contained in the cloud project
-		directory.
-
-		@return: list of string file names
-		"""
-		fileNameLst = []
-		fileListMetaData = None
-
-		try:
-			fileListMetaData = self.dbx.files_list_folder(path=self.cloudProjectDir)
-		except dropbox.exceptions.ApiError as e:
-			if isinstance(e.error, dropbox.files.ListFolderError):
-				raise NotADirectoryError("Dropbox directory {} does not exist".format(self.cloudProjectDir))
-
-		for fileMetaData in fileListMetaData.entries:
-			fileNameLst.append(fileMetaData.name)
-
-		return fileNameLst
-
-	def getCloudFilePathNameList(self):
-		"""
 		Returns the list of file names of files contained in the cloud project
 		directory.
 
@@ -142,8 +121,12 @@ class DropboxAccess(CloudAccess):
 			if isinstance(e.error, dropbox.files.ListFolderError):
 				raise NotADirectoryError("Dropbox directory {} does not exist".format(self.cloudProjectDir))
 
+		cloudProjectDir = self.cloudProjectDir + '/'
+
 		for fileMetaData in fileListMetaData.entries:
-			fileNameLst.append(fileMetaData.name)
+			if hasattr(fileMetaData, 'is_downloadable'):
+				# means the fileMetaData is for a file, not a directory
+				fileNameLst.append(fileMetaData.path_display.replace(cloudProjectDir, ''))
 
 		return fileNameLst
 
