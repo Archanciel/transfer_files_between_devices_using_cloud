@@ -6,7 +6,7 @@ from configmanager import ConfigManager
 
 class DropboxAccess(CloudAccess):
 	def __init__(self, configManager, projectName):
-		super().__init__(configManager.dropboxBaseDir, projectName)
+		super().__init__(configManager.dropboxBaseDir, projectName, configManager.getProjectLocalDir(projectName) + DIR_SEP)
 		accessToken = configManager.dropboxApiKey
 		self.dbx = dropbox.Dropbox(accessToken)
 
@@ -25,7 +25,7 @@ class DropboxAccess(CloudAccess):
 		with open(localFilePathName, 'rb') as f:
 			self.dbx.files_upload(f.read(), cloudFilePathName, mode=dropbox.files.WriteMode.overwrite)
 
-	def uploadFilePathName(self, localFilePathName, localProjectDir):
+	def uploadFilePathName(self, localFilePathName):
 		"""
 		Uploads a file keeping its path component to the project folder on Dropbox
 		using API v2.
@@ -35,8 +35,7 @@ class DropboxAccess(CloudAccess):
 
 		@param localFilePathName: file path name of file to upload
 		"""
-		localProjectDir = localProjectDir + DIR_SEP
-		filePathName = localFilePathName.replace(localProjectDir, '')
+		filePathName = localFilePathName.replace(self.localProjectDir, '')
 		filePathName = filePathName.replace('\\', '/')
 		cloudFilePathName = self.cloudProjectDir + '/' + filePathName
 
@@ -101,16 +100,18 @@ class DropboxAccess(CloudAccess):
 				raise NotADirectoryError("Dropbox directory {} does not exist".format(self.cloudProjectDir))
 			
 		for fileMetaData in fileListMetaData.entries:
-			fileNameLst.append(fileMetaData.name)
+			if hasattr(fileMetaData, 'is_downloadable'):
+				# means the fileMetaData is for a file, not a directory
+				fileNameLst.append(fileMetaData.name)
 			
 		return fileNameLst
 
 	def getCloudFilePathNameList(self):
 		"""
-		Returns the list of file names of files contained in the cloud project
-		directory.
+		Returns the list of file path names of files contained in the cloud project
+		directory and sub-directories.
 
-		@return: list of string file names
+		@return: list of string file path names
 		"""
 		fileNameLst = []
 		fileListMetaData = None

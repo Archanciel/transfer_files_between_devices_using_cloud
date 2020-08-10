@@ -4,7 +4,7 @@ from abc import abstractmethod
 from constants import DIR_SEP
 
 class CloudAccess(metaclass=ABCMeta):
-	def __init__(self, cloudTransferBaseDir, projectName):
+	def __init__(self, cloudTransferBaseDir, projectName, localProjectDir):
 		"""
 		CloudAccess constructor. Initialises the project cloud directory
 		path name using information obtained by the CloudAccess subclass
@@ -18,6 +18,7 @@ class CloudAccess(metaclass=ABCMeta):
 								component of uploaded or downloaded files
 		"""
 		self.cloudProjectDir = cloudTransferBaseDir + '/' + projectName
+		self.localProjectDir = localProjectDir
 
 	@abstractmethod	
 	def uploadFileName(self, localFilePathName):

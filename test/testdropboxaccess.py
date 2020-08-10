@@ -12,7 +12,7 @@ from configmanager import *
 from dropboxaccess import DropboxAccess
 			
 class TestDropboxAccess(unittest.TestCase):
-	def testGetCloudFileList(self):
+	def testGetCloudFileNameList(self):
 		"""
 		For this test to succeed, the dropbox test dir must contain two files:
 		my_file_one.py and my_file_two.py. 
@@ -30,6 +30,28 @@ class TestDropboxAccess(unittest.TestCase):
 
 		self.assertEqual(sorted(['my_file_one.py', 'my_file_two.py']), sorted(drpa.getCloudFileNameList()))
 
+	def testGetCloudFilePathNameList(self):
+		"""
+		For this test to succeed, the dropbox test dir must contain four files:
+		my_file_one.py, my_file_two.py, SubDirOne/subDirOne.py and
+		SubDirTwo/subDirTwo.py
+
+		The dropbox cloud folder is test_dropbox/transFileCloudTestProject
+		"""
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'transFileCloudTestProject'
+		drpa = DropboxAccess(cm, projectName)
+
+		self.assertEqual(sorted(['SubDirOne/subDirOne.py',
+							  'SubDirTwo/subDirTwo.py',
+							  'my_file_one.py',
+							  'my_file_two.py']), sorted(drpa.getCloudFilePathNameList()))
+
 	def testGetCloudFileList_invalid_cloud_dir(self):
 		'''
 		Tests that the getCloudFileNameList() method raises a NotADirectoryError
@@ -40,9 +62,9 @@ class TestDropboxAccess(unittest.TestCase):
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 	
 		if os.name == 'posix':
-			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/dropbox_access_tst.ini'
 		else:
-			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\dropbox_access_tst.ini'
 
 		cm = ConfigManager(configFilePathName)
 		projectName = 'not_exist'
@@ -58,9 +80,9 @@ class TestDropboxAccess(unittest.TestCase):
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 		
 		if os.name == 'posix':
-			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/dropbox_access_tst.ini'
 		else:
-			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\dropbox_access_tst.ini'
 
 		cm = ConfigManager(configFilePathName)
 		projectName = 'transFileCloudTestProject'
@@ -95,9 +117,9 @@ class TestDropboxAccess(unittest.TestCase):
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
 		if os.name == 'posix':
-			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/dropbox_access_tst.ini'
 		else:
-			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\dropbox_access_tst.ini'
 
 		cm = ConfigManager(configFilePathName)
 		projectName = 'transFileCloudTestProjectToCreate'
@@ -122,10 +144,10 @@ class TestDropboxAccess(unittest.TestCase):
 		
 	def testUploadAndDeleteFileName(self):
 		if os.name == 'posix':
-			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/dropbox_access_tst.ini'
 			localDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
 		else:
-			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\dropbox_access_tst.ini'
 			localDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
 
 		cm = ConfigManager(configFilePathName)
@@ -159,10 +181,10 @@ class TestDropboxAccess(unittest.TestCase):
 		
 	def testUploadSameFileNameTwice(self):
 		if os.name == 'posix':
-			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/dropbox_access_tst.ini'
 			localDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir_saved'
 		else:
-			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\dropbox_access_tst.ini'
 			localDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_1\\fromdir_saved'
 
 		cm = ConfigManager(configFilePathName)
@@ -234,11 +256,11 @@ class TestDropboxAccess(unittest.TestCase):
 		localProjectDir = cm.getProjectLocalDir(projectName)
 		uploadFileNameProjectRoot = 'filemover_2.py'
 		localFilePathName = localDir + DIR_SEP + uploadFileNameProjectRoot
-		drpa.uploadFilePathName(localFilePathName, localProjectDir)
+		drpa.uploadFilePathName(localFilePathName)
 
 		uploadFileNameProjectSubdir = 'test' + DIR_SEP + 'testfilemover_2.py'
 		localFilePathName = localDir + DIR_SEP + uploadFileNameProjectSubdir
-		drpa.uploadFilePathName(localFilePathName, localProjectDir)
+		drpa.uploadFilePathName(localFilePathName)
 
 		uploadFileNameProjectSubdirSlashDirSep = uploadFileNameProjectSubdir.replace('\\', '/')
 		self.assertEqual([uploadFileNameProjectRoot, uploadFileNameProjectSubdirSlashDirSep], drpa.getCloudFilePathNameList())
@@ -254,4 +276,4 @@ class TestDropboxAccess(unittest.TestCase):
 if __name__ == '__main__':
 #	unittest.main()
 	tst = TestDropboxAccess()
-	tst.testUploadAndDeleteFilePathName()
+	tst.testCreateAndDeleteProjectFolder()
