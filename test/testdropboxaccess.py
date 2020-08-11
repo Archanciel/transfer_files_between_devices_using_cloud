@@ -283,7 +283,7 @@ class TestDropboxAccess(unittest.TestCase):
 		"""
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			downloadDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			downloadDir = '/storage/emulated/0/Download'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 			downloadDir = 'D:\\Users\\Jean-Pierre\\Downloads'
@@ -311,7 +311,7 @@ class TestDropboxAccess(unittest.TestCase):
 		"""
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			downloadDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			downloadDir = '/storage/emulated/0/Download'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 			downloadDir = 'D:\\Users\\Jean-Pierre\\Downloads'
@@ -341,7 +341,7 @@ class TestDropboxAccess(unittest.TestCase):
 		"""
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
-			downloadDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+			downloadDir = '/storage/emulated/0/Download'
 		else:
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
 			downloadDir = 'D:\\Users\\Jean-Pierre\\Downloads'
@@ -364,6 +364,6 @@ class TestDropboxAccess(unittest.TestCase):
 		shutil.rmtree(downloadDir + DIR_SEP + fileSubDir)
 
 if __name__ == '__main__':
-#	unittest.main()
-	tst = TestDropboxAccess()
-	tst.testDownloadFile_in_subSubDir()
+	unittest.main()
+#	tst = TestDropboxAccess()
+#	tst.testDownloadFile_in_subSubDir()
