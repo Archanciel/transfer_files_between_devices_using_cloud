@@ -1,5 +1,5 @@
 import unittest
-import os, sys, inspect, datetime
+import os, sys, inspect, datetime, glob, shutil
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -47,10 +47,11 @@ class TestDropboxAccess(unittest.TestCase):
 		projectName = 'transFileCloudTestProject'
 		drpa = DropboxAccess(cm, projectName)
 
-		self.assertEqual(sorted(['SubDirOne/subDirOne.py',
-							  'SubDirTwo/subDirTwo.py',
-							  'my_file_one.py',
-							  'my_file_two.py']), sorted(drpa.getCloudFilePathNameList()))
+		self.assertEqual(sorted(['SubDirOne/SubDirOneSubDir/subDirOneSubDir.py',
+								 'SubDirOne/subDirOne.py',
+								 'SubDirTwo/subDirTwo.py',
+								 'my_file_one.py',
+								 'my_file_two.py']), sorted(drpa.getCloudFilePathNameList()))
 
 	def testGetCloudFileList_invalid_cloud_dir(self):
 		'''
@@ -273,7 +274,96 @@ class TestDropboxAccess(unittest.TestCase):
 		self.assertEqual([], drpa.getCloudFilePathNameList())
 		drpa.deleteProjectFolder()
 
+	def testDownloadFile(self):
+		"""
+		For this test to succeed, the dropbox test dir must contain two files:
+		my_file_one.py and my_file_two.py.
+
+		The dropbox cloud folder is test_dropbox/transFileCloudTestProject
+		"""
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			downloadDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			downloadDir = 'D:\\Users\\Jean-Pierre\\Downloads'
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'transFileCloudTestProject'
+		drpa = DropboxAccess(cm, projectName)
+		fileName = 'my_file_one.py'
+		downloadedFilePathName = downloadDir + DIR_SEP + fileName
+		drpa.downloadFile(fileName, downloadedFilePathName)
+
+		# verifying that the file was downloaded
+		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + '*.py')]
+		self.assertEqual(sorted([fileName]), sorted(fileNameLst))
+
+		# deleting downloaded file
+		os.remove(downloadedFilePathName)
+
+	def testDownloadFile_in_subDir(self):
+		"""
+		For this test to succeed, the dropbox test dir must contain one file:
+		SubDirOne/subDirOne.py.
+
+		The dropbox cloud folder is test_dropbox/transFileCloudTestProject
+		"""
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			downloadDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			downloadDir = 'D:\\Users\\Jean-Pierre\\Downloads'
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'transFileCloudTestProject'
+		drpa = DropboxAccess(cm, projectName)
+		fileName = 'subDirOne.py'
+		fileSubDir = 'SubDirOne'
+		cloudFilePathName = fileSubDir + '/' + fileName
+		downloadedFilePathName = downloadDir + DIR_SEP + fileSubDir + DIR_SEP + fileName
+		drpa.downloadFile(cloudFilePathName, downloadedFilePathName)
+
+		# verifying that the file was downloaded
+		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + fileSubDir + DIR_SEP + '*.py')]
+		self.assertEqual(sorted([fileName]), sorted(fileNameLst))
+
+		# deleting downloaded file
+		shutil.rmtree(downloadDir + DIR_SEP + fileSubDir)
+
+	def testDownloadFile_in_subSubDir(self):
+		"""
+		For this test to succeed, the dropbox test dir must contain one file:
+		SubDirOne/subDirOne.py.
+
+		The dropbox cloud folder is test_dropbox/transFileCloudTestProject
+		"""
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'
+			downloadDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_1/fromdir'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\transfiles.ini'
+			downloadDir = 'D:\\Users\\Jean-Pierre\\Downloads'
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'transFileCloudTestProject'
+		drpa = DropboxAccess(cm, projectName)
+		fileName = 'subDirOneSubDir.py'
+		fileSubDir = 'SubDirOne'
+		fileSubSubDir = 'SubDirOneSubDir'
+		cloudFilePathName = fileSubDir + '/' + fileSubSubDir + '/' + fileName
+		downloadedFilePathName = downloadDir + DIR_SEP + fileSubDir + DIR_SEP + fileSubSubDir + DIR_SEP + fileName
+		drpa.downloadFile(cloudFilePathName, downloadedFilePathName)
+
+		# verifying that the file was downloaded
+		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + fileSubDir + DIR_SEP + fileSubSubDir + DIR_SEP + '*.py')]
+		self.assertEqual(sorted([fileName]), sorted(fileNameLst))
+
+		# deleting downloaded file
+		shutil.rmtree(downloadDir + DIR_SEP + fileSubDir)
+
 if __name__ == '__main__':
 #	unittest.main()
 	tst = TestDropboxAccess()
-	tst.testCreateAndDeleteProjectFolder()
+	tst.testDownloadFile_in_subSubDir()

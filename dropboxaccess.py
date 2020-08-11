@@ -1,4 +1,4 @@
-import io, dropbox
+import os, io, dropbox
 
 from constants import DIR_SEP
 from cloudaccess import CloudAccess
@@ -52,6 +52,7 @@ class DropboxAccess(CloudAccess):
 								 downloaded
 		"""
 		cloudFilePathName = self.cloudProjectDir + '/' + cloudFileName
+		os.makedirs(os.path.dirname(destFilePathName), exist_ok=True)
 
 		with open(destFilePathName, "wb") as f:
 			metadata, res = self.dbx.files_download(path=cloudFilePathName)

@@ -29,7 +29,7 @@ class CloudAccess(metaclass=ABCMeta):
 		pass
 
 	@abstractmethod	
-	def downloadFile(self):
+	def downloadFile(self, cloudFileName, destFilePathName):
 		pass
 
 	@abstractmethod
