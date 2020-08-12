@@ -204,6 +204,8 @@ class TestTransferFiles(unittest.TestCase):
 		# now asking TransferFiles to upload the modified files
 
 		tf = TransferFiles(configFilePath=configFilePathName)
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
 		tf.pathUploadToCloud(filePathNameToUploadLst)
 
 		sys.stdin = stdin
@@ -218,6 +220,21 @@ class TestTransferFiles(unittest.TestCase):
 
 		actualUploadedFilePathNameLst = drpa.getCloudFilePathNameList()
 		self.assertEqual(sorted(expectedUploadedFilePathNameLst), sorted(actualUploadedFilePathNameLst))
+		#print(outputCapturingString.getvalue())
+		if os.name == 'posix':
+			self.assertTrue('Uploading testproject_2/projectdir/test/testfilemover_2.py to the cloud .../n' +
+							 'Uploading test/testproject_2/projectdir/filemover_2.py to the cloud .../n' +
+							 'Uploading test/testproject_2/projectdir/filelister_2.py to the cloud .../n' +
+							 'Uploading testproject_2/projectdir/doc/doc_21.docx to the cloud .../n' +
+							 'Uploading testproject_2/projectdir/doc/doc_22.docx to the cloud .../n' +
+							 'Uploading testproject_2/projectdir/images/current_state_21.jpg to the cloud ...)\n' in outputCapturingString.getvalue())
+		else:
+			self.assertTrue('Uploading testproject_2\projectdir\\test\\testfilemover_2.py to the cloud ...\n' +
+							'Uploading test\\testproject_2\projectdir\\filemover_2.py to the cloud ...\n' +
+							'Uploading test\\testproject_2\projectdir\\filelister_2.py to the cloud ...\n' +
+							'Uploading testproject_2\projectdir\doc\doc_21.docx to the cloud ...\n' +
+							'Uploading testproject_2\projectdir\doc\doc_22.docx to the cloud ...\n' +
+							'Uploading testproject_2\projectdir\images\current_state_21.jpg to the cloud ...)\n' in outputCapturingString.getvalue())
 
 	def testTransferFilesFromCloudToLocalDirs(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox

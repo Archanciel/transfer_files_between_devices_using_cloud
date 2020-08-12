@@ -207,7 +207,7 @@ class TransferFiles:
 		@param updatedFilePathNameLst: list of file path names to upload
 		"""
 		for localFilePathName in updatedFilePathNameLst:
-			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-4]))
+			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-1]))
 			self.cloudAccess.uploadFileName(localFilePathName)
 
 		# updating last synch time for the project in config file
@@ -223,7 +223,8 @@ class TransferFiles:
 		@param updatedFilePathNameLst: list of file path names to upload
 		"""
 		for localFilePathName in updatedFilePathNameLst:
-			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-1]))
+			filePathNameElementLst = localFilePathName.split(DIR_SEP)[-4:]
+			print('Uploading {} to the cloud ...'.format(DIR_SEP.join(filePathNameElementLst)))
 			self.cloudAccess.uploadFilePathName(localFilePathName)
 
 		# updating last synch time for the project in config file
