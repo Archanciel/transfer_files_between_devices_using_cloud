@@ -153,11 +153,9 @@ class TestTransferFiles(unittest.TestCase):
 
 		if os.name == 'posix':
 			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
-			localProjectDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir_saved'
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
 		else:
 			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
-			localProjectDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_saved'
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
 
 		# cleaning up the target cloud folder
@@ -220,21 +218,11 @@ class TestTransferFiles(unittest.TestCase):
 
 		actualUploadedFilePathNameLst = drpa.getCloudFilePathNameList()
 		self.assertEqual(sorted(expectedUploadedFilePathNameLst), sorted(actualUploadedFilePathNameLst))
-		#print(outputCapturingString.getvalue())
+
 		if os.name == 'posix':
-			self.assertTrue('Uploading testproject_2/projectdir/test/testfilemover_2.py to the cloud .../n' +
-							 'Uploading test/testproject_2/projectdir/filemover_2.py to the cloud .../n' +
-							 'Uploading test/testproject_2/projectdir/filelister_2.py to the cloud .../n' +
-							 'Uploading testproject_2/projectdir/doc/doc_21.docx to the cloud .../n' +
-							 'Uploading testproject_2/projectdir/doc/doc_22.docx to the cloud .../n' +
-							 'Uploading testproject_2/projectdir/images/current_state_21.jpg to the cloud ...)\n' in outputCapturingString.getvalue())
+			self.assertTrue('Uploading testproject_2/projectdir/test/testfilemover_2.py to the cloud ...' in outputCapturingString.getvalue())
 		else:
-			self.assertTrue('Uploading testproject_2\projectdir\\test\\testfilemover_2.py to the cloud ...\n' +
-							'Uploading test\\testproject_2\projectdir\\filemover_2.py to the cloud ...\n' +
-							'Uploading test\\testproject_2\projectdir\\filelister_2.py to the cloud ...\n' +
-							'Uploading testproject_2\projectdir\doc\doc_21.docx to the cloud ...\n' +
-							'Uploading testproject_2\projectdir\doc\doc_22.docx to the cloud ...\n' +
-							'Uploading testproject_2\projectdir\images\current_state_21.jpg to the cloud ...)\n' in outputCapturingString.getvalue())
+			self.assertTrue('Uploading testproject_2\projectdir\\test\\testfilemover_2.py to the cloud ...' in outputCapturingString.getvalue())
 
 	def testTransferFilesFromCloudToLocalDirs(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
@@ -361,6 +349,6 @@ class TestTransferFiles(unittest.TestCase):
 		self.assertEqual(None, tf.projectName)
 
 if __name__ == '__main__':
-	#unittest.main()
-	tst = TestTransferFiles()
-	tst.testPathUploadToCloud()
+	unittest.main()
+	#tst = TestTransferFiles()
+	#tst.testPathUploadToCloud()
