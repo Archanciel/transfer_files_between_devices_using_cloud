@@ -56,6 +56,39 @@ class TestConfigManager(unittest.TestCase):
 		
 		self.assertEqual('2020-06-13 08:45:23', cm.getLastSynchTime(projectName))
 
+	def testIsProjectSubDirSynchronized_True(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+		
+		cm = ConfigManager(configFilePathName)		
+		projectName = 'exploreProject'
+		
+		self.assertTrue(cm.isProjectSubDirSynchronized(projectName))
+
+	def testIsProjectSubDirSynchronized_False(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+		
+		cm = ConfigManager(configFilePathName)		
+		projectName = 'transFileCloudProject'
+		
+		self.assertFalse(cm.isProjectSubDirSynchronized(projectName))
+
+	def testIsProjectSubDirSynchronized_False_keyNotDefined(self):
+		if os.name == 'posix':
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+		
+		cm = ConfigManager(configFilePathName)		
+		projectName = 'TransferFilesTestProject'
+		
+		self.assertFalse(cm.isProjectSubDirSynchronized(projectName))
+
 	def testUpdateLastSynchTime(self):
 		if os.name == 'posix':
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/transfiles.ini'

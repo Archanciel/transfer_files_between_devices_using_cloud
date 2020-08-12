@@ -172,7 +172,10 @@ class TransferFiles:
 
 			if doUpload: 
 				print('')  # empty line
-				self.uploadToCloud(updatedFilePathNameLst)
+				if self.configManager.isProjectSubDirSynchronized(self.projectName):
+					self.pathUploadToCloud(updatedFilePathNameLst)
+				else:
+					self.uploadToCloud(updatedFilePathNameLst)
 			else:
 				self.handleLastSynchTimeChoice(lastSynchTimeChoice)
 		else:
@@ -198,14 +201,30 @@ class TransferFiles:
 	def uploadToCloud(self, updatedFilePathNameLst):
 		"""
 		Physically uploads the files contained in updatedFilePathNameLst to
-		the cloud and sets the last update date stored in the 
+		the cloud and sets the last update date stored in the configuration file
+		to now. All the files are uploaded in the project cloud root dir.
+		
+		@param updatedFilePathNameLst: list of file path names to upload
+		"""
+		for localFilePathName in updatedFilePathNameLst:
+			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-4]))
+			self.cloudAccess.uploadFileName(localFilePathName)
+
+		# updating last synch time for the project in config file
+		self.updateLastSynchTime()
+
+	def pathUploadToCloud(self, updatedFilePathNameLst):
+		"""
+		Physically uploads the files contained in updatedFilePathNameLst, creating
+		project sub dirs on the cloud project dir and uploading the files in their
+		correct sub dir. Then, the method sets the last update date stored in the
 		configuration file to now.
 		
 		@param updatedFilePathNameLst: list of file path names to upload
 		"""
 		for localFilePathName in updatedFilePathNameLst:
 			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-1]))
-			self.cloudAccess.uploadFileName(localFilePathName)
+			self.cloudAccess.uploadFilePathName(localFilePathName)
 
 		# updating last synch time for the project in config file
 		self.updateLastSynchTime()

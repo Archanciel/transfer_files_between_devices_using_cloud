@@ -147,8 +147,7 @@ class TestTransferFiles(unittest.TestCase):
 		# now restoring the modified files dir to its saved version
 		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
 
-	@unittest.skip
-	def testPathUploadModifiedFilesToCloud(self):
+	def testPathUploadToCloud(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
@@ -167,34 +166,26 @@ class TestTransferFiles(unittest.TestCase):
 		projectName = 'TransferFilesTestProject'
 		drpa = DropboxAccess(cm, projectName)
 
-		cloudFileLst = drpa.getCloudFileNameList()
+		cloudFileLst = drpa.getCloudFilePathNameList()
 
 		for file in cloudFileLst:
 			drpa.deleteFile(file)
-
-		self.assertEqual([], drpa.getCloudFileNameList())
+		
+		self.assertEqual([], drpa.getCloudFilePathNameList())
 
 		# reading and rewriting test project files to update their modification date
 
-		tstFileToModifyLst = ['testfilemover_2.py']
-		pythonFileToModifyLst = ['filemover_2.py', 'filelister_2.py']
-		docFileToModifyLst = ['doc_21.docx', 'doc_22.docx']
-		imgFileToModifyLst = ['current_state_21.jpg']
+		tstFileToUploadLst = ['testfilemover_2.py']
+		pythonFileToUploadLst = ['filemover_2.py', 'filelister_2.py']
+		docFileToUploadLst = ['doc_21.docx', 'doc_22.docx']
+		imgFileToUploadLst = ['current_state_21.jpg']
 
-		tstFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToModifyLst]
-		pythonFilePathNameToModifyLst = [localProjectDir + DIR_SEP + x for x in pythonFileToModifyLst]
-		docFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToModifyLst]
-		imgFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToModifyLst]
+		tstFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToUploadLst]
+		pythonFilePathNameToUploadLst = [localProjectDir + DIR_SEP + x for x in pythonFileToUploadLst]
+		docFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToUploadLst]
+		imgFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToUploadLst]
 
-		filePathNameToModifyLst = tstFilePathNameToModifyLst + pythonFilePathNameToModifyLst + docFilePathNameToModifyLst + imgFilePathNameToModifyLst
-
-		for filePathName in filePathNameToModifyLst:
-			# opening file as readwrite in binary mode
-			with open(filePathName, 'rb+') as f:
-				content = f.read()
-				f.seek(0)
-				f.write(content)
-				f.close()
+		filePathNameToUploadLst = tstFilePathNameToUploadLst + pythonFilePathNameToUploadLst + docFilePathNameToUploadLst + imgFilePathNameToUploadLst
 
 		# simulating user input
 
@@ -213,21 +204,20 @@ class TestTransferFiles(unittest.TestCase):
 		# now asking TransferFiles to upload the modified files
 
 		tf = TransferFiles(configFilePath=configFilePathName)
-
-		# confirming modified files upload
-		sys.stdin = StringIO('Y')
-
-		tf.pathUploadModifiedFilesToCloud()
+		tf.pathUploadToCloud(filePathNameToUploadLst)
 
 		sys.stdin = stdin
 		sys.stdout = stdout
 
-		expectedUploadedFileNameLst = tstFilePathNameToModifyLst + pythonFilePathNameToModifyLst + docFilePathNameToModifyLst + imgFilePathNameToModifyLst
+		expectedUploadedFilePathNameLst = ['doc/doc_21.docx',
+										   'doc/doc_22.docx',
+										   'filelister_2.py',
+										   'filemover_2.py',
+										   'images/current_state_21.jpg',
+										   'test/testfilemover_2.py']
 
-		self.assertEqual(sorted(expectedUploadedFileNameLst), sorted(drpa.getCloudFileNameList()))
-
-		# now restoring the modified files dir to its saved version
-		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
+		actualUploadedFilePathNameLst = drpa.getCloudFilePathNameList()
+		self.assertEqual(sorted(expectedUploadedFilePathNameLst), sorted(actualUploadedFilePathNameLst))
 
 	def testTransferFilesFromCloudToLocalDirs(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
@@ -354,6 +344,6 @@ class TestTransferFiles(unittest.TestCase):
 		self.assertEqual(None, tf.projectName)
 
 if __name__ == '__main__':
-	unittest.main()
-	#tst = TestTransferFiles()
-	#tst.testTransferFilesConstructor_commandLine_invalProject()
+	#unittest.main()
+	tst = TestTransferFiles()
+	tst.testPathUploadToCloud()

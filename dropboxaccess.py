@@ -28,15 +28,23 @@ class DropboxAccess(CloudAccess):
 	def uploadFilePathName(self, localFilePathName):
 		"""
 		Uploads a file keeping its path component to the project folder on Dropbox
-		using API v2.
+		using API v2. Since the path of the file is kept, the structure of the
+		cloud project sub directories will reproduce the structure of the local
+		project sub directories.
 
 		To avoid a conflict error if the file already exists on the cloud, the
 		mode is set to dropbox.files.WriteMode.overwrite.
 
 		@param localFilePathName: file path name of file to upload
 		"""
+		# keeping only the local project sub dir component
 		filePathName = localFilePathName.replace(self.localProjectDir, '')
-		filePathName = filePathName.replace('\\', '/')
+		
+		if DIR_SEP == '\\':
+			# if run on Windows, replaces the Windows dir separator by the 
+			# dropbox> dir separator
+			filePathName = filePathName.replace('\\', '/')
+			
 		cloudFilePathName = self.cloudProjectDir + '/' + filePathName
 
 		with open(localFilePathName, 'rb') as f:

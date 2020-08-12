@@ -80,6 +80,15 @@ class ConfigManager:
 
 	def getLastSynchTime(self, projectName):
 		return self.projects[projectName]['lastSyncTime']
+		
+	def isProjectSubDirSynchronized(self, projectName):
+		try:
+			if self.projects[projectName]['synchProjectSubDirStructure'].upper() == 'TRUE':
+				return True
+			else:
+				return False
+		except KeyError:
+			return False		
 
 	def updateLastSynchTime(self, projectName, lastSynchTimeStr):
 		self.projects[projectName]['lastSyncTime'] = lastSynchTimeStr
