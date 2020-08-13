@@ -128,7 +128,7 @@ class TransferFiles:
 				# directly to their final destination dir, the local project dir
 
 				print('')  # empty line
-				self.downloadAndDeleteFilesFromCloud(self.localProjectDir)
+				self.downloadAndDeleteFilesFromCloud(self.localProjectDir, cloudFileLst)
 				print('')  # empty line
 			else:
 				# downloading the files which have no path component from the cloud
@@ -137,7 +137,7 @@ class TransferFiles:
 				# file for the project
 
 				print('')  # empty line
-				self.downloadAndDeleteFilesFromCloud(self.configManager.downloadPath)
+				self.downloadAndDeleteFilesFromCloud(self.configManager.downloadPath, cloudFileLst)
 				print('')  # empty line
 
 				# moving file from download dir to project dest dir and sub-dirs
@@ -278,14 +278,12 @@ class TransferFiles:
 			except ValueError:
 				return False, ''
 		
-	def downloadAndDeleteFilesFromCloud(self, downloadPath):
+	def downloadAndDeleteFilesFromCloud(self, downloadPath, cloudFileLst):
 		"""
 		Physically downloads the files from the cloud and deletes them from
 		the cloud.
 		"""
-		cloudFileNameLst = self.cloudAccess.getCloudFileNameList()
-
-		for cloudFilePathName in cloudFileNameLst:
+		for cloudFilePathName in cloudFileLst:
 			destFilePathName = downloadPath + DIR_SEP + cloudFilePathName
 			print('Transferring {} from the cloud ...'.format(cloudFilePathName))
 			self.cloudAccess.downloadFile(cloudFilePathName, destFilePathName)

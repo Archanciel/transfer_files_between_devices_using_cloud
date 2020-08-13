@@ -1,5 +1,5 @@
 import unittest
-import os, sys, inspect, datetime
+import os, sys, inspect, datetime, shutil
 from distutils import dir_util
 from io import StringIO
 
@@ -288,7 +288,7 @@ class TestTransferFiles(unittest.TestCase):
 
 		# selecting project 1 (the test project 'TransferFilesTestProject' is
 		# the first project defined in test_TransferFiles.ini !)
-		sys.stdin = StringIO('1')
+		sys.stdin = StringIO('1') # TransferFilesTestProject
 
 		print('\nstdout temporarily captured. Test is running ...')
 
@@ -357,7 +357,7 @@ class TestTransferFiles(unittest.TestCase):
 
 		drpa = DropboxAccess(cm, projectName)
 
-		cloudFileLst = drpa.getCloudFileNameList()
+		cloudFileLst = drpa.getCloudFilePathNameList()
 
 		for file in cloudFileLst:
 			drpa.deleteFile(file)
@@ -388,7 +388,7 @@ class TestTransferFiles(unittest.TestCase):
 		drpa = DropboxAccess(cm, projectName)
 
 		for filePathName in filePathNameToUploadLst:
-			drpa.uploadFileName(filePathName)
+			drpa.uploadFilePathName(filePathName)
 
 		# simulating user input
 
@@ -396,7 +396,7 @@ class TestTransferFiles(unittest.TestCase):
 
 		# selecting project 1 (the test project 'TransferFilesTestProject' is
 		# the first project defined in test_TransferFiles.ini !)
-		sys.stdin = StringIO('1')
+		sys.stdin = StringIO('2') # TransferPathFilesTestProject
 
 		print('\nstdout temporarily captured. Test is running ...')
 
@@ -412,7 +412,7 @@ class TestTransferFiles(unittest.TestCase):
 		# confirming cloud files download
 		sys.stdin = StringIO('Y')
 
-		tf.transferFilesFromCloudToLocalDirs(drpa.getCloudFileNameList())
+		tf.transferFilesFromCloudToLocalDirs(drpa.getCloudFilePathNameList())
 
 		sys.stdin = stdin
 		sys.stdout = stdout
@@ -438,6 +438,7 @@ class TestTransferFiles(unittest.TestCase):
 		self.assertEqual(sorted(filePathNameToUploadLst), sorted(allFilePathNameLst))
 
 		# now restoring the modified files dir to its saved version
+		shutil.rmtree(localProjectDir)
 		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
 
 	def testTransferFilesConstructor_commandLine_invalProject(self):
@@ -458,5 +459,5 @@ class TestTransferFiles(unittest.TestCase):
 
 if __name__ == '__main__':
 	unittest.main()
-	#tst = TestTransferFiles()
-	#tst.testPathUploadToCloud()
+#	tst = TestTransferFiles()
+#	tst.testTransferFilesFromCloudToLocalDirs_FilePath()

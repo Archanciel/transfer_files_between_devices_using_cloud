@@ -122,7 +122,7 @@ class DropboxAccess(CloudAccess):
 
 		@return: list of string file path names
 		"""
-		fileNameLst = []
+		filePathNameLst = []
 		fileListMetaData = None
 
 		try:
@@ -136,9 +136,9 @@ class DropboxAccess(CloudAccess):
 		for fileMetaData in fileListMetaData.entries:
 			if hasattr(fileMetaData, 'is_downloadable'):
 				# means the fileMetaData is for a file, not a directory
-				fileNameLst.append(fileMetaData.path_display.replace(cloudProjectDir, ''))
+				filePathNameLst.append(fileMetaData.path_display.replace(cloudProjectDir, ''))
 
-		return fileNameLst
+		return filePathNameLst
 
 	def createProjectSubFolder(self, subFolderName):
 		"""
