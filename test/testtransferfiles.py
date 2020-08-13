@@ -224,7 +224,7 @@ class TestTransferFiles(unittest.TestCase):
 		else:
 			self.assertTrue('Uploading testproject_2\projectdir\\test\\testfilemover_2.py to the cloud ...' in outputCapturingString.getvalue())
 
-	def testTransferFilesFromCloudToLocalDirs(self):
+	def testTransferFilesFromCloudToLocalDirs_noFilePath(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
@@ -236,24 +236,24 @@ class TestTransferFiles(unittest.TestCase):
 			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
 			localProjectDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_saved'
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
-				
+
 		cm = ConfigManager(configFilePathName)
 		projectName = 'TransferFilesTestProject'
-		
-		# storing the last synch update time to compare it to the new update 
+
+		# storing the last synch update time to compare it to the new update
 		# time once download and move has been performed
 		storedLastSynchTimeStr = cm.getLastSynchTime(projectName)
 		storedLastSyncTime = datetime.datetime.strptime(storedLastSynchTimeStr, DATE_TIME_FORMAT_CONFIG_FILE)
-		
+
 		# cleaning up the cloud folder before uploading the test files
-				
+
 		drpa = DropboxAccess(cm, projectName)
-		
+
 		cloudFileLst = drpa.getCloudFileNameList()
-		
+
 		for file in cloudFileLst:
 			drpa.deleteFile(file)
-			
+
 		self.assertEqual([], drpa.getCloudFileNameList())
 
 		# listing the test files which wiLl be uploaded to
@@ -264,7 +264,7 @@ class TestTransferFiles(unittest.TestCase):
 		pythonFileToUploadLst = ['filemover_2.py', 'filelister_2.py']
 		docFileToUploadLst = ['doc_21.docx', 'doc_22.docx']
 		imgFileToUploadLst = ['current_state_21.jpg']
-		
+
 		fileNameToUploadLst = tstFileToUploadLst + pythonFileToUploadLst + docFileToUploadLst + imgFileToUploadLst
 
 		tstFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToUploadLst]
@@ -276,56 +276,164 @@ class TestTransferFiles(unittest.TestCase):
 
 		# uploading the test files which will then be downloaded and moved to
 		# local dirs
-		
+
 		drpa = DropboxAccess(cm, projectName)
-		
+
 		for filePathName in filePathNameToUploadLst:
 			drpa.uploadFileName(filePathName)
 
 		# simulating user input
 
 		stdin = sys.stdin
-		
+
 		# selecting project 1 (the test project 'TransferFilesTestProject' is
 		# the first project defined in test_TransferFiles.ini !)
 		sys.stdin = StringIO('1')
 
 		print('\nstdout temporarily captured. Test is running ...')
-		
+
 		stdout = sys.stdout
 		outputCapturingString = StringIO()
 		sys.stdout = outputCapturingString
 
 		# now asking TransferFiles to download the cloud files and move them
 		# to the local dirs
-		
+
 		tf = TransferFiles(configFilePath=configFilePathName)
-		
+
 		# confirming cloud files download
 		sys.stdin = StringIO('Y')
-		
+
 		tf.transferFilesFromCloudToLocalDirs(drpa.getCloudFileNameList())
 
 		sys.stdin = stdin
 		sys.stdout = stdout
-		
+
 		# testing that the last synch time is after the stored synch time
-		
+
 		cm_reloaded = ConfigManager(configFilePathName)
 		newLastSynchTimeStr = cm_reloaded.getLastSynchTime(projectName)
 		newLastSyncTime = datetime.datetime.strptime(newLastSynchTimeStr, DATE_TIME_FORMAT_CONFIG_FILE)
 		self.assertTrue(newLastSyncTime > storedLastSyncTime)
-		
+
 		# now testing that the files downloaded from the cloud and moved to
 		# the local dirs are the expected ones
-		
+
 		# first, reset the last synch time to the stored one so that FileLister
 		# will list files whose modification date is oreater than this time
 		cm.updateLastSynchTime(projectName, storedLastSynchTimeStr)
-		
+
 		fl = FileLister(cm)
 		allFileNameLst, allFilePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst(projectName)
-		
+
+		self.assertEqual(sorted(fileNameToUploadLst), sorted(allFileNameLst))
+		self.assertEqual(sorted(filePathNameToUploadLst), sorted(allFilePathNameLst))
+
+		# now restoring the modified files dir to its saved version
+		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
+
+	def testTransferFilesFromCloudToLocalDirs_FilePath(self):
+		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
+		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+
+		if os.name == 'posix':
+			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
+			localProjectDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir_saved'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
+			localProjectDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_saved'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'TransferPathFilesTestProject'
+
+		# storing the last synch update time to compare it to the new update
+		# time once download and move has been performed
+		storedLastSynchTimeStr = cm.getLastSynchTime(projectName)
+		storedLastSyncTime = datetime.datetime.strptime(storedLastSynchTimeStr, DATE_TIME_FORMAT_CONFIG_FILE)
+
+		# cleaning up the cloud folder before uploading the test files
+
+		drpa = DropboxAccess(cm, projectName)
+
+		cloudFileLst = drpa.getCloudFileNameList()
+
+		for file in cloudFileLst:
+			drpa.deleteFile(file)
+
+		self.assertEqual([], drpa.getCloudFileNameList())
+
+		# listing the test files which wiLl be uploaded to
+		# the cloud in order to be available for download
+		# and move to local dirs
+
+		tstFileToUploadLst = ['testfilemover_2.py']
+		pythonFileToUploadLst = ['filemover_2.py', 'filelister_2.py']
+		docFileToUploadLst = ['doc_21.docx', 'doc_22.docx']
+		imgFileToUploadLst = ['current_state_21.jpg']
+
+		fileNameToUploadLst = tstFileToUploadLst + pythonFileToUploadLst + docFileToUploadLst + imgFileToUploadLst
+
+		tstFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToUploadLst]
+		pythonFilePathNameToUploadLst = [localProjectDir + DIR_SEP + x for x in pythonFileToUploadLst]
+		docFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToUploadLst]
+		imgFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToUploadLst]
+
+		filePathNameToUploadLst = tstFilePathNameToUploadLst + pythonFilePathNameToUploadLst + docFilePathNameToUploadLst + imgFilePathNameToUploadLst
+
+		# uploading the test files which will then be downloaded and moved to
+		# local dirs
+
+		drpa = DropboxAccess(cm, projectName)
+
+		for filePathName in filePathNameToUploadLst:
+			drpa.uploadFileName(filePathName)
+
+		# simulating user input
+
+		stdin = sys.stdin
+
+		# selecting project 1 (the test project 'TransferFilesTestProject' is
+		# the first project defined in test_TransferFiles.ini !)
+		sys.stdin = StringIO('1')
+
+		print('\nstdout temporarily captured. Test is running ...')
+
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+
+		# now asking TransferFiles to download the cloud files and move them
+		# to the local dirs
+
+		tf = TransferFiles(configFilePath=configFilePathName)
+
+		# confirming cloud files download
+		sys.stdin = StringIO('Y')
+
+		tf.transferFilesFromCloudToLocalDirs(drpa.getCloudFileNameList())
+
+		sys.stdin = stdin
+		sys.stdout = stdout
+
+		# testing that the last synch time is after the stored synch time
+
+		cm_reloaded = ConfigManager(configFilePathName)
+		newLastSynchTimeStr = cm_reloaded.getLastSynchTime(projectName)
+		newLastSyncTime = datetime.datetime.strptime(newLastSynchTimeStr, DATE_TIME_FORMAT_CONFIG_FILE)
+		self.assertTrue(newLastSyncTime > storedLastSyncTime)
+
+		# now testing that the files downloaded from the cloud and moved to
+		# the local dirs are the expected ones
+
+		# first, reset the last synch time to the stored one so that FileLister
+		# will list files whose modification date is oreater than this time
+		cm.updateLastSynchTime(projectName, storedLastSynchTimeStr)
+
+		fl = FileLister(cm)
+		allFileNameLst, allFilePathNameLst, lastSyncTimeStr = fl.getModifiedFileLst(projectName)
+
 		self.assertEqual(sorted(fileNameToUploadLst), sorted(allFileNameLst))
 		self.assertEqual(sorted(filePathNameToUploadLst), sorted(allFilePathNameLst))
 

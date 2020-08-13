@@ -42,7 +42,6 @@ class TransferFiles:
 				return
 			
 		self.projectName = projectName
-		self.downloadDir = self.configManager.downloadPath
 		self.localProjectDir = None
 
 		try:
@@ -124,13 +123,29 @@ class TransferFiles:
 		doDownload, _ = self.requester.getUserConfirmation(questionStr, cloudFileLst)
 
 		if doDownload:
-			print('')  # empty line
-			self.downloadAndDeleteFilesFromCloud()
-			print('')  # empty line
+			if self.configManager.isProjectSubDirSynchronized(self.projectName):
+				# downloading the files from the cloud keeping their path component
+				# directly to their final destination dir, the local project dir
 
-			# moving file from dowload dir to project dest dir and sub-dirs
-			fileMover = FileMover(self.configManager, self.projectName)
-			fileMover.moveFilesToLocalDirs(cloudFileLst)
+				print('')  # empty line
+				self.downloadAndDeleteFilesFromCloud(self.localProjectDir)
+				print('')  # empty line
+			else:
+				# downloading the files which have no path component from the cloud
+				# to the download path and then moving them from the download path
+ 				# according to the sub dir parameters defined in the configuration
+				# file for the project
+
+				print('')  # empty line
+				self.downloadAndDeleteFilesFromCloud(self.configManager.downloadPath)
+				print('')  # empty line
+
+				# moving file from download dir to project dest dir and sub-dirs
+				# according to the sub dir parameters defined in the configuration
+				# file for the project
+
+				fileMover = FileMover(self.configManager, self.projectName)
+				fileMover.moveFilesToLocalDirs(cloudFileLst)
 
 			# updating last synch time for the project in the local config file
 			self.updateLastSynchTime()
@@ -263,18 +278,18 @@ class TransferFiles:
 			except ValueError:
 				return False, ''
 		
-	def downloadAndDeleteFilesFromCloud(self):
+	def downloadAndDeleteFilesFromCloud(self, downloadPath):
 		"""
 		Physically downloads the files from the cloud and deletes them from
 		the cloud.
 		"""
 		cloudFileNameLst = self.cloudAccess.getCloudFileNameList()
 
-		for fileName in cloudFileNameLst:
-			destFileName = self.configManager.downloadPath + DIR_SEP + fileName
-			print('Transferring {} from the cloud ...'.format(fileName))
-			self.cloudAccess.downloadFile(fileName, destFileName)
-			self.cloudAccess.deleteFile(fileName)
+		for cloudFilePathName in cloudFileNameLst:
+			destFilePathName = downloadPath + DIR_SEP + cloudFilePathName
+			print('Transferring {} from the cloud ...'.format(cloudFilePathName))
+			self.cloudAccess.downloadFile(cloudFilePathName, destFilePathName)
+			self.cloudAccess.deleteFile(cloudFilePathName)
 
 if __name__ == "__main__":
 	tf = TransferFiles()
