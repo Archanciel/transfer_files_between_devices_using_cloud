@@ -71,7 +71,10 @@ class TransferFiles:
 		cloudFileLst = []
 
 		try:
-			cloudFileLst = self.cloudAccess.getCloudFileNameList()
+			if self.configManager.isProjectSubDirSynchronized(self.projectName):
+				cloudFileLst = self.cloudAccess.getCloudFilePathNameList()
+			else:
+				cloudFileLst = self.cloudAccess.getCloudFileNameList()
 		except NotADirectoryError as e:
 			# means that the cloud project directory does not yet exist
 			if self.requester.getCreateCloudFolderConfirmation(self.projectName):
