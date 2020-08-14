@@ -224,6 +224,72 @@ class TestTransferFiles(unittest.TestCase):
 		else:
 			self.assertTrue('Uploading testproject_2\projectdir\\test\\testfilemover_2.py to the cloud ...' in outputCapturingString.getvalue())
 
+	def testPathUploadToCloud_invalid_fileName(self):
+		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
+		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+
+		if os.name == 'posix':
+			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+
+		# cleaning up the target cloud folder
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'TransferPathFilesTestProject'
+		drpa = DropboxAccess(cm, projectName)
+
+		cloudFileLst = drpa.getCloudFilePathNameList()
+
+		for file in cloudFileLst:
+			drpa.deleteFile(file)
+
+		self.assertEqual([], drpa.getCloudFilePathNameList())
+
+		# reading and rewriting test project files to update their modification date
+
+		fileToUploadLst = ['youtube-dl test video \'\'_ä↭𝕐-BaW_jenozKc.m4a']
+
+		filePathNameToUploadLst = [localProjectDir + DIR_SEP + x for x in fileToUploadLst]
+
+		# simulating user input
+
+		stdin = sys.stdin
+
+		# selecting project 1 (the test project 'TransferFilesTestProject' is
+		# the first project defined in test_TransferFiles.ini !)
+		sys.stdin = StringIO('2')
+
+		print('\nstdout temporarily captured. Test is running ...')
+
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+
+		# now asking TransferFiles to upload the modified files
+
+		tf = TransferFiles(configFilePath=configFilePathName)
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+		tf.pathUploadToCloud(filePathNameToUploadLst)
+
+		sys.stdin = stdin
+		sys.stdout = stdout
+
+		expectedUploadedFilePathNameLst = []
+
+		actualUploadedFilePathNameLst = drpa.getCloudFilePathNameList()
+		self.assertEqual(sorted(expectedUploadedFilePathNameLst), sorted(actualUploadedFilePathNameLst))
+
+		if os.name == 'posix':
+			self.assertTrue(
+				'\tUploading test/testproject_2/projectdir\youtube-dl test video \'\'_ä↭𝕐-BaW_jenozKc.m4a failed. Possible cause: invalid file name ...' in outputCapturingString.getvalue())
+		else:
+			self.assertTrue(
+				'\tUploading test\\testproject_2\projectdir\youtube-dl test video \'\'_ä↭𝕐-BaW_jenozKc.m4a failed. Possible cause: invalid file name ...' in outputCapturingString.getvalue())
+
 	def testTransferFilesFromCloudToLocalDirs_noFilePath(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
@@ -460,4 +526,4 @@ class TestTransferFiles(unittest.TestCase):
 if __name__ == '__main__':
 	unittest.main()
 #	tst = TestTransferFiles()
-#	tst.testTransferFilesFromCloudToLocalDirs_FilePath()
+#	tst.testPathUploadToCloud_invalid_fileName()

@@ -242,8 +242,12 @@ class TransferFiles:
 		"""
 		for localFilePathName in updatedFilePathNameLst:
 			filePathNameElementLst = localFilePathName.split(DIR_SEP)[-4:]
-			print('Uploading {} to the cloud ...'.format(DIR_SEP.join(filePathNameElementLst)))
-			self.cloudAccess.uploadFilePathName(localFilePathName)
+			printFilePathName = DIR_SEP.join(filePathNameElementLst)
+			print('Uploading {} to the cloud ...'.format(printFilePathName))
+			try:
+				self.cloudAccess.uploadFilePathName(localFilePathName)
+			except NameError as e:
+				print('\tUploading {} failed. Possible cause: invalid file name ...'.format(printFilePathName))
 
 		# updating last synch time for the project in config file
 		self.updateLastSynchTime()
