@@ -225,8 +225,13 @@ class TransferFiles:
 		@param updatedFilePathNameLst: list of file path names to upload
 		"""
 		for localFilePathName in updatedFilePathNameLst:
-			print('Uploading {} to the cloud ...'.format(localFilePathName.split(DIR_SEP)[-1]))
-			self.cloudAccess.uploadFileName(localFilePathName)
+			printFileName = localFilePathName.split(DIR_SEP)[-1]
+			print('Uploading {} to the cloud ...'.format(printFileName))
+
+			try:
+				self.cloudAccess.uploadFileName(localFilePathName)
+			except NameError as e:
+				print('\tUploading {} failed. Possible cause: invalid file name ...'.format(printFileName))
 
 		# updating last synch time for the project in config file
 		self.updateLastSynchTime()
@@ -244,6 +249,7 @@ class TransferFiles:
 			filePathNameElementLst = localFilePathName.split(DIR_SEP)[-4:]
 			printFilePathName = DIR_SEP.join(filePathNameElementLst)
 			print('Uploading {} to the cloud ...'.format(printFilePathName))
+
 			try:
 				self.cloudAccess.uploadFilePathName(localFilePathName)
 			except NameError as e:
@@ -258,8 +264,8 @@ class TransferFiles:
 		stored in the configuration file to now. Else, if the user specified
 		a synch date, validates it before setting it in the config file.
 		
-		@param userInpuLlastSynchTimeStr last synch time string as defined by
-										 manually the user
+		@param userInpuLlastSynchTimeStr last synch time string as defined
+										 manually by the user
 		"""
 		if userInpuLlastSynchTimeStr == '':
 			validSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT_CONFIG_FILE)

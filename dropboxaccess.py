@@ -22,8 +22,12 @@ class DropboxAccess(CloudAccess):
 		"""
 		cloudFilePathName = self.cloudProjectDir + '/' + localFilePathName.split(DIR_SEP)[-1]
 
-		with open(localFilePathName, 'rb') as f:
-			self.dbx.files_upload(f.read(), cloudFilePathName, mode=dropbox.files.WriteMode.overwrite)
+		try:
+			with open(localFilePathName, 'rb') as f:
+				self.dbx.files_upload(f.read(), cloudFilePathName, mode=dropbox.files.WriteMode.overwrite)
+		except dropbox.exceptions.ApiError as e:
+			if isinstance(e.error, dropbox.files.UploadError):
+				raise NameError()
 
 	def uploadFilePathName(self, localFilePathName):
 		"""
