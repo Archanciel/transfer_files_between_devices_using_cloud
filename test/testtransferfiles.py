@@ -590,6 +590,6 @@ class TestTransferFiles(unittest.TestCase):
 		self.assertEqual(None, tf.projectName)
 
 if __name__ == '__main__':
-#	unittest.main()
-	tst = TestTransferFiles()
-	tst.testPathUploadToCloud_invalid_fileName()
+	unittest.main()
+#	tst = TestTransferFiles()
+#	tst.testPathUploadToCloud_invalid_fileName()
