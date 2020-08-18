@@ -131,7 +131,7 @@ class TransferFiles:
 				# directly to their final destination dir, the local project dir
 
 				print('')  # empty line
-				self.downloadAndDeleteFilesFromCloud(self.localProjectDir, cloudFileLst)
+				self.downloadAndDeleteFilesFromCloud(downloadPath=self.localProjectDir, cloudFileLst=cloudFileLst, targetName='project')
 				print('')  # empty line
 			else:
 				# downloading the files which have no path component from the cloud
@@ -140,7 +140,7 @@ class TransferFiles:
 				# file for the project
 
 				print('')  # empty line
-				self.downloadAndDeleteFilesFromCloud(self.configManager.downloadPath, cloudFileLst)
+				self.downloadAndDeleteFilesFromCloud(downloadPath=self.configManager.downloadPath, cloudFileLst=cloudFileLst, targetName='download')
 				print('')  # empty line
 
 				# moving file from download dir to project dest dir and sub-dirs
@@ -184,8 +184,13 @@ class TransferFiles:
 		updatedFileNameLst, updatedFilePathNameLst, lastSyncTimeStr = self.fileLister.getModifiedFileLst(self.projectName)
 		
 		if updatedFileNameLst != []:
-			questionStr = '^^^ {} files were modified locally after {}\nand will be uploaded to the cloud.\nChoose P to display the path or U to update the last sync time'.format(
-				len(updatedFileNameLst), lastSyncTimeStr)
+			if self.configManager.isProjectSubDirSynchronized(self.projectName):
+				questionStr = '^^^ {} files were modified locally after {}\nand will be uploaded to the cloud, keeping the file path information.\nChoose P to display the path or U to update the last sync time'.format(
+					len(updatedFileNameLst), lastSyncTimeStr)
+			else:
+				questionStr = '^^^ {} files were modified locally after {}\nand will be uploaded to the cloud.\nChoose P to display the path or U to update the last sync time'.format(
+					len(updatedFileNameLst), lastSyncTimeStr)
+
 			doUpload, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
 
 			if doUpload: 
@@ -291,14 +296,26 @@ class TransferFiles:
 			except ValueError:
 				return False, ''
 		
-	def downloadAndDeleteFilesFromCloud(self, downloadPath, cloudFileLst):
+	def downloadAndDeleteFilesFromCloud(self, downloadPath, cloudFileLst, targetName):
 		"""
 		Physically downloads the files from the cloud and deletes them from
 		the cloud.
+
+		@param downloadPath: path to which the cloud files will be downloaded,
+							 either the local download dir or directly to the
+							 project dir and sub dirs
+		@param cloudFileLst: list of files to transfer from the cloud. The list
+							 contains either file names or file path names,
+							 according to the value of the project
+							 synchProjectSubDirStructure parm value as defined
+							 in the configuration file
+		@param targetName: 	 either 'download' or 'project', according to the value
+							 of the project synchProjectSubDirStructure parm
+							 value as defined
 		"""
 		for cloudFilePathName in cloudFileLst:
 			destFilePathName = downloadPath + DIR_SEP + cloudFilePathName
-			print('Transferring {} from the cloud ...'.format(cloudFilePathName))
+			print('Transferring {} from the cloud to {} dir ...'.format(cloudFilePathName, targetName))
 			self.cloudAccess.downloadFile(cloudFilePathName, destFilePathName)
 			self.cloudAccess.deleteFile(cloudFilePathName)
 

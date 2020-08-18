@@ -58,6 +58,8 @@ the utility will potentially display a different list of modified files.
 - dropbox
 
 ## Version history
+- 2.0 Added directory download: as a result, the directory structure on the 
+synchronized devices is identical
 - 1.3 Bug fix + user input minor improvements
 - 1.2 Added update synch time option if no files should be uploaded
 - 1.1 Added handling command line arguments
