@@ -131,7 +131,7 @@ class TransferFiles:
 				# directly to their final destination dir, the local project dir
 
 				print('')  # empty line
-				self.downloadAndDeleteFilesFromCloud(downloadPath=self.localProjectDir, cloudFileLst=cloudFileLst, targetName='directly to project')
+				self.downloadAndDeleteFilesFromCloud(downloadPath=self.localProjectDir, cloudFileLst=cloudFileLst, targetName='directly to the project')
 				print('')  # empty line
 			else:
 				# downloading the files which have no path component from the cloud
