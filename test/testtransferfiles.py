@@ -24,7 +24,7 @@ class TestTransferFiles(unittest.TestCase):
 
 		projectName = 'TransferFilesTestProject'
 		tf = TransferFiles(configFilePath=configFilePathName, projectName=projectName)
-		lastSynchTimeStr = '2020-13-02 08:09:55'
+		lastSynchTimeStr = '02/13/2020 08:09:55'
 		isValid, validLastSynchTimeStr = tf.validateLastSynchTimeStr(lastSynchTimeStr)
 		self.assertFalse(isValid)
 		self.assertEqual('', validLastSynchTimeStr)
@@ -37,7 +37,7 @@ class TestTransferFiles(unittest.TestCase):
 
 		projectName = 'TransferFilesTestProject'
 		tf = TransferFiles(configFilePath=configFilePathName, projectName=projectName)
-		lastSynchTimeStr = '2020-6-4 8:5:3'
+		lastSynchTimeStr = '4/6/2020 8:5:3'
 		self.assertTrue(tf.validateLastSynchTimeStr(lastSynchTimeStr))
 
 	def testValidateLastSynchTimeStrTwoDigitYear(self):
@@ -48,10 +48,10 @@ class TestTransferFiles(unittest.TestCase):
 
 		projectName = 'TransferFilesTestProject'
 		tf = TransferFiles(configFilePath=configFilePathName, projectName=projectName)
-		lastSynchTimeStr = '20-6-4 8:5:3'
+		lastSynchTimeStr = '4/6/20 8:5:3'
 		isValid, validLastSynchTimeStr = tf.validateLastSynchTimeStr(lastSynchTimeStr)
 		self.assertTrue(isValid)
-		self.assertEqual('2020-06-04 08:05:03', validLastSynchTimeStr)
+		self.assertEqual('04/06/2020 08:05:03', validLastSynchTimeStr)
 
 	def testValidateLastSynchTimeStrDateOnly(self):
 		if os.name == 'posix':
@@ -61,10 +61,10 @@ class TestTransferFiles(unittest.TestCase):
 
 		projectName = 'TransferFilesTestProject'
 		tf = TransferFiles(configFilePath=configFilePathName, projectName=projectName)
-		lastSynchTimeStr = '20-6-4'
+		lastSynchTimeStr = '4/6/20'
 		isValid, validLastSynchTimeStr = tf.validateLastSynchTimeStr(lastSynchTimeStr)
 		self.assertTrue(isValid)
-		self.assertEqual('2020-06-04 00:00:00', validLastSynchTimeStr)
+		self.assertEqual('04/06/2020 00:00:00', validLastSynchTimeStr)
 
 	def testUploadModifiedFilesToCloud(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox

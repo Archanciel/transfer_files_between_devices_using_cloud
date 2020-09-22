@@ -54,7 +54,7 @@ class TestConfigManager(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)		
 		projectName = 'transFileCloudProject'
 		
-		self.assertEqual('2020-06-13 08:45:23', cm.getLastSynchTime(projectName))
+		self.assertEqual('13/06/2020 08:45:23', cm.getLastSynchTime(projectName))
 
 	def testIsProjectSubDirSynchronized_True(self):
 		if os.name == 'posix':

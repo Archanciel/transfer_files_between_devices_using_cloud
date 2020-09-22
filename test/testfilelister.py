@@ -32,7 +32,7 @@ class TestFileLister(unittest.TestCase):
 				['D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\constants_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\filemover_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilelister_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\test\\testfilemover_2.py', 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_3\\projectdir\\README_2.md']),
 							 sorted(allFilePathNameLst))
 
-		self.assertEqual('2020-06-15 08:45:23', lastSyncTimeStr)
+		self.assertEqual('15/06/2020 08:45:23', lastSyncTimeStr)
 
 	def testGetModifiedFileLst_invalid_local_dir(self):
 		'''
@@ -123,7 +123,7 @@ class TestFileLister(unittest.TestCase):
 		excludedFileTypeWildchardLst = ['*.ini', '*.tmp', '*.jpg', '*.docx']
 
 		excludedFileTypePatternLst = fl.createRegexpPatternLstFromWildchardExprLst(excludedFileTypeWildchardLst)			
-		lastSyncTime = datetime.datetime.strptime('2020-06-15 08:45:23', DATE_TIME_FORMAT_CONFIG_FILE)
+		lastSyncTime = datetime.datetime.strptime('15/06/2020 08:45:23', DATE_TIME_FORMAT_CONFIG_FILE)
 
 		actualAllFileNameLst, actualAllFilePathNameLst = fl.getModifiedAndNotExcludedFileLst(projectDir, lastSyncTime, excludedDirLst, excludedFileTypePatternLst)
 		self.assertEqual(sorted(expectedAllFileNameLst), sorted(actualAllFileNameLst))
