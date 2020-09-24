@@ -66,7 +66,7 @@ class TestTransferFiles(unittest.TestCase):
 		self.assertTrue(isValid)
 		self.assertEqual('04/06/2020 00:00:00', validLastSynchTimeStr)
 
-	def testUploadModifiedFilesToCloud(self):
+	def testUploadModifiedFilesToCloud_noFilePath(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
@@ -146,7 +146,93 @@ class TestTransferFiles(unittest.TestCase):
 
 		# now restoring the modified files dir to its saved version
 		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
+	
+	def testUploadModifiedFilesToCloud_filePath(self):
+		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
+		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+		
+		if os.name == 'posix':
+			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
+			localProjectDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir_saved'
+			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles.ini'
+		else:
+			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
+			localProjectDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_saved'
+			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+		
+		# cleaning up the target cloud folder
+		
+		cm = ConfigManager(configFilePathName)
+		projectName = 'TransferPathFilesTestProject'
+		drpa = DropboxAccess(cm, projectName)
+		
+		cloudFileLst = drpa.getCloudFilePathNameList()
 
+		for file in cloudFileLst:
+			drpa.deleteFile(file)
+		
+		self.assertEqual([], drpa.getCloudFilePathNameList())
+		
+		# reading and rewriting test project files to update their modification date
+		
+		tstFileToModifyLst = ['testfilemover_2.py']
+		pythonFileToModifyLst = ['filemover_2.py', 'filelister_2.py']
+		docFileToModifyLst = ['doc_21.docx', 'doc_22.docx']
+		imgFileToModifyLst = ['current_state_21.jpg']
+		
+		tstFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToModifyLst]
+		pythonFilePathNameToModifyLst = [localProjectDir + DIR_SEP + x for x in pythonFileToModifyLst]
+		docFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToModifyLst]
+		imgFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToModifyLst]
+		
+		filePathNameToModifyLst = tstFilePathNameToModifyLst + pythonFilePathNameToModifyLst + docFilePathNameToModifyLst + imgFilePathNameToModifyLst
+		
+		for filePathName in filePathNameToModifyLst:
+			# opening file as readwrite in binary mode
+			with open(filePathName, 'rb+') as f:
+				content = f.read()
+				f.seek(0)
+				f.write(content)
+				f.close()
+		
+		# simulating user input
+		
+		stdin = sys.stdin
+		
+		# selecting project 2 (the test project 'TransferPathFilesTestProject' is
+		# the second project defined in test_TransferFiles.ini !)
+		sys.stdin = StringIO('2') # TransferPathFilesTestProject
+		
+		print('\nstdout temporarily captured. Test is running ...')
+		
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+		
+		# now asking TransferFiles to upload the modified files
+		
+		tf = TransferFiles(configFilePath=configFilePathName)
+		
+		# confirming modified files upload
+		sys.stdin = StringIO('Y')
+		
+		tf.uploadModifiedFilesToCloud()
+		
+		sys.stdin = stdin
+		sys.stdout = stdout
+		
+		expectedUploadedFileNameLst = [  'doc/doc_21.docx',
+										 'doc/doc_22.docx',
+										 'filelister_2.py',
+										 'filemover_2.py',
+										 'images/current_state_21.jpg',
+										 'test/testfilemover_2.py']
+		
+		self.assertEqual(sorted(expectedUploadedFileNameLst), sorted(drpa.getCloudFilePathNameList()))
+		
+		# now restoring the modified files dir to its saved version
+		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
+	
 	def testPathUploadToCloud(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
@@ -464,7 +550,7 @@ class TestTransferFiles(unittest.TestCase):
 		# now restoring the modified files dir to its saved version
 		dir_util.copy_tree(localProjectDirSaved, localProjectDir)
 
-	def testTransferFilesFromCloudToLocalDirs_FilePath(self):
+	def testTransferFilesFromCloudToLocalDirs_filePath(self):
 		# avoid warning resourcewarning unclosed ssl.sslsocket due to Dropbox
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
@@ -526,8 +612,8 @@ class TestTransferFiles(unittest.TestCase):
 
 		stdin = sys.stdin
 
-		# selecting project 1 (the test project 'TransferFilesTestProject' is
-		# the first project defined in test_TransferFiles.ini !)
+		# selecting project 2 (the test project 'TransferPathFilesTestProject' is
+		# the second project defined in test_TransferFiles.ini !)
 		sys.stdin = StringIO('2') # TransferPathFilesTestProject
 
 		print('\nstdout temporarily captured. Test is running ...')
