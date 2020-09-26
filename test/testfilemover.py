@@ -40,7 +40,7 @@ class TestFileMover(unittest.TestCase):
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 
-		# purging downloadDir
+		# deleting downloadDir (dir and content)
 		if os.path.exists(downloadDir):
 			shutil.rmtree(downloadDir)
 
@@ -157,7 +157,7 @@ class TestFileMover(unittest.TestCase):
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 
-		# purging downloadDir
+		# deleting downloadDir (dir and content)
 		if os.path.exists(downloadDir):
 			shutil.rmtree(downloadDir)
 
@@ -206,7 +206,7 @@ class TestFileMover(unittest.TestCase):
 
 		configManager = ConfigManager(CONFIG_FILE_PATH_NAME)
 
-		# purging downloadDir
+		# deleting downloadDir (dir and content)
 		if os.path.exists(downloadDir):
 			shutil.rmtree(downloadDir)
 
