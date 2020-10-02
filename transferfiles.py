@@ -273,6 +273,7 @@ class TransferFiles:
 										 manually by the user
 		"""
 		if userInpuLlastSynchTimeStr == '':
+			# the user choosed to update synch time to Now !
 			validSynchTimeStr = datetime.now().strftime(DATE_TIME_FORMAT_CONFIG_FILE)
 		else:
 			isValid, validSynchTimeStr = self.validateLastSynchTimeStr(userInpuLlastSynchTimeStr)
