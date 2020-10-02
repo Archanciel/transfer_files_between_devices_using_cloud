@@ -1,9 +1,7 @@
 import datetime
-import glob
 import re
 from pathlib import Path
 import functools
-import os
 
 from configmanager import *
 from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE

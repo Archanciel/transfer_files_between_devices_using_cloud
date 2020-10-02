@@ -1,7 +1,6 @@
-import shutil, os
+import shutil
 
 from constants import *
-from configmanager import ConfigManager
 from filelister import FileLister
 
 class FileMover:
