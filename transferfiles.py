@@ -43,7 +43,7 @@ class TransferFiles:
 	    @param configFilePath: used for unit testing only
 	    @param projectName used for unit testing only
 	    
-		@return: True if the user select another project, False otherwise
+		@return: True if the user selects another project, False otherwise
 		"""
 		if projectName == None:
 			# we are not unit testing ...
@@ -109,7 +109,7 @@ class TransferFiles:
 			# dir to the correct project dir and sub dirs.
 			self.transferFilesFromCloudToLocalDirs(cloudFileLst)
 		
-		return self.initTransferFileOnProject(configFilePath=None, projectName=None)
+		return self.initTransferFileOnProject()
 
 	def transferFilesFromCloudToLocalDirs(self, cloudFileLst):
 		"""
@@ -138,10 +138,15 @@ class TransferFiles:
 		"""
 		localProjectDirShort = DIR_SEP.join(self.localProjectDir.split(DIR_SEP)[-3:])
 
-		questionStr = 'vvv {} files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}.\nIf you want to upload new modified files instead, type N'.format(
+		questionStr = 'vvv {} files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}.\nIf you want to upload new modified files instead, type N, or Enter to select another project'.format(
 			len(cloudFileLst), localProjectDirShort)
 		doDownload, _ = self.requester.getUserConfirmation(questionStr, cloudFileLst)
 
+		if doDownload is None:
+			# user typed Enter, which means he does not want to download the files
+			# and wants to select another project or quit.
+			return
+		
 		if doDownload:
 			if self.configManager.isProjectSubDirSynchronized(self.projectName):
 				# downloading the files from the cloud keeping their path component
@@ -205,7 +210,7 @@ class TransferFiles:
 				questionStr = '^^^ {} files were modified locally after {}\nand will be uploaded to the cloud, keeping the file path information.\nChoose P to display the path or U to update the last sync time'.format(
 					len(updatedFileNameLst), lastSyncTimeStr)
 			else:
-				questionStr = '^^^ {} files were modified locally after {}\nand will be uploaded to the cloud.\nChoose P to display the path or U to update the last sync time'.format(
+				questionStr = '^^^ {} files were modified locally after {}\nand will be uploaded to the cloud.\nChoose P to display the path or U to update the last sync time, or Enter to select another project'.format(
 					len(updatedFileNameLst), lastSyncTimeStr)
 
 			doUpload, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)

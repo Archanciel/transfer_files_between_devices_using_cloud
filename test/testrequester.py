@@ -33,7 +33,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
  
-		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
+		self.assertEqual('Select project (Enter to loop or quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 		self.assertEqual('transFileCloudProject', projectName)
 	
 	def testGetProjectNameInvalidUserInput_zero(self):
@@ -60,7 +60,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
  
-		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
+		self.assertEqual('Select project (Enter to loop or quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\nInvalid selection. Select project (Enter to loop or quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 
 	def testGetProjectNameInvalidUserInput_minus_one(self):
 		if os.name == 'posix':
@@ -85,7 +85,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
 
-		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
+		self.assertEqual('Select project (Enter to loop or quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\nInvalid selection. Select project (Enter to loop or quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 
 	def testGetProjectNameInvalidUserInput_exeed_choice_number(self):
 		if os.name == 'posix':
@@ -110,7 +110,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
 
-		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\nInvalid selection. Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
+		self.assertEqual('Select project (Enter to loop or quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\nInvalid selection. Select project (Enter to loop or quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 	
 	def testGetProjectNameInvalidUserInput_return(self):
 		if os.name == 'posix':
@@ -134,7 +134,7 @@ class TestRequester(unittest.TestCase):
  
 		sys.stdin = stdin
 		sys.stdout = stdout
-		self.assertEqual('Select project (Q or Enter to quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
+		self.assertEqual('Select project (Enter to loop or quit):\n\n1 transFileCloudTestProject\n2 transFileCloudProject\n3 transFileCloudFilePathNameProject\n4 cartesianAxesProject\n5 transFileCloudInvalidProject\n\n', outputCapturingString.getvalue())
 
 	def testGetUserConfirmation_uploadFiles(self):
 		if os.name == 'posix':
@@ -162,7 +162,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
 
-		self.assertEqual('\nconstants_2.py\nfilelister_2.py\ntestfilelister_2.py\n\n^^^ 3 files were modified locally after 2020-07-22 15:30:22\nand will be uploaded to the cloud.\nChoose P to display the path or U to update the last sync time.\n\nContinue (Y/N/P/U) ',
+		self.assertEqual('\nconstants_2.py\nfilelister_2.py\ntestfilelister_2.py\n\n^^^ 3 files were modified locally after 2020-07-22 15:30:22\nand will be uploaded to the cloud.\nChoose P to display the path or U to update the last sync time.\n\nContinue (Y/N/P/U/Enter) ',
 			outputCapturingString.getvalue())
 		self.assertTrue(doUpload)
 		self.assertEqual('',lastSynchTimeChoice)
@@ -192,7 +192,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
 
-		self.assertEqual('\nconstants_2.py\nfilelister_2.py\ntestfilelister_2.py\n\nvvv 3 files will be transferred from the cloud and then moved to the correct dir and sub-dir of ru.iiec.pydroid3/files/trans_file_cloud.\nIf you want to upload new modified files instead, type N.\n\nContinue (Y/N) ',
+		self.assertEqual('\nconstants_2.py\nfilelister_2.py\ntestfilelister_2.py\n\nvvv 3 files will be transferred from the cloud and then moved to the correct dir and sub-dir of ru.iiec.pydroid3/files/trans_file_cloud.\nIf you want to upload new modified files instead, type N.\n\nContinue (Y/N/Enter) ',
 			outputCapturingString.getvalue())
 		self.assertTrue(doDownload)
 		self.assertEqual('',lastSynchTimeChoice)

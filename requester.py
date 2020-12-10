@@ -98,7 +98,9 @@ class Requester:
 		@return: True and '' for new synch time if user confirms files upload
 				 False and '' for new synch time if user cancels files upload
 				 False and new synch time answer if user wants to update the
-				 project synch time without uploading any file.
+				 project synch time without uploading any file
+				 None and '' to skip download and loop to another project
+				 (the case if user typed Enter).
 		"""
 		if filePathNameLst != []:
 			# this means that the method is called in order to upload files to
@@ -109,12 +111,12 @@ class Requester:
 			#
 			# Additionally, the user has the possibility to update the last
 			# synch time of the project.
-			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst, path='/P', upload='/U')
+			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst, path='P/', upload='U/')
 			userChoice = input(userPrompt).upper()
 			
 			if 'P' in userChoice:
 				questionStr = questionStr.replace('P to display the path and ', '')	
-				userPrompt = self.addFilesToUserPrompt(questionStr, filePathNameLst,path='', upload='/U')
+				userPrompt = self.addFilesToUserPrompt(questionStr, filePathNameLst,path='', upload='U/')
 			else:
 				return self.handleUserChoice(userChoice)
 		elif fileNameLst != []:
@@ -123,7 +125,7 @@ class Requester:
 		else:
 			# here, neither modified files upload nor cloud files download is adequate. We give
 			# the user the possibility to update the last synch time
-			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst, upload='/U')
+			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst, upload='U/')
 		
 		userChoice = input(userPrompt).upper()
 					
@@ -144,8 +146,10 @@ class Requester:
 			return False, self.askUserNewSyncTime()
 		elif userChoice == 'Y':
 			return True, ''
-		else:
+		elif userChoice == 'N':
 			return False, ''
+		else:
+			return None, ''
 		
 	def addFilesToUserPrompt(self, questionStr, fileNameLst, path='', upload=''):
 		"""
@@ -153,8 +157,8 @@ class Requester:
 		
 		@param questionStr: the question displayed to the user
 		@param fileNameLst: file names to print before asking the question
-		@param path: either empty or '/P'
-		@param upload: either empty or '/U'
+		@param path: either empty or 'P/'
+		@param upload: either empty or 'U/'
 		
 		@return: the full user prompt
 		"""
@@ -173,9 +177,9 @@ class Requester:
 		if fileNameLst == []:
 			# here, neither modified files upload nor cloud files download is adequate. We give
 			# the user the possibility to update the last synch time
-			userPrompt += '\n' + questionStr + '.\n\nContinue (Enter{}) '.format(upload)
+			userPrompt += '\n' + questionStr + '.\n\nContinue ({}Enter) '.format(upload)
 		else:
-			userPrompt += '\n' + questionStr + '.\n\nContinue (Y/N{}{}) '.format(path, upload)
+			userPrompt += '\n' + questionStr + '.\n\nContinue (Y/N/{}{}Enter) '.format(path, upload)
 
 		return userPrompt
 	
