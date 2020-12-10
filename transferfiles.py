@@ -31,19 +31,32 @@ class TransferFiles:
 			
 		self.configManager = ConfigManager(configFilePath)
 		self.requester = Requester(self.configManager)
-			
+
+		self.initTransferFileOnProject(configFilePath, projectName)
+
+	def initTransferFileOnProject(self, configFilePath=None, projectName=None):
+		"""
+		This method enables the transfer files utility to be executed in a loop.
+		It initializes the TransferFile class with the data specific to the
+		project selected by the user.
+		
+	    @param configFilePath: used for unit testing only
+	    @param projectName used for unit testing only
+	    
+		@return: True if the user select another project, False otherwise
+		"""
 		if projectName == None:
 			# we are not unit testing ...
-			projectName = self.requester.getProjectName()
-		
+			projectName = self.requester.getProjectName(commandLineArgs=None)
+			
 			if projectName == None:
 				# user did choose Quit
 				self.projectName = None
-				return
-			
+				return False
+		
 		self.projectName = projectName
 		self.localProjectDir = None
-
+		
 		try:
 			self.localProjectDir = self.configManager.getProjectLocalDir(self.projectName)
 		except KeyError as e:
@@ -51,12 +64,14 @@ class TransferFiles:
 			# with an invalid project name passed as -p command line parm
 			print('\nProject {} not defined in configuration file {}. Program closed.\n'.format(str(e), configFilePath))
 			self.projectName = None
-			return
-
+			return False
+		
 		# currently, only Dropbox as cloud space is implemented
 		self.cloudAccess = DropboxAccess(self.configManager, self.projectName)
 		self.fileLister = FileLister(self.configManager)
-
+		
+		return True
+	
 	def transferFiles(self):
 		"""
 		This is the main TransferFiles method. Depending on the content of the
@@ -93,6 +108,8 @@ class TransferFiles:
 			# local download dir and deleted from the cloud. They will then be moved from the download
 			# dir to the correct project dir and sub dirs.
 			self.transferFilesFromCloudToLocalDirs(cloudFileLst)
+		
+		return self.initTransferFileOnProject(configFilePath=None, projectName=None)
 
 	def transferFilesFromCloudToLocalDirs(self, cloudFileLst):
 		"""
@@ -205,7 +222,7 @@ class TransferFiles:
 			# here, neither modified files upload nor cloud files download is adequate. Instead
 			# of simply closing the utility, we give the user the possibility to update the last 
 			# synch time
-			questionStr = 'No files modified locally since last sync time {}.\nChoose U to update the last sync time, Q or Enter to quit.'.format(lastSyncTimeStr)
+			questionStr = 'No files modified locally since last sync time {}.\nChoose U to update the last sync time, Enter to loop or quit'.format(lastSyncTimeStr)
 			_, lastSynchTimeChoice = self.requester.getUserConfirmation(questionStr, updatedFileNameLst, updatedFilePathNameLst)
 			self.handleLastSynchTimeChoice(lastSynchTimeChoice)
 
@@ -323,7 +340,10 @@ class TransferFiles:
 if __name__ == "__main__":
 	tf = TransferFiles()
 
+	runTransFerFile = True
+	
 	try:
-		tf.transferFiles()
+		while runTransFerFile:
+			runTransFerFile = tf.transferFiles()
 	except requests.exceptions.ConnectionError:
 		print("No internet access. Fix the problem and retry !")

@@ -50,7 +50,7 @@ the utility will potentially display a different list of modified files.
 
 ## Project class diagram
 <p align="center">
-  <img src="images/class_diagram.jpg" width="600" title="Transfer File class diagram">
+  <img src="images/class_diagram.jpg" width="600" title="Audio Download class diagram">
 </p>
 
 ## Required libraries
@@ -58,6 +58,7 @@ the utility will potentially display a different list of modified files.
 - dropbox
 
 ## Version history
+- 2.1 Added utility loop execution
 - 2.0 Added directory download: as a result, the directory structure on the 
 synchronized devices is identical
 - 1.3 Bug fix + user input minor improvements

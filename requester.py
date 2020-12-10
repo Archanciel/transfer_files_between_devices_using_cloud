@@ -24,7 +24,7 @@ class Requester:
 			projectName = self.decodeCommandLineArgs(commandLineArgs)
 		else:
 			projectNameList = [x for x in self.configManager.projects]
-			userPrompt = "Select project (Q or Enter to quit):\n\n"
+			userPrompt = "Select project (Enter to loop or quit):\n\n"
 			
 			for (i, projectName) in enumerate(projectNameList): 
 				userPrompt += str(i + 1) + ' ' + projectName + '\n'
@@ -173,7 +173,7 @@ class Requester:
 		if fileNameLst == []:
 			# here, neither modified files upload nor cloud files download is adequate. We give
 			# the user the possibility to update the last synch time
-			userPrompt += '\n' + questionStr + '.\n\nContinue (Q{}) '.format(upload)
+			userPrompt += '\n' + questionStr + '.\n\nContinue (Enter{}) '.format(upload)
 		else:
 			userPrompt += '\n' + questionStr + '.\n\nContinue (Y/N{}{}) '.format(path, upload)
 
