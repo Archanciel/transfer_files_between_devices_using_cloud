@@ -140,7 +140,7 @@ class TransferFiles:
 
 		questionStr = 'vvv {} files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}.\nIf you want to upload new modified files instead, type N, or Enter to select another project'.format(
 			len(cloudFileLst), localProjectDirShort)
-		doDownload, _ = self.requester.getUserConfirmation(questionStr, cloudFileLst)
+		doDownload, doKeepFileOnCloud = self.requester.getUserConfirmation(questionStr, cloudFileLst)
 
 		if doDownload is None:
 			# user typed Enter, which means he does not want to download the files
@@ -153,7 +153,7 @@ class TransferFiles:
 				# directly to their final destination dir, the local project dir
 
 				print('')  # empty line
-				self.downloadAndDeleteFilesFromCloud(downloadPath=self.localProjectDir, cloudFileLst=cloudFileLst, targetName='directly to the project')
+				self.downloadAndDeleteFilesFromCloud(downloadPath=self.localProjectDir, cloudFileLst=cloudFileLst, targetName='directly to the project', doKeepFileOnCloud=doKeepFileOnCloud)
 				print('')  # empty line
 			else:
 				# downloading the files which have no path component from the cloud
@@ -162,7 +162,7 @@ class TransferFiles:
 				# file for the project
 
 				print('')  # empty line
-				self.downloadAndDeleteFilesFromCloud(downloadPath=self.configManager.downloadPath, cloudFileLst=cloudFileLst, targetName='to download')
+				self.downloadAndDeleteFilesFromCloud(downloadPath=self.configManager.downloadPath, cloudFileLst=cloudFileLst, targetName='to download', doKeepFileOnCloud=doKeepFileOnCloud)
 				print('')  # empty line
 
 				# moving file from download dir to project dest dir and sub-dirs
@@ -319,7 +319,7 @@ class TransferFiles:
 			except ValueError:
 				return False, ''
 		
-	def downloadAndDeleteFilesFromCloud(self, downloadPath, cloudFileLst, targetName):
+	def downloadAndDeleteFilesFromCloud(self, downloadPath, cloudFileLst, targetName, doKeepFileOnCloud=False):
 		"""
 		Physically downloads the files from the cloud and deletes them from
 		the cloud.
@@ -335,12 +335,16 @@ class TransferFiles:
 		@param targetName: 	 either 'download' or 'project', according to the value
 							 of the project synchProjectSubDirStructure parm
 							 value as defined
+		@param doKeepFileOnCloud if True, do not delete files on cloud after
+								 downloading them
 		"""
 		for cloudFilePathName in cloudFileLst:
 			destFilePathName = downloadPath + DIR_SEP + cloudFilePathName
 			print('Transferring {} from the cloud {} dir ...'.format(cloudFilePathName, targetName))
 			self.cloudAccess.downloadFile(cloudFilePathName, destFilePathName)
-			self.cloudAccess.deleteFile(cloudFilePathName)
+			
+			if not doKeepFileOnCloud:
+				self.cloudAccess.deleteFile(cloudFilePathName)
 
 if __name__ == "__main__":
 	tf = TransferFiles()

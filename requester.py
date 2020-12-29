@@ -3,6 +3,8 @@ import sys, argparse
 from constants import *
 from configmanager import ConfigManager
 
+
+
 class Requester:
 	def __init__(self, configManager):
 		self.configManager = configManager
@@ -146,6 +148,8 @@ class Requester:
 			return False, self.askUserNewSyncTime()
 		elif userChoice == 'Y':
 			return True, ''
+		elif userChoice == 'YK':
+			return True, True
 		elif userChoice == 'N':
 			return False, ''
 		else:
@@ -179,7 +183,13 @@ class Requester:
 			# the user the possibility to update the last synch time
 			userPrompt += '\n' + questionStr + '.\n\nContinue ({}Enter) '.format(upload)
 		else:
-			userPrompt += '\n' + questionStr + '.\n\nContinue (Y/N/{}{}Enter) '.format(path, upload)
+			if upload != '':
+				# we are uploading and so 'YK' for 'yes keep files on cloud
+				# makes no sense !
+				userPrompt += '\n' + questionStr + '.\n\nContinue (Y/N/{}{}Enter) '.format(path, upload)
+			else:
+				# here, we are downloading files and 'yes keep files on cloud' is useful
+				userPrompt += '\n' + questionStr + '.\n\nContinue (Y/YK/N/{}{}Enter) '.format(path, upload)
 
 		return userPrompt
 	
