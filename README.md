@@ -58,6 +58,8 @@ the utility will potentially display a different list of modified files.
 - dropbox
 
 ## Version history
+- 2.2 Added possibility to keep files on cloud after downloading them so that they can 
+  be downloaded on another device
 - 2.1 Added utility loop execution
 - 2.0 Added directory download: as a result, the directory structure on the 
 synchronized devices is identical
