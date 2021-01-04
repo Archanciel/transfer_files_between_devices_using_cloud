@@ -1,4 +1,5 @@
 import shutil
+from os.path import sep
 
 from constants import *
 from filelister import FileLister
@@ -59,15 +60,15 @@ class FileMover:
 				fileToMoveNameLst = fileTypeEntryTuple[1]
 
 				for fileToMoveName in fileToMoveNameLst:
-					fromFilePath = self.downloadDir + DIR_SEP + fileToMoveName
-					toFilePath = destinationDir + DIR_SEP + fileToMoveName
+					fromFilePath = self.downloadDir + sep + fileToMoveName
+					toFilePath = destinationDir + sep + fileToMoveName
 					shutil.move(fromFilePath, toFilePath)
 					fromFilePathShortened = self.shortenFileNamePath(fromFilePath)
 					toFilePathShortened = self.shortenFileNamePath(toFilePath)
 					print('moving {} to {}'.format(fromFilePathShortened, toFilePathShortened))
 		except FileNotFoundError as e:
-			pathElemLst = e.filename.split(DIR_SEP)
-			pathOnly = DIR_SEP.join(pathElemLst[:-1])
+			pathElemLst = e.filename.split(sep)
+			pathOnly = sep.join(pathElemLst[:-1])
 			print('Destination dir {} does not exist. Program stopped.'.format(pathOnly))
 
 	def shortenFileNamePath(self, completeFilePathName):
@@ -79,6 +80,6 @@ class FileMover:
 		
 		@param completeFilePathName: fuLl file path name
 		"""
-		filePathNameElementLst = completeFilePathName.split(DIR_SEP)
+		filePathNameElementLst = completeFilePathName.split(sep)
 		
-		return DIR_SEP.join(filePathNameElementLst[-4:])									
+		return sep.join(filePathNameElementLst[-4:])									

@@ -1,5 +1,6 @@
 import unittest
 import os, sys, inspect, shutil, glob
+from os.path import sep
 from io import StringIO
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -9,7 +10,6 @@ sys.path.insert(0, parentdir)
 from configmanager import ConfigManager
 from filemover import FileMover
 from filelister import FileLister
-from constants import DIR_SEP
 
 if os.name == 'posix':
 	CONFIG_FILE_PATH_NAME = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_FileMover.ini'
@@ -125,23 +125,23 @@ class TestFileMover(unittest.TestCase):
 							 'test\\testproject_1\\projectdir\\README_1.md', ''], outputCapturingString.getvalue().split('\n'))
 
 		# verifying project dir
-		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + DIR_SEP + '*.*')]
+		fileNameLst = [x.split(sep)[-1] for x in glob.glob(projectDir + sep + '*.*')]
 		self.assertEqual(sorted(['filelister_1.py', 'filemover_1.py', 'constants_1.py', 'README_1.md']), sorted(fileNameLst))
 
 		# verifying project test sub dir
-		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + TEST_SUB_DIR + DIR_SEP + '*.*')]
+		fileNameLst = [x.split(sep)[-1] for x in glob.glob(projectDir + TEST_SUB_DIR + sep + '*.*')]
 		self.assertEqual(sorted(['testfilelister_1.py', 'testfilemover_1.py']), sorted(fileNameLst))
 
 		# verifying project images sub dir
-		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + IMG_SUB_DIR + DIR_SEP + '*.*')]
+		fileNameLst = [x.split(sep)[-1] for x in glob.glob(projectDir + IMG_SUB_DIR + sep + '*.*')]
 		self.assertEqual(sorted(['current_state_12.jpg', 'current_state_11.jpg']), sorted(fileNameLst))
 
 		# verifying project doc sub dir
-		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + DOC_SUB_DIR + DIR_SEP + '*.*')]
+		fileNameLst = [x.split(sep)[-1] for x in glob.glob(projectDir + DOC_SUB_DIR + sep + '*.*')]
 		self.assertEqual(sorted(['doc_12.docx', 'doc_11.docx']), sorted(fileNameLst))
 
 		# testing that download no longer contains the files defined in cloudFileLst
-		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + '*.*')]
+		fileNameLst = [x.split(sep)[-1] for x in glob.glob(downloadDir + sep + '*.*')]
 		self.assertEqual(sorted(['constants_1.mp3', 'Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3']), sorted(fileNameLst))
 
 	def testMoveFilesToLocalDirs_dirNotExist(self):
@@ -245,7 +245,7 @@ class TestFileMover(unittest.TestCase):
 			self.assertEqual(['moving test\\testproject_1\\fromdir\\Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3 to projectdir\\mp3\\Rimsky-Korsakov\\Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3', ''], outputCapturingString.getvalue().split('\n'))
 
 		# verifying project Rimsky-Korsakov sub dir
-		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(projectDir + SUB_DIR_RIMSKY + DIR_SEP + '*.*')]
+		fileNameLst = [x.split(sep)[-1] for x in glob.glob(projectDir + SUB_DIR_RIMSKY + sep + '*.*')]
 		self.assertEqual(sorted(['Nikolay Rimsky-Korsakov - Отче наш   Notre Père   Our Father - Cep.mp3']), sorted(fileNameLst))
 
 if __name__ == '__main__':

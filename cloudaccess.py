@@ -1,8 +1,6 @@
 from abc import ABCMeta
 from abc import abstractmethod
 
-from constants import DIR_SEP
-
 class CloudAccess(metaclass=ABCMeta):
 	def __init__(self, cloudTransferBaseDir, projectName, localProjectDir):
 		"""

@@ -1,4 +1,5 @@
 from datetime import datetime
+from os.path import sep
 import requests
 
 from constants import *
@@ -136,7 +137,7 @@ class TransferFiles:
 		@param cloudFileLst: contains the list of file names for the files
 							 available on the cloud
 		"""
-		localProjectDirShort = DIR_SEP.join(self.localProjectDir.split(DIR_SEP)[-3:])
+		localProjectDirShort = sep.join(self.localProjectDir.split(sep)[-3:])
 
 		questionStr = 'vvv {} files will be transferred from the cloud and then moved to the correct dir and sub-dir of {}.\nIf you want to upload new modified files instead, type N, or Enter to select another project'.format(
 			len(cloudFileLst), localProjectDirShort)
@@ -252,7 +253,7 @@ class TransferFiles:
 		@param updatedFilePathNameLst: list of file path names to upload
 		"""
 		for localFilePathName in updatedFilePathNameLst:
-			printFileName = localFilePathName.split(DIR_SEP)[-1]
+			printFileName = localFilePathName.split(sep)[-1]
 			print('Uploading {} to the cloud ...'.format(printFileName))
 
 			try:
@@ -273,8 +274,8 @@ class TransferFiles:
 		@param updatedFilePathNameLst: list of file path names to upload
 		"""
 		for localFilePathName in updatedFilePathNameLst:
-			filePathNameElementLst = localFilePathName.split(DIR_SEP)[-4:]
-			printFilePathName = DIR_SEP.join(filePathNameElementLst)
+			filePathNameElementLst = localFilePathName.split(sep)[-4:]
+			printFilePathName = sep.join(filePathNameElementLst)
 			print('Uploading {} to the cloud ...'.format(printFilePathName))
 
 			try:
@@ -339,7 +340,7 @@ class TransferFiles:
 								 downloading them
 		"""
 		for cloudFilePathName in cloudFileLst:
-			destFilePathName = downloadPath + DIR_SEP + cloudFilePathName
+			destFilePathName = downloadPath + sep + cloudFilePathName
 			print('Transferring {} from the cloud {} dir ...'.format(cloudFilePathName, targetName))
 			self.cloudAccess.downloadFile(cloudFilePathName, destFilePathName)
 			

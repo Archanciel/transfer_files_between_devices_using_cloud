@@ -1,5 +1,6 @@
 import unittest
 import os, sys, inspect, datetime, shutil
+from os.path import sep
 from distutils import dir_util
 from io import StringIO
 
@@ -9,7 +10,7 @@ sys.path.insert(0, parentdir)
 		
 import warnings 		
 
-from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE
+from constants import DATE_TIME_FORMAT_CONFIG_FILE
 from configmanager import *
 from transferfiles import TransferFiles
 from dropboxaccess import DropboxAccess
@@ -99,10 +100,10 @@ class TestTransferFiles(unittest.TestCase):
 		docFileToModifyLst = ['doc_21.docx', 'doc_22.docx']
 		imgFileToModifyLst = ['current_state_21.jpg']
 
-		tstFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToModifyLst]
-		pythonFilePathNameToModifyLst = [localProjectDir + DIR_SEP + x for x in pythonFileToModifyLst]
-		docFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToModifyLst]
-		imgFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToModifyLst]
+		tstFilePathNameToModifyLst = [localProjectDir + sep + 'test' + sep + x for x in tstFileToModifyLst]
+		pythonFilePathNameToModifyLst = [localProjectDir + sep + x for x in pythonFileToModifyLst]
+		docFilePathNameToModifyLst = [localProjectDir + sep + 'doc' + sep + x for x in docFileToModifyLst]
+		imgFilePathNameToModifyLst = [localProjectDir + sep + 'images' + sep + x for x in imgFileToModifyLst]
 
 		filePathNameToModifyLst = tstFilePathNameToModifyLst + pythonFilePathNameToModifyLst + docFilePathNameToModifyLst + imgFilePathNameToModifyLst
 
@@ -180,10 +181,10 @@ class TestTransferFiles(unittest.TestCase):
 		docFileToModifyLst = ['doc_21.docx', 'doc_22.docx']
 		imgFileToModifyLst = ['current_state_21.jpg']
 		
-		tstFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToModifyLst]
-		pythonFilePathNameToModifyLst = [localProjectDir + DIR_SEP + x for x in pythonFileToModifyLst]
-		docFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToModifyLst]
-		imgFilePathNameToModifyLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToModifyLst]
+		tstFilePathNameToModifyLst = [localProjectDir + sep + 'test' + sep + x for x in tstFileToModifyLst]
+		pythonFilePathNameToModifyLst = [localProjectDir + sep + x for x in pythonFileToModifyLst]
+		docFilePathNameToModifyLst = [localProjectDir + sep + 'doc' + sep + x for x in docFileToModifyLst]
+		imgFilePathNameToModifyLst = [localProjectDir + sep + 'images' + sep + x for x in imgFileToModifyLst]
 		
 		filePathNameToModifyLst = tstFilePathNameToModifyLst + pythonFilePathNameToModifyLst + docFilePathNameToModifyLst + imgFilePathNameToModifyLst
 		
@@ -264,10 +265,10 @@ class TestTransferFiles(unittest.TestCase):
 		docFileToUploadLst = ['doc_21.docx', 'doc_22.docx']
 		imgFileToUploadLst = ['current_state_21.jpg']
 
-		tstFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToUploadLst]
-		pythonFilePathNameToUploadLst = [localProjectDir + DIR_SEP + x for x in pythonFileToUploadLst]
-		docFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToUploadLst]
-		imgFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToUploadLst]
+		tstFilePathNameToUploadLst = [localProjectDir + sep + 'test' + sep + x for x in tstFileToUploadLst]
+		pythonFilePathNameToUploadLst = [localProjectDir + sep + x for x in pythonFileToUploadLst]
+		docFilePathNameToUploadLst = [localProjectDir + sep + 'doc' + sep + x for x in docFileToUploadLst]
+		imgFilePathNameToUploadLst = [localProjectDir + sep + 'images' + sep + x for x in imgFileToUploadLst]
 
 		filePathNameToUploadLst = tstFilePathNameToUploadLst + pythonFilePathNameToUploadLst + docFilePathNameToUploadLst + imgFilePathNameToUploadLst
 
@@ -338,7 +339,7 @@ class TestTransferFiles(unittest.TestCase):
 
 		fileToUploadLst = ['youtube-dl test video \'\'_ä↭𝕐-BaW_jenozKc.m4a']
 
-		filePathNameToUploadLst = [localProjectDir + DIR_SEP + x for x in fileToUploadLst]
+		filePathNameToUploadLst = [localProjectDir + sep + x for x in fileToUploadLst]
 
 		# simulating user input
 
@@ -404,7 +405,7 @@ class TestTransferFiles(unittest.TestCase):
 
 		fileToUploadLst = ['youtube-dl test video \'\'_ä↭𝕐-BaW_jenozKc.m4a']
 
-		filePathNameToUploadLst = [localProjectDir + DIR_SEP + x for x in fileToUploadLst]
+		filePathNameToUploadLst = [localProjectDir + sep + x for x in fileToUploadLst]
 
 		# simulating user input
 
@@ -485,10 +486,10 @@ class TestTransferFiles(unittest.TestCase):
 
 		fileNameToUploadLst = tstFileToUploadLst + pythonFileToUploadLst + docFileToUploadLst + imgFileToUploadLst
 
-		tstFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToUploadLst]
-		pythonFilePathNameToUploadLst = [localProjectDir + DIR_SEP + x for x in pythonFileToUploadLst]
-		docFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToUploadLst]
-		imgFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToUploadLst]
+		tstFilePathNameToUploadLst = [localProjectDir + sep + 'test' + sep + x for x in tstFileToUploadLst]
+		pythonFilePathNameToUploadLst = [localProjectDir + sep + x for x in pythonFileToUploadLst]
+		docFilePathNameToUploadLst = [localProjectDir + sep + 'doc' + sep + x for x in docFileToUploadLst]
+		imgFilePathNameToUploadLst = [localProjectDir + sep + 'images' + sep + x for x in imgFileToUploadLst]
 
 		filePathNameToUploadLst = tstFilePathNameToUploadLst + pythonFilePathNameToUploadLst + docFilePathNameToUploadLst + imgFilePathNameToUploadLst
 
@@ -593,10 +594,10 @@ class TestTransferFiles(unittest.TestCase):
 
 		fileNameToUploadLst = tstFileToUploadLst + pythonFileToUploadLst + docFileToUploadLst + imgFileToUploadLst
 
-		tstFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'test' + DIR_SEP + x for x in tstFileToUploadLst]
-		pythonFilePathNameToUploadLst = [localProjectDir + DIR_SEP + x for x in pythonFileToUploadLst]
-		docFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'doc' + DIR_SEP + x for x in docFileToUploadLst]
-		imgFilePathNameToUploadLst = [localProjectDir + DIR_SEP + 'images' + DIR_SEP + x for x in imgFileToUploadLst]
+		tstFilePathNameToUploadLst = [localProjectDir + sep + 'test' + sep + x for x in tstFileToUploadLst]
+		pythonFilePathNameToUploadLst = [localProjectDir + sep + x for x in pythonFileToUploadLst]
+		docFilePathNameToUploadLst = [localProjectDir + sep + 'doc' + sep + x for x in docFileToUploadLst]
+		imgFilePathNameToUploadLst = [localProjectDir + sep + 'images' + sep + x for x in imgFileToUploadLst]
 
 		filePathNameToUploadLst = tstFilePathNameToUploadLst + pythonFilePathNameToUploadLst + docFilePathNameToUploadLst + imgFilePathNameToUploadLst
 

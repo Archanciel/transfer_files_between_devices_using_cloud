@@ -6,9 +6,6 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 		
-import warnings 		
-
-from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE
 from configmanager import *
 			
 class TestConfigManager(unittest.TestCase):

@@ -1,12 +1,11 @@
 import os, io, dropbox
+from os.path import sep
 
-from constants import DIR_SEP
 from cloudaccess import CloudAccess
-from configmanager import ConfigManager
 
 class DropboxAccess(CloudAccess):
 	def __init__(self, configManager, projectName):
-		super().__init__(configManager.dropboxBaseDir, projectName, configManager.getProjectLocalDir(projectName) + DIR_SEP)
+		super().__init__(configManager.dropboxBaseDir, projectName, configManager.getProjectLocalDir(projectName) + sep)
 		accessToken = configManager.dropboxApiKey
 		self.dbx = dropbox.Dropbox(accessToken)
 
@@ -20,7 +19,7 @@ class DropboxAccess(CloudAccess):
 
 		@param localFilePathName: file path name of file to upload
 		"""
-		cloudFilePathName = self.cloudProjectDir + '/' + localFilePathName.split(DIR_SEP)[-1]
+		cloudFilePathName = self.cloudProjectDir + '/' + localFilePathName.split(sep)[-1]
 
 		try:
 			with open(localFilePathName, 'rb') as f:
@@ -44,7 +43,7 @@ class DropboxAccess(CloudAccess):
 		# keeping only the local project sub dir component
 		filePathName = localFilePathName.replace(self.localProjectDir, '')
 		
-		if DIR_SEP == '\\':
+		if sep == '\\':
 			# if run on Windows, replaces the Windows dir separator by the 
 			# dropbox> dir separator
 			filePathName = filePathName.replace('\\', '/')

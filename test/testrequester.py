@@ -192,7 +192,7 @@ class TestRequester(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
 
-		self.assertEqual('\nconstants_2.py\nfilelister_2.py\ntestfilelister_2.py\n\nvvv 3 files will be transferred from the cloud and then moved to the correct dir and sub-dir of ru.iiec.pydroid3/files/trans_file_cloud.\nIf you want to upload new modified files instead, type N.\n\nContinue (Y/N/Enter) ',
+		self.assertEqual('\nconstants_2.py\nfilelister_2.py\ntestfilelister_2.py\n\nvvv 3 files will be transferred from the cloud and then moved to the correct dir and sub-dir of ru.iiec.pydroid3/files/trans_file_cloud.\nIf you want to upload new modified files instead, type N.\n\nContinue (Y/YK/N/Enter) ',
 			outputCapturingString.getvalue())
 		self.assertTrue(doDownload)
 		self.assertEqual('',lastSynchTimeChoice)

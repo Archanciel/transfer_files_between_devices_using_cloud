@@ -7,7 +7,7 @@ sys.path.insert(0, parentdir)
 
 from configmanager import *
 from filelister import FileLister
-from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE
+from constants import DATE_TIME_FORMAT_CONFIG_FILE
 			
 class TestFileLister(unittest.TestCase):
 	def testGetModifiedFileLst(self):

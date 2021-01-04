@@ -1,9 +1,8 @@
 import sys, argparse
+from os.path import sep
 
 from constants import *
 from configmanager import ConfigManager
-
-
 
 class Requester:
 	def __init__(self, configManager):
@@ -169,12 +168,12 @@ class Requester:
 		userPrompt = '\n'
 				
 		for fileName in fileNameLst:
-			if DIR_SEP in fileName:
+			if sep in fileName:
 				# here, the file name is in fact a fuLl file path name. In order
 				# to display a more readable file list, only the last 4 file
 				# pathename element are kept
-				filePathNameElementLst = fileName.split(DIR_SEP)[-4:]
-				fileName = DIR_SEP.join(filePathNameElementLst)
+				filePathNameElementLst = fileName.split(sep)[-4:]
+				fileName = sep.join(filePathNameElementLst)
  
 			userPrompt += fileName + '\n'
 

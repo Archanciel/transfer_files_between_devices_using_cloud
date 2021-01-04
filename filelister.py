@@ -1,10 +1,11 @@
 import datetime
 import re
 from pathlib import Path
+from os.path import sep
 import functools
 
 from configmanager import *
-from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE
+from constants import DATE_TIME_FORMAT_CONFIG_FILE
 
 
 class FileLister:
@@ -301,8 +302,8 @@ class FileLister:
 		return sorted(filePatternDirTupleLst, key=functools.cmp_to_key(self.computeMoveOrder))
 
 	def computeMoveOrder(self, typeTupleOne, typeTupleTwo):
-		subDirNoOne = len(typeTupleOne[1].split(DIR_SEP))
-		subDirNoTwo = len(typeTupleTwo[1].split(DIR_SEP))
+		subDirNoOne = len(typeTupleOne[1].split(sep))
+		subDirNoTwo = len(typeTupleTwo[1].split(sep))
 
 		if subDirNoOne < subDirNoTwo:
 			return 1

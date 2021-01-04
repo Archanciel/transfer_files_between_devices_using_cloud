@@ -1,5 +1,6 @@
 import unittest
 import os, sys, inspect, datetime, glob, shutil
+from os.path import sep
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -7,7 +8,7 @@ sys.path.insert(0, parentdir)
 		
 import warnings 		
 
-from constants import DIR_SEP, DATE_TIME_FORMAT_CONFIG_FILE
+from constants import DATE_TIME_FORMAT_CONFIG_FILE
 from configmanager import *
 from dropboxaccess import DropboxAccess
 			
@@ -169,7 +170,7 @@ class TestDropboxAccess(unittest.TestCase):
 		
 		# now, uploading a file
 		uploadFileName = 'filemover_1.py'
-		localFilePathName = localDir + DIR_SEP + uploadFileName
+		localFilePathName = localDir + sep + uploadFileName
 		drpa.uploadFileName(localFilePathName)
 
 		self.assertEqual([uploadFileName], drpa.getCloudFileNameList())
@@ -206,7 +207,7 @@ class TestDropboxAccess(unittest.TestCase):
 		
 		# now, uploading a file
 		uploadFileName = 'uploadTwice'
-		localFilePathName = localDir + DIR_SEP + uploadFileName
+		localFilePathName = localDir + sep + uploadFileName
 		drpa.uploadFileName(localFilePathName)
 
 		self.assertEqual([uploadFileName], drpa.getCloudFileNameList())
@@ -256,11 +257,11 @@ class TestDropboxAccess(unittest.TestCase):
 		# in a project sub dir
 		localProjectDir = cm.getProjectLocalDir(projectName)
 		uploadFileNameProjectRoot = 'filemover_2.py'
-		localFilePathName = localDir + DIR_SEP + uploadFileNameProjectRoot
+		localFilePathName = localDir + sep + uploadFileNameProjectRoot
 		drpa.uploadFilePathName(localFilePathName)
 
-		uploadFileNameProjectSubdir = 'test' + DIR_SEP + 'testfilemover_2.py'
-		localFilePathName = localDir + DIR_SEP + uploadFileNameProjectSubdir
+		uploadFileNameProjectSubdir = 'test' + sep + 'testfilemover_2.py'
+		localFilePathName = localDir + sep + uploadFileNameProjectSubdir
 		drpa.uploadFilePathName(localFilePathName)
 
 		uploadFileNameProjectSubdirSlashDirSep = uploadFileNameProjectSubdir.replace('\\', '/')
@@ -292,11 +293,11 @@ class TestDropboxAccess(unittest.TestCase):
 		projectName = 'transFileCloudTestProject'
 		drpa = DropboxAccess(cm, projectName)
 		fileName = 'my_file_one.py'
-		downloadedFilePathName = downloadDir + DIR_SEP + fileName
+		downloadedFilePathName = downloadDir + sep + fileName
 		drpa.downloadFile(fileName, downloadedFilePathName)
 
 		# verifying that the file was downloaded
-		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + '*.py')]
+		fileNameLst = [x.split(sep)[-1] for x in glob.glob(downloadDir + sep + '*.py')]
 		self.assertEqual(sorted([fileName]), sorted(fileNameLst))
 
 		# deleting downloaded file
@@ -322,15 +323,15 @@ class TestDropboxAccess(unittest.TestCase):
 		fileName = 'subDirOne.py'
 		fileSubDir = 'SubDirOne'
 		cloudFilePathName = fileSubDir + '/' + fileName
-		downloadedFilePathName = downloadDir + DIR_SEP + fileSubDir + DIR_SEP + fileName
+		downloadedFilePathName = downloadDir + sep + fileSubDir + sep + fileName
 		drpa.downloadFile(cloudFilePathName, downloadedFilePathName)
 
 		# verifying that the file was downloaded
-		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + fileSubDir + DIR_SEP + '*.py')]
+		fileNameLst = [x.split(sep)[-1] for x in glob.glob(downloadDir + sep + fileSubDir + sep + '*.py')]
 		self.assertEqual(sorted([fileName]), sorted(fileNameLst))
 
 		# deleting downloaded file
-		shutil.rmtree(downloadDir + DIR_SEP + fileSubDir)
+		shutil.rmtree(downloadDir + sep + fileSubDir)
 
 	def testDownloadFile_in_subSubDir(self):
 		"""
@@ -353,15 +354,15 @@ class TestDropboxAccess(unittest.TestCase):
 		fileSubDir = 'SubDirOne'
 		fileSubSubDir = 'SubDirOneSubDir'
 		cloudFilePathName = fileSubDir + '/' + fileSubSubDir + '/' + fileName
-		downloadedFilePathName = downloadDir + DIR_SEP + fileSubDir + DIR_SEP + fileSubSubDir + DIR_SEP + fileName
+		downloadedFilePathName = downloadDir + sep + fileSubDir + sep + fileSubSubDir + sep + fileName
 		drpa.downloadFile(cloudFilePathName, downloadedFilePathName)
 
 		# verifying that the file was downloaded
-		fileNameLst = [x.split(DIR_SEP)[-1] for x in glob.glob(downloadDir + DIR_SEP + fileSubDir + DIR_SEP + fileSubSubDir + DIR_SEP + '*.py')]
+		fileNameLst = [x.split(sep)[-1] for x in glob.glob(downloadDir + sep + fileSubDir + sep + fileSubSubDir + sep + '*.py')]
 		self.assertEqual(sorted([fileName]), sorted(fileNameLst))
 
 		# deleting downloaded file
-		shutil.rmtree(downloadDir + DIR_SEP + fileSubDir)
+		shutil.rmtree(downloadDir + sep + fileSubDir)
 
 if __name__ == '__main__':
 	unittest.main()
