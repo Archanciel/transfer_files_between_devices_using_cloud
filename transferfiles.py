@@ -357,3 +357,5 @@ if __name__ == "__main__":
 			runTransFerFile = tf.transferFiles()
 	except requests.exceptions.ConnectionError:
 		print("No internet access. Fix the problem and retry !")
+	except NotADirectoryError as e:
+		print("Directory {} does not exist. Update the transfile.ini config file and retry !".format(e))
