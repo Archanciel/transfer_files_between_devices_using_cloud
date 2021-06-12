@@ -138,8 +138,11 @@ class FileLister:
 					continue
 
 				pathfileName = os.path.join(root, fileName)
-				file_mtime = datetime.datetime.fromtimestamp(os.stat(pathfileName).st_mtime)
-				if (file_mtime > lastSyncTime):
+				os_stat = os.stat(pathfileName)
+				file_creat_time = datetime.datetime.fromtimestamp(os_stat.st_ctime)
+				file_modif_time = datetime.datetime.fromtimestamp(os_stat.st_mtime)
+				if (file_creat_time > lastSyncTime or
+					file_modif_time > lastSyncTime):
 					fileNameLst.append(fileName)
 					filePathNameLst.append(pathfileName)
 
