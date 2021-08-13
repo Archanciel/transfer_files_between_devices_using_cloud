@@ -54,6 +54,7 @@ the utility will potentially display a different list of modified files.
 </p>
 
 ## Required libraries
+- requests
 - configobj
 - dropbox
 
