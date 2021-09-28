@@ -3,6 +3,7 @@ import os, sys, inspect, datetime, shutil
 from os.path import sep
 from distutils import dir_util
 from io import StringIO
+import time
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -80,6 +81,28 @@ class TestTransferFiles(unittest.TestCase):
 			localProjectDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_saved'
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
 		
+		stdin = sys.stdin
+		
+		print('\nstdout temporarily captured. Test is running ...')
+		
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+		
+		# selecting project 1 (the test project 'TransferFilesTestProject' is
+		# the first project defined in test_TransferFiles.ini !)
+		sys.stdin = StringIO('1')  # TransferFilesTestProject
+		
+		tf = TransferFiles(configFilePath=configFilePathName)
+		
+		# updating last synch time to now
+		tf.updateLastSynchTime()
+		
+		sys.stdin = stdin
+		sys.stdout = stdout
+		
+		time.sleep(1)
+		
 		# cleaning up the target cloud folder
 		
 		cm = ConfigManager(configFilePathName)
@@ -131,8 +154,6 @@ class TestTransferFiles(unittest.TestCase):
 
 		# now asking TransferFiles to upload the modified files 
 		
-		tf = TransferFiles(configFilePath=configFilePathName)
-		
 		# confirming modified files upload
 		sys.stdin = StringIO('Y')
 		
@@ -160,6 +181,28 @@ class TestTransferFiles(unittest.TestCase):
 			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
 			localProjectDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_saved'
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles.ini'
+		
+		stdin = sys.stdin
+		
+		print('\nstdout temporarily captured. Test is running ...')
+		
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+		
+		# selecting project 1 (the test project 'TransferFilesTestProject' is
+		# the first project defined in test_TransferFiles.ini !)
+		sys.stdin = StringIO('2')  # TransferPathFilesTestProject
+		
+		tf = TransferFiles(configFilePath=configFilePathName)
+		
+		# updating last synch time to now
+		tf.updateLastSynchTime()
+		
+		sys.stdin = stdin
+		sys.stdout = stdout
+		
+		time.sleep(1)
 		
 		# cleaning up the target cloud folder
 		
@@ -211,8 +254,6 @@ class TestTransferFiles(unittest.TestCase):
 		sys.stdout = outputCapturingString
 		
 		# now asking TransferFiles to upload the modified files
-		
-		tf = TransferFiles(configFilePath=configFilePathName)
 		
 		# confirming modified files upload
 		sys.stdin = StringIO('Y')
@@ -459,6 +500,28 @@ class TestTransferFiles(unittest.TestCase):
 		cm = ConfigManager(configFilePathName)
 		projectName = 'TransferFilesTestProject'
 
+		stdin = sys.stdin
+
+		print('\nstdout temporarily captured. Test is running ...')
+
+		stdout = sys.stdout
+		outputCapturingString = StringIO()
+		sys.stdout = outputCapturingString
+
+		# selecting project 1 (the test project 'TransferFilesTestProject' is
+		# the first project defined in test_TransferFiles.ini !)
+		sys.stdin = StringIO('1') # TransferFilesTestProject
+
+		tf = TransferFiles(configFilePath=configFilePathName)
+
+		# updating last synch time to now
+		tf.updateLastSynchTime()
+		
+		sys.stdin = stdin
+		sys.stdout = stdout
+		
+		time.sleep(2)
+		
 		# storing the last synch update time to compare it to the new update
 		# time once download and move has been performed
 		storedLastSynchTimeStr = cm.getLastSynchTime(projectName)
@@ -517,8 +580,6 @@ class TestTransferFiles(unittest.TestCase):
 
 		# now asking TransferFiles to download the cloud files and move them
 		# to the local dirs
-
-		tf = TransferFiles(configFilePath=configFilePathName)
 
 		# confirming cloud files download
 		sys.stdin = StringIO('Y')
@@ -677,6 +738,6 @@ class TestTransferFiles(unittest.TestCase):
 		self.assertEqual(None, tf.projectName)
 
 if __name__ == '__main__':
-	unittest.main()
-#	tst = TestTransferFiles()
-#	tst.testPathUploadToCloud_invalid_fileName()
+#	unittest.main()
+	tst = TestTransferFiles()
+	tst.testTransferFilesFromCloudToLocalDirs_noFilePath()
