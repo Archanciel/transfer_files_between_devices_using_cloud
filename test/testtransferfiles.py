@@ -73,11 +73,11 @@ class TestTransferFiles(unittest.TestCase):
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
 		if os.name == 'posix':
-			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
+			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir_3'
 			localProjectDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir_saved'
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles_3.ini'
 		else:
-			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
+			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_3'
 			localProjectDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_saved'
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles_3.ini'
 		
@@ -489,16 +489,13 @@ class TestTransferFiles(unittest.TestCase):
 		warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
 		if os.name == 'posix':
-			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir'
+			localProjectDir = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir_1'
 			localProjectDirSaved = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/testproject_2/projectdir_saved'
 			configFilePathName = '/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/trans_file_cloud/test/test_TransferFiles_1.ini'
 		else:
-			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir'
+			localProjectDir = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_1'
 			localProjectDirSaved = 'D:\\Development\\Python\\trans_file_cloud\\test\\testproject_2\\projectdir_saved'
 			configFilePathName = 'D:\\Development\\Python\\trans_file_cloud\\test\\test_TransferFiles_1.ini'
-
-		cm = ConfigManager(configFilePathName)
-		projectName = 'TransferFilesTestProject'
 
 		stdin = sys.stdin
 
@@ -520,8 +517,11 @@ class TestTransferFiles(unittest.TestCase):
 		sys.stdin = stdin
 		sys.stdout = stdout
 		
-		time.sleep(2)
-		
+		time.sleep(1)
+
+		cm = ConfigManager(configFilePathName)
+		projectName = 'TransferFilesTestProject'
+
 		# storing the last synch update time to compare it to the new update
 		# time once download and move has been performed
 		storedLastSynchTimeStr = cm.getLastSynchTime(projectName)
