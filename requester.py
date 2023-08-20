@@ -115,7 +115,7 @@ class Requester:
 			userPrompt = self.addFilesToUserPrompt(questionStr, fileNameLst, path='P/', upload='U/')
 			userChoice = input(userPrompt).upper()
 			
-			if 'P' in userChoice:
+			if 'P' in userChoice or '5' in userChoice:
 				questionStr = questionStr.replace('P to display the path and ', '')	
 				userPrompt = self.addFilesToUserPrompt(questionStr, filePathNameLst,path='', upload='U/')
 			else:
@@ -143,13 +143,13 @@ class Requester:
 		@return: True or False for upload confirmation and last synch time
 				 update value if any
 		"""
-		if 'U' in userChoice:
+		if 'U' in userChoice or '4' in userChoice:
 			return False, self.askUserNewSyncTime()
-		elif userChoice == 'Y':
+		elif userChoice == 'Y' or userChoice == '1':
 			return True, ''
-		elif userChoice == 'YK':
+		elif userChoice == 'YK' or userChoice == '2':
 			return True, True
-		elif userChoice == 'N':
+		elif userChoice == 'N' or userChoice == '3':
 			return False, ''
 		else:
 			return None, ''
@@ -157,6 +157,7 @@ class Requester:
 	def addFilesToUserPrompt(self, questionStr, fileNameLst, path='', upload=''):
 		"""
 		This method adds upload or download file names to the user prompt.
+		Entering numbers or letters will be interpreted as user choices.
 		
 		@param questionStr: the question displayed to the user
 		@param fileNameLst: file names to print before asking the question
@@ -185,10 +186,10 @@ class Requester:
 			if upload != '':
 				# we are uploading and so 'YK' for 'yes keep files on cloud
 				# makes no sense !
-				userPrompt += '\n' + questionStr + '.\n\nContinue (Y/N/{}{}Enter) '.format(path, upload)
+				userPrompt += '\n' + questionStr + '.\n\nContinue (Y/N/{}{}Enter)\n         (1/3/5/4/Enter) '.format(path, upload)
 			else:
 				# here, we are downloading files and 'yes keep files on cloud' is useful
-				userPrompt += '\n' + questionStr + '.\n\nContinue (Y/YK/N/{}{}Enter) '.format(path, upload)
+				userPrompt += '\n' + questionStr + '.\n\nContinue (Y/YK/N/{}{}Enter)\n         (1/2/3/4/Enter) '.format(path, upload)
 
 		return userPrompt
 	
